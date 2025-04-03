@@ -38,6 +38,7 @@ public class Lesson {
     @JoinColumn(nullable = false)
     private Location location;
 
+    //TODO : Join «ÿ¡÷±‚
     @Column(name = "teacher_id", nullable = false)
     private Integer teacherId;
 
