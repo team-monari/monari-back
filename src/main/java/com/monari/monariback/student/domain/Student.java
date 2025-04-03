@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.monari.monariback.student.domain.enumerated.Grade;
 import com.monari.monariback.student.domain.enumerated.SchoolLevel;
@@ -12,6 +13,7 @@ import com.monari.monariback.student.domain.enumerated.SocialProvider;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +23,7 @@ import jakarta.persistence.Table;
 
 @Table(name = "student")
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Student {
 
 	@Id
