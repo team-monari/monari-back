@@ -3,8 +3,14 @@ package com.monari.monariback.student.domain;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.monari.monariback.student.domain.enumerated.Grade;
+import com.monari.monariback.student.domain.enumerated.SchoolLevel;
+import com.monari.monariback.student.domain.enumerated.SocialProvider;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,16 +34,19 @@ public class Student {
 	private String name;
 
 	@Column(length = 50)
-	private String socialProvider;  // 예: KAKAO / NAVER
+	@Enumerated(value = EnumType.STRING)
+	private SocialProvider socialProvider;
 
 	@Column(length = 255)
 	private String socialId;
 
 	@Column(length = 20)
-	private String schoolLevel;  // 예: MIDDLE / HIGH
+	@Enumerated(value = EnumType.STRING)
+	private SchoolLevel schoolLevel;
 
 	@Column(length = 20)
-	private String grade;  // 예: ONE / TWO / THREE
+	@Enumerated(value = EnumType.STRING)
+	private Grade grade;
 
 	@Column
 	private LocalDateTime createdAt;
