@@ -19,6 +19,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Table(name = "student")
@@ -60,4 +61,11 @@ public class Student {
 
 	@LastModifiedDate
 	private LocalDateTime updatedAt;
+
+	@PrePersist
+	private void generateUuid() {
+		if (this.publicId == null) {
+			this.publicId = UUID.randomUUID();
+		}
+	}
 }
