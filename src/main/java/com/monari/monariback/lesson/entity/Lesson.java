@@ -67,19 +67,19 @@ public class Lesson {
     @Enumerated(EnumType.STRING)
     private LessonStatus status;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Column(name = "school_level")
+    @Column(name = "school_level", nullable = false)
     @Enumerated(EnumType.STRING)
     private SchoolLevel schoolLevel;
 
-    @Column(name = "subject")
+    @Column(name = "subject", nullable = false)
     @Enumerated(EnumType.STRING)
     private Subject subject;
 
