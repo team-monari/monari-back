@@ -3,6 +3,9 @@ package com.monari.monariback.student.domain;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import com.monari.monariback.student.domain.enumerated.Grade;
 import com.monari.monariback.student.domain.enumerated.SchoolLevel;
 import com.monari.monariback.student.domain.enumerated.SocialProvider;
@@ -48,9 +51,10 @@ public class Student {
 	@Enumerated(value = EnumType.STRING)
 	private Grade grade;
 
-	@Column
+	@CreatedDate
+	@Column(updatable = false)
 	private LocalDateTime createdAt;
 
-	@Column
+	@LastModifiedDate
 	private LocalDateTime updatedAt;
 }
