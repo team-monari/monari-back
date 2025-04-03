@@ -22,7 +22,7 @@ public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "service_subcategory")
     private String serviceSubcategory;
@@ -30,23 +30,14 @@ public class Location {
     @Column(name = "service_status")
     private String serviceStatus;
 
-    @Column(name = "service_name")
-    private String serviceName;
-
     @Column(name = "payment_method")
     private String paymentMethod;
 
     @Column(name = "location_name")
     private String locationName;
 
-    @Column(name = "url")
+    @Column(name = "service_url")
     private String serviceUrl;
-
-    @Column(name = "service_start_date_time")
-    private LocalDateTime serviceStartDateTime;
-
-    @Column(name = "service_end_date_time")
-    private LocalDateTime serviceEndDateTime;
 
     @Column(name = "registration_start_date_time")
     private LocalDateTime registrationStartDateTime;
