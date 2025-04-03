@@ -20,8 +20,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Getter
@@ -67,11 +67,11 @@ public class Lesson {
     private LessonStatus status;
 
     @Column(name = "created_at")
-    @CreationTimestamp
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    @UpdateTimestamp
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @Column(name = "school_level")
