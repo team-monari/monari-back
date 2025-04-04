@@ -117,4 +117,34 @@ public class LessonService {
             lesson.getSubject().name()
         );
     }
+
+    /**
+     * 수업 조회
+     *
+     * @param lessonId - 조회할 수업의 id
+     * @return LessonResponse - 조회된 수업 정보가 담긴 dto
+     * @author Hong
+     */
+    @Transactional(readOnly = true)
+    public LessonResponse read(final Integer lessonId) {
+        final Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
+            () -> new IllegalArgumentException("해당 수업이 존재하지 않습니다.") // TODO : 커스텀 예외 처리
+        );
+
+        return new LessonResponse(
+            lesson.getId(),
+            lesson.getLocation().getId(),
+            lesson.getTeacherId(),
+            lesson.getDescription(),
+            lesson.getAmount(),
+            lesson.getMinStudent(),
+            lesson.getMaxStudent(),
+            lesson.getStartDate(),
+            lesson.getEndDate(),
+            lesson.getDeadline(),
+            lesson.getStatus().name(),
+            lesson.getSchoolLevel().name(),
+            lesson.getSubject().name()
+        );
+    }
 }
