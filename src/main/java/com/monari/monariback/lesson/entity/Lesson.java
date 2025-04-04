@@ -68,13 +68,13 @@ public class Lesson {
     @Enumerated(EnumType.STRING)
     private LessonStatus status = LessonStatus.ACTIVE;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     @CreatedDate
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     @LastModifiedDate
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
 
     @Column(name = "school_level", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -113,28 +113,28 @@ public class Lesson {
     }
 
     public void update(
-        final Location location,
-        final Integer teacherId,
-        final String description,
-        final Integer amount,
-        final Integer minStudent,
-        final Integer maxStudent,
-        final LocalDate startDate,
-        final LocalDate endDate,
-        final LocalDate deadline,
-        final SchoolLevel schoolLevel,
-        final Subject subject
+        final Location newLocation,
+        final Integer newTeacherId,
+        final String newDescription,
+        final Integer newAmount,
+        final Integer newMinStudent,
+        final Integer newMaxStudent,
+        final LocalDate newStartDate,
+        final LocalDate newEndDate,
+        final LocalDate newDeadline,
+        final SchoolLevel newSchoolLevel,
+        final Subject newSubject
     ) {
-        this.location = location;
-        this.teacherId = teacherId;
-        this.description = description;
-        this.amount = amount;
-        this.minStudent = minStudent;
-        this.maxStudent = maxStudent;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.deadline = deadline;
-        this.schoolLevel = schoolLevel;
-        this.subject = subject;
+        location = newLocation;
+        teacherId = newTeacherId;
+        description = newDescription;
+        amount = newAmount;
+        minStudent = newMinStudent;
+        maxStudent = newMaxStudent;
+        startDate = newStartDate;
+        endDate = newEndDate;
+        deadline = newDeadline;
+        schoolLevel = newSchoolLevel;
+        subject = newSubject;
     }
 }
