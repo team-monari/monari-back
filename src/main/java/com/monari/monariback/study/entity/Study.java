@@ -1,9 +1,9 @@
-package com.monari.monariback.study.domain;
+package com.monari.monariback.study.entity;
 
 import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
-import com.monari.monariback.study.domain.enumerated.StudyStatus;
+import com.monari.monariback.study.entity.enumerated.StudyStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
