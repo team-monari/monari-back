@@ -1,8 +1,9 @@
 package com.monari.monariback.lesson.entity;
 
+import com.monari.monariback.common.entity.BaseEntity;
+import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.lesson.entity.enurmurated.LessonStatus;
-import com.monari.monariback.lesson.entity.enurmurated.SchoolLevel;
-import com.monari.monariback.lesson.entity.enurmurated.Subject;
+import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.location.entity.Location;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,20 +17,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Getter
 @Table(name = "lesson")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Lesson {
+public class Lesson extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +37,7 @@ public class Lesson {
     @JoinColumn(nullable = false)
     private Location location;
 
-    //TODO : Join ÇØÁÖ±â
+    //TODO : Join ï¿½ï¿½ï¿½Ö±ï¿½
     @Column(name = "teacher_id", nullable = false)
     private Integer teacherId;
 
@@ -67,14 +65,6 @@ public class Lesson {
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private LessonStatus status = LessonStatus.ACTIVE;
-
-    @Column(name = "created_at")
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     @Column(name = "school_level", nullable = false)
     @Enumerated(EnumType.STRING)
