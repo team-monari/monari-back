@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -55,23 +56,23 @@ public class Lesson {
     private Integer maxStudent;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date", nullable = false)
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     @Column(name = "deadline", nullable = false)
-    private LocalDateTime deadline;
+    private LocalDate deadline;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private LessonStatus status;
+    private LessonStatus status = LessonStatus.ACTIVE;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
@@ -83,4 +84,57 @@ public class Lesson {
     @Enumerated(EnumType.STRING)
     private Subject subject;
 
+    public static Lesson ofCreate(
+        final Location location,
+        final Integer teacherId,
+        final String description,
+        final Integer amount,
+        final Integer minStudent,
+        final Integer maxStudent,
+        final LocalDate startDate,
+        final LocalDate endDate,
+        final LocalDate deadline,
+        final SchoolLevel schoolLevel,
+        final Subject subject
+    ) {
+        Lesson lesson = new Lesson();
+        lesson.location = location;
+        lesson.teacherId = teacherId;
+        lesson.description = description;
+        lesson.amount = amount;
+        lesson.minStudent = minStudent;
+        lesson.maxStudent = maxStudent;
+        lesson.startDate = startDate;
+        lesson.endDate = endDate;
+        lesson.deadline = deadline;
+        lesson.schoolLevel = schoolLevel;
+        lesson.subject = subject;
+        return lesson;
+    }
+
+    public void update(
+        final Location newLocation,
+        final Integer newTeacherId,
+        final String newDescription,
+        final Integer newAmount,
+        final Integer newMinStudent,
+        final Integer newMaxStudent,
+        final LocalDate newStartDate,
+        final LocalDate newEndDate,
+        final LocalDate newDeadline,
+        final SchoolLevel newSchoolLevel,
+        final Subject newSubject
+    ) {
+        location = newLocation;
+        teacherId = newTeacherId;
+        description = newDescription;
+        amount = newAmount;
+        minStudent = newMinStudent;
+        maxStudent = newMaxStudent;
+        startDate = newStartDate;
+        endDate = newEndDate;
+        deadline = newDeadline;
+        schoolLevel = newSchoolLevel;
+        subject = newSubject;
+    }
 }
