@@ -21,7 +21,7 @@ public class Study extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(nullable = false, length = 10000)
+    @Column(nullable = false, length = 5000)
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -31,6 +31,6 @@ public class Study extends BaseEntity {
     private SchoolLevel schoolLevel;
 
     @Enumerated(EnumType.STRING)
-    private StudyStatus studyStatus;
+    private StudyStatus status;
 
 }
