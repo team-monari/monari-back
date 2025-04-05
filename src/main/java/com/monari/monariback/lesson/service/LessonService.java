@@ -9,6 +9,7 @@ import com.monari.monariback.lesson.repository.LessonRepository;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.location.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,7 @@ public class LessonService {
      * @return CreateLessonResponse - 수업 생성 후 응답 dto 입니다.
      * @author Hong
      */
-    public LessonResponse create(final CreateLessonRequest lessonDto) {
+    public ResponseEntity<?> create(final CreateLessonRequest lessonDto) {
 
         Location location = locationRepository.findById(lessonDto.locationId()).orElseThrow(
             () -> new IllegalArgumentException("해당 장소가 존재하지 않습니다.") // TODO : 커스텀 예외 처리
@@ -52,22 +53,8 @@ public class LessonService {
         );
 
         lessonRepository.save(lesson);
-
-        return new LessonResponse(
-            lesson.getId(),
-            lesson.getLocation().getId(),
-            lesson.getTeacherId(),
-            lesson.getDescription(),
-            lesson.getAmount(),
-            lesson.getMinStudent(),
-            lesson.getMaxStudent(),
-            lesson.getStartDate(),
-            lesson.getEndDate(),
-            lesson.getDeadline(),
-            lesson.getStatus().name(),
-            lesson.getSchoolLevel().name(),
-            lesson.getSubject().name()
-        );
+        // 이렇게 String 으로 해도 되는지 논의
+        return ResponseEntity.ok("생성에 성공하였습니다");
     }
 
     /**
@@ -78,7 +65,7 @@ public class LessonService {
      * @return LessonResponse - 수정된 수업 정보가 담긴 dto
      * @author Hong
      */
-    public LessonResponse update(final Integer lessonId, final UpdateLessonRequest lessonDto) {
+    public ResponseEntity<?> update(final Integer lessonId, final UpdateLessonRequest lessonDto) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
             () -> new IllegalArgumentException("해당 수업이 존재하지 않습니다.") // TODO : 커스텀 예외 처리
         );
@@ -101,21 +88,7 @@ public class LessonService {
             lessonDto.subject()
         );
 
-        return new LessonResponse(
-            lesson.getId(),
-            lesson.getLocation().getId(),
-            lesson.getTeacherId(),
-            lesson.getDescription(),
-            lesson.getAmount(),
-            lesson.getMinStudent(),
-            lesson.getMaxStudent(),
-            lesson.getStartDate(),
-            lesson.getEndDate(),
-            lesson.getDeadline(),
-            lesson.getStatus().name(),
-            lesson.getSchoolLevel().name(),
-            lesson.getSubject().name()
-        );
+        return ResponseEntity.ok("수정이 완료되었습니다.");
     }
 
     /**

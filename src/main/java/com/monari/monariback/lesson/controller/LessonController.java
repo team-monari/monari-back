@@ -22,22 +22,19 @@ public class LessonController {
     private final LessonService lessonService;
 
     @PostMapping()
-    public ResponseEntity<LessonResponse> createLesson(
+    public ResponseEntity<?> createLesson(
         @RequestBody final CreateLessonRequest lessonDto
     ) {
-        return ResponseEntity.ok(
-            lessonService.create(lessonDto)
-        );
+        return lessonService.create(lessonDto);
     }
 
     @PatchMapping("/{lessonId}")
-    public ResponseEntity<LessonResponse> updateLesson(
+    public ResponseEntity<?> updateLesson(
         @PathVariable("lessonId") final Integer lessonId,
         @RequestBody final UpdateLessonRequest lessonDto
     ) {
-        return ResponseEntity.ok(
-            lessonService.update(lessonId, lessonDto)
-        );
+        return lessonService.update(lessonId, lessonDto);
+
     }
 
     @GetMapping("/{lessonId}")
