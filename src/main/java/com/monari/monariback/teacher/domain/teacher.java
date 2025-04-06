@@ -1,15 +1,17 @@
 package com.monari.monariback.teacher.domain;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.monari.monariback.common.entity.BaseEntity;
+import com.monari.monariback.common.enumerated.SocialProvider;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +21,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "teacher")
 @EntityListeners(AuditingEntityListener.class)
-public class teacher {
+public class teacher extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +36,9 @@ public class teacher {
 	@Column(length = 50, nullable = false) // name
 	private String name;
 
-	// @Enumerated(EnumType.STRING)
-	// @Column(length = 50) // social provider
-	// private SocialProvider socialProvider;
+	@Enumerated(EnumType.STRING)
+	@Column(length = 50) // social provider
+	private SocialProvider socialProvider;
 
 	@Column(length = 100) // social ID
 	private String socialId;
@@ -49,14 +51,6 @@ public class teacher {
 
 	@Column(length = 1000)
 	private String career;
-
-	@CreatedDate
-	@Column(nullable = false, updatable = false)
-	private LocalDateTime createdAt;
-
-	@LastModifiedDate
-	@Column(nullable = false)
-	private LocalDateTime updatedAt;
 
 	@PrePersist
 	private void generateUuid() {

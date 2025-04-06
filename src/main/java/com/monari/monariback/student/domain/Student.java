@@ -3,15 +3,13 @@ package com.monari.monariback.student.domain;
 import java.util.UUID;
 
 import com.monari.monariback.common.entity.BaseEntity;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.monari.monariback.common.enumerated.Grade;
 import com.monari.monariback.common.enumerated.SchoolLevel;
-import com.monari.monariback.student.domain.enumerated.SocialProvider;
+import com.monari.monariback.common.enumerated.SocialProvider;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
