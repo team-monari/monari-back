@@ -1,10 +1,8 @@
-package com.monari.monariback.student.domain;
+package com.monari.monariback.teacher.domain;
 
 import java.util.UUID;
 
 import com.monari.monariback.common.entity.BaseEntity;
-import com.monari.monariback.common.enumerated.Grade;
-import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.SocialProvider;
 
 import jakarta.persistence.Column;
@@ -19,38 +17,39 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@Table(name = "student")
 @Entity
+@Table(name = "teacher")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Student extends BaseEntity {
+public class Teacher extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(columnDefinition = "BINARY(16)", unique = true, nullable = false, updatable = false)
+	@Column(name = "public_id", columnDefinition = "BINARY(16)", nullable = false, unique = true, updatable = false)
 	private UUID publicId;
 
-	@Column(length = 255, nullable = false)
+	@Column(length = 100, nullable = false)
 	private String email;
 
-	@Column(length = 100, nullable = false)
+	@Column(length = 50, nullable = false)
 	private String name;
 
+	@Enumerated(EnumType.STRING)
 	@Column(length = 50)
-	@Enumerated(value = EnumType.STRING)
 	private SocialProvider socialProvider;
 
-	@Column(length = 255)
+	@Column(length = 100)
 	private String socialId;
 
-	@Column(length = 20)
-	@Enumerated(value = EnumType.STRING)
-	private SchoolLevel schoolLevel;
+	@Column(length = 100)
+	private String university;
 
-	@Column(length = 20)
-	@Enumerated(value = EnumType.STRING)
-	private Grade grade;
+	@Column(length = 100)
+	private String major;
+
+	@Column(length = 1000)
+	private String career;
 
 	@PrePersist
 	private void generateUuid() {
