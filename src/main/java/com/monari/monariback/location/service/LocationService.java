@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class LocationService {
 
@@ -34,7 +35,6 @@ public class LocationService {
      *
      * @author Hong
      */
-    @Transactional
     public void setUp() {
         if (locationRepository.count() == 0) {
             List<Location> allLocations = getAllLocationsFromApi();
