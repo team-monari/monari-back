@@ -57,10 +57,6 @@ public class KakaoOauthProvider implements OauthProvider {
 		formData.add("redirect_uri", redirectUri);
 		formData.add("code", code);
 
-		if (!clientSecret.isBlank()) {
-			formData.add("client_secret", clientSecret);
-		}
-
 		return webClient.post()
 				.uri(tokenUri)
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -83,7 +79,7 @@ public class KakaoOauthProvider implements OauthProvider {
 
 	private KakaoUserInfoResponse fetchUserInfo(String accessToken) {
 		return webClient
-				.post() // GET 방식으로 바꾸고 싶다면 여기만 수정
+				.post()
 				.uri(userInfoUri)
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
