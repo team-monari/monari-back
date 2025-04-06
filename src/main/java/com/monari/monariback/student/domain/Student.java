@@ -1,14 +1,12 @@
 package com.monari.monariback.student.domain;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import com.monari.monariback.common.entity.BaseEntity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.monari.monariback.student.domain.enumerated.Grade;
-import com.monari.monariback.student.domain.enumerated.SchoolLevel;
+import com.monari.monariback.common.enumerated.Grade;
+import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.student.domain.enumerated.SocialProvider;
 
 import jakarta.persistence.Column;
@@ -24,8 +22,7 @@ import jakarta.persistence.Table;
 
 @Table(name = "student")
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Student {
+public class Student extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,13 +51,6 @@ public class Student {
 	@Column(length = 20)
 	@Enumerated(value = EnumType.STRING)
 	private Grade grade;
-
-	@CreatedDate
-	@Column(updatable = false)
-	private LocalDateTime createdAt;
-
-	@LastModifiedDate
-	private LocalDateTime updatedAt;
 
 	@PrePersist
 	private void generateUuid() {
