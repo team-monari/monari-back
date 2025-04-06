@@ -14,9 +14,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "teacher")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Teacher extends BaseEntity {
 
 	@Id

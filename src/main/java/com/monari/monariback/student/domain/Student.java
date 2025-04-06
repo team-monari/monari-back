@@ -3,7 +3,6 @@ package com.monari.monariback.student.domain;
 import java.util.UUID;
 
 import com.monari.monariback.common.entity.BaseEntity;
-
 import com.monari.monariback.common.enumerated.Grade;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.SocialProvider;
@@ -17,9 +16,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Table(name = "student")
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Student extends BaseEntity {
 
 	@Id
