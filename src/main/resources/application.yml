@@ -17,3 +17,9 @@ spring:
     url: jdbc:h2:mem:test
     username: sa
     password:
+
+oauth:
+  kakao:
+    client-id: ${KAKAO-CLIENT-ID}
+    redirect-uri: ${KAKAO-REDIRECT-URI}
+    token-uri: https://kauth.kakao.com/oauth/token
