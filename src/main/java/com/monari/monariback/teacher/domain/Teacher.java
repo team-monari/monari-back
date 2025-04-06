@@ -2,14 +2,11 @@ package com.monari.monariback.teacher.domain;
 
 import java.util.UUID;
 
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.SocialProvider;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -20,8 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "teacher")
-@EntityListeners(AuditingEntityListener.class)
-public class teacher extends BaseEntity {
+public class Teacher extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,23 +26,23 @@ public class teacher extends BaseEntity {
 	@Column(name = "public_id", columnDefinition = "BINARY(16)", nullable = false, unique = true, updatable = false)
 	private UUID publicId;
 
-	@Column(length = 100, nullable = false) // email
+	@Column(length = 100, nullable = false)
 	private String email;
 
-	@Column(length = 50, nullable = false) // name
+	@Column(length = 50, nullable = false)
 	private String name;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 50) // social provider
+	@Column(length = 50)
 	private SocialProvider socialProvider;
 
-	@Column(length = 100) // social ID
+	@Column(length = 100)
 	private String socialId;
 
-	@Column(length = 100) // university
+	@Column(length = 100)
 	private String university;
 
-	@Column(length = 100) // major
+	@Column(length = 100)
 	private String major;
 
 	@Column(length = 1000)
