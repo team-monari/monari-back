@@ -1,6 +1,7 @@
 package com.monari.monariback.auth.oauth;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -9,7 +10,9 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.monari.monariback.auth.dto.response.KakaoUserInfoResponse;
 import com.monari.monariback.auth.dto.response.OauthAccessTokenResponse;
+import com.monari.monariback.auth.oauth.userinfo.KakaoUserInfo;
 import com.monari.monariback.auth.oauth.userinfo.OauthUserInfo;
 import com.monari.monariback.common.enumerated.SocialProvider;
 
@@ -23,19 +26,22 @@ public class KakaoOauthProvider implements OauthProvider {
 	private final String redirectUri;
 	private final String clientSecret;
 	private final String tokenUri;
+	private final String userInfoUri;
 
 	public KakaoOauthProvider(
 			WebClient webClient,
 			@Value("${oauth.kakao.client-id}") String clientId,
 			@Value("${oauth.kakao.redirect-uri}") String redirectUri,
 			@Value("${oauth.kakao.client-secret:}") String clientSecret,
-			@Value("${oauth.kakao.token-uri}") String tokenUri
+			@Value("${oauth.kakao.token-uri}") String tokenUri,
+			@Value("${oauth.kakao.user-info-uri}") String userInfoUri
 	) {
 		this.webClient = webClient;
 		this.clientId = clientId;
 		this.redirectUri = redirectUri;
 		this.clientSecret = clientSecret;
 		this.tokenUri = tokenUri;
+		this.userInfoUri = userInfoUri;
 	}
 
 	@Override
@@ -66,12 +72,29 @@ public class KakaoOauthProvider implements OauthProvider {
 				)
 				.bodyToMono(OauthAccessTokenResponse.class)
 				.map(OauthAccessTokenResponse::accessToken)
-				.block(); // 동기 방식으로 반
+				.block();
 	}
 
 	@Override
 	public OauthUserInfo getUserInfo(String accessToken) {
-		return null;
+		KakaoUserInfoResponse response = fetchUserInfo(accessToken);
+		return new KakaoUserInfo(response);
+	}
+
+	private KakaoUserInfoResponse fetchUserInfo(String accessToken) {
+		return webClient
+				.post() // GET 방식으로 바꾸고 싶다면 여기만 수정
+				.uri(userInfoUri)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+				.retrieve()
+				.onStatus(
+						status -> status.is4xxClientError() || status.is5xxServerError(),
+						this::handleOauthError
+				)
+				.bodyToMono(KakaoUserInfoResponse.class)
+				.blockOptional()
+				.orElseThrow(() -> new RuntimeException("카카오 사용자 정보 응답이 비어 있습니다"));
 	}
 
 	private Mono<? extends Throwable> handleOauthError(ClientResponse response) {
