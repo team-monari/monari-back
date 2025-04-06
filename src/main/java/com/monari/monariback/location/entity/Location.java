@@ -1,5 +1,6 @@
 package com.monari.monariback.location.entity;
 
+import com.monari.monariback.location.dto.LocationDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -56,4 +58,37 @@ public class Location {
 
     @Column(name = "cancellation_deadline")
     private Integer cancellationDeadline;
+
+    public static Location ofCreate(LocationDto dto) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+
+        return new Location(
+            null,
+            nullIfBlank(dto.MINCLASSNM()),
+            nullIfBlank(dto.SVCSTATNM()),
+            nullIfBlank(dto.PAYATNM()),
+            nullIfBlank(dto.PLACENM()),
+            nullIfBlank(dto.SVCURL()),
+            parseDate(dto.SVCOPNBGNDT(), formatter),
+            parseDate(dto.SVCOPNENDDT(), formatter),
+            parseDate(dto.RCPTBGNDT(), formatter),
+            parseDate(dto.RCPTENDDT(), formatter),
+            nullIfBlank(dto.REVSTDDAYNM()),
+            parseInteger(dto.REVSTDDAY())
+        );
+    }
+
+    private static String nullIfBlank(String value) {
+        return (value == null || value.trim().isEmpty()) ? null : value;
+    }
+
+    private static LocalDateTime parseDate(String value, DateTimeFormatter formatter) {
+        String v = nullIfBlank(value);
+        return v == null ? null : LocalDateTime.parse(v, formatter);
+    }
+
+    private static Integer parseInteger(String value) {
+        String v = nullIfBlank(value);
+        return v == null ? null : Integer.parseInt(v);
+    }
 }
