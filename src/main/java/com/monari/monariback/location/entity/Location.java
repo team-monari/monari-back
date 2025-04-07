@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -56,4 +57,49 @@ public class Location {
 
     @Column(name = "cancellation_deadline")
     private Integer cancellationDeadline;
+
+    public static Location ofCreate(
+        final String serviceSubcategory,
+        final String serviceStatus,
+        final String paymentMethod,
+        final String locationName,
+        final String serviceUrl,
+        final String registrationStartDateTime,
+        final String registrationEndDateTime,
+        final String cancellationStartDateTime,
+        final String cancellationEndDateTime,
+        final String cancellationPolicyInfo,
+        final String cancellationDeadline
+    ) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+
+        return new Location(
+            null,
+            nullIfBlank(serviceSubcategory),
+            nullIfBlank(serviceStatus),
+            nullIfBlank(paymentMethod),
+            nullIfBlank(locationName),
+            nullIfBlank(serviceUrl),
+            parseDate(registrationStartDateTime, formatter),
+            parseDate(registrationEndDateTime, formatter),
+            parseDate(cancellationStartDateTime, formatter),
+            parseDate(cancellationEndDateTime, formatter),
+            nullIfBlank(cancellationPolicyInfo),
+            parseInteger(cancellationDeadline)
+        );
+    }
+
+    private static String nullIfBlank(String value) {
+        return (value == null || value.trim().isEmpty()) ? null : value;
+    }
+
+    private static LocalDateTime parseDate(String value, DateTimeFormatter formatter) {
+        String v = nullIfBlank(value);
+        return v == null ? null : LocalDateTime.parse(v, formatter);
+    }
+
+    private static Integer parseInteger(String value) {
+        String v = nullIfBlank(value);
+        return v == null ? null : Integer.parseInt(v);
+    }
 }

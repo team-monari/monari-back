@@ -1,0 +1,28 @@
+package com.monari.monariback.global.config.error;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ErrorResponse<T> {
+
+    private String code;
+    private String message;
+    private T data;
+
+    public ErrorResponse(final ErrorCode code, final T data) {
+        this.code = code.getCode();
+        this.message = code.getMessage();
+        this.data = data;
+    }
+
+    public static <T> ErrorResponse<T> of(final ErrorCode code, final T data) {
+        return new ErrorResponse<>(code, data);
+    }
+
+    public static ErrorResponse<Void> of(final ErrorCode code) {
+        return new ErrorResponse<>(code, null);
+    }
+}
