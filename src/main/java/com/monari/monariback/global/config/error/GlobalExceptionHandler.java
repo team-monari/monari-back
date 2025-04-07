@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 
     // 지원하지 않는 HTTP method 호출할 경우 발생하는 예외 처리
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    protected ResponseEntity<ErrorResponse<Void>>  handle(HttpRequestMethodNotSupportedException e) {
+    protected ResponseEntity<ErrorResponse<Void>> handle(HttpRequestMethodNotSupportedException e) {
         log.error("HttpRequestMethodNotSupportedException", e);
         return createErrorResponseEntity(ErrorCode.METHOD_NOT_ALLOWED);
     }
@@ -36,14 +36,14 @@ public class GlobalExceptionHandler {
 
     // 커스텀 비즈니스 예외 처리
     @ExceptionHandler(BusinessException.class)
-    protected ResponseEntity<ErrorResponse<Void>>  handle(BusinessException e) {
+    protected ResponseEntity<ErrorResponse<Void>> handle(BusinessException e) {
         log.error("BusinessException", e);
         return createErrorResponseEntity(e.getErrorCode());
     }
 
     // 그외 예외 처리
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorResponse<Void>>  handle(Exception e) {
+    protected ResponseEntity<ErrorResponse<Void>> handle(Exception e) {
         log.error("Exception", e);
         return createErrorResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
     }
