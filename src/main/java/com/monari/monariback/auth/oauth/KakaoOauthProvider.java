@@ -4,6 +4,7 @@ import static com.monari.monariback.auth.constant.KakaoOauthConstants.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -62,7 +63,7 @@ public class KakaoOauthProvider implements OauthProvider {
 				.body(BodyInserters.fromFormData(formData))
 				.retrieve()
 				.onStatus(
-						status -> status.is4xxClientError() || status.is5xxServerError(),
+						HttpStatusCode::isError,
 						this::handleOauthError
 				)
 				.bodyToMono(OauthAccessTokenResponse.class)
@@ -84,7 +85,7 @@ public class KakaoOauthProvider implements OauthProvider {
 				.header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + accessToken)
 				.retrieve()
 				.onStatus(
-						status -> status.is4xxClientError() || status.is5xxServerError(),
+						HttpStatusCode::isError,
 						this::handleOauthError
 				)
 				.bodyToMono(KakaoUserInfoResponse.class)

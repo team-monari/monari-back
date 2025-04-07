@@ -16,8 +16,8 @@ public class JwtProperties {
 	private final long accessTokenExpirationMillis;
 
 	public JwtProperties(
-			@Value("${jwt.secret-key}") final String secretKey,
-			@Value("${jwt.accessToken-expiration-millis}") final long accessTokenExpirationMillis
+			@Value("${jwt.secret-key}") String secretKey,
+			@Value("${jwt.accessToken-expiration-millis}") long accessTokenExpirationMillis
 	) {
 		this.secretKey = secretKey;
 		this.accessTokenExpirationMillis = accessTokenExpirationMillis;
