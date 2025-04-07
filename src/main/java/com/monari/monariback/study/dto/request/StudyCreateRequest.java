@@ -10,5 +10,4 @@ public record StudyCreateRequest (
         SchoolLevel schoolLevel,
         Integer locationId
 ) {
-
 }

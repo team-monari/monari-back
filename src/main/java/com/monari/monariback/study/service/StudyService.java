@@ -18,16 +18,15 @@ public class StudyService {
 
     /**
      * 스터디 생성
-     * @param studyDto - 수업 생성 정보가 들어간 dto 입니다.
+     * @param studyDto 스터디 생성 요청 DTO
      * @author Jeong
      */
     @Transactional
     public void createStudy(final StudyCreateRequest studyDto) {
-        Location location = locationRepository.findById(studyDto.locationId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 공공장소는 존재하지 않습니다.")
-        );  // TODO - 추후 LocationService의 메서드 사용
+        Location location = locationRepository.findById(studyDto.locationId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 공공장소는 존재하지 않습니다"));
 
-        Study study = new Study(
+        Study study = Study.ofCreate(
                 studyDto.title(),
                 studyDto.description(),
                 studyDto.subject(),

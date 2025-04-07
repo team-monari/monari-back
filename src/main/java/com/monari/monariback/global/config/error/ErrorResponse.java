@@ -18,8 +18,17 @@ public class ErrorResponse<T> {
         this.data = data;
     }
 
+    public ErrorResponse(final ErrorCode code, final String message) {
+        this.code = code.getCode();
+        this.message = message;
+    }
+
     public static <T> ErrorResponse<T> of(final ErrorCode code, final T data) {
         return new ErrorResponse<>(code, data);
+    }
+
+    public static ErrorResponse<Void> of(final ErrorCode code, final String message) {
+        return new ErrorResponse<>(code, message);
     }
 
     public static ErrorResponse<Void> of(final ErrorCode code) {

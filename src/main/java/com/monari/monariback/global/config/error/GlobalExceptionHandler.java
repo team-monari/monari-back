@@ -41,6 +41,13 @@ public class GlobalExceptionHandler {
         return createErrorResponseEntity(e.getErrorCode());
     }
 
+    // IllegalArgumentException 예외 처리
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<ErrorResponse<Void>> handle(IllegalArgumentException e) {
+        log.error("IllegalArgumentException", e);
+        return createErrorResponseEntity(ErrorCode.BAD_REQUEST, e.getMessage());
+    }
+
     // 그외 예외 처리
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse<Void>> handle(Exception e) {
@@ -57,6 +64,12 @@ public class GlobalExceptionHandler {
     private <T> ResponseEntity<ErrorResponse<T>> createErrorResponseEntity(ErrorCode errorCode, T data) {
         return new ResponseEntity<>(
                 ErrorResponse.of(errorCode, data),
+                errorCode.getStatus());
+    }
+
+    private ResponseEntity<ErrorResponse<Void>> createErrorResponseEntity(ErrorCode errorCode, String message) {
+        return new ResponseEntity<>(
+                ErrorResponse.of(errorCode, message),
                 errorCode.getStatus());
     }
 

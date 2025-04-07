@@ -38,12 +38,21 @@ public class Study extends BaseEntity {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
-    public Study(String title, String description, Subject subject, SchoolLevel schoolLevel, Location location) {
-        this.title = title;
-        this.description = description;
-        this.subject = subject;
-        this.schoolLevel = schoolLevel;
-        this.location = location;
-        this.status = StudyStatus.ACTIVE;
+    public static Study ofCreate(
+            String title,
+            String description,
+            Subject subject,
+            SchoolLevel schoolLevel,
+            Location location) {
+
+        Study study = new Study();
+        study.title = title;
+        study.description = description;
+        study.subject = subject;
+        study.schoolLevel = schoolLevel;
+        study.location = location;
+        study.status = StudyStatus.ACTIVE;
+        return study;
     }
+
 }
