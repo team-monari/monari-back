@@ -51,6 +51,20 @@ public class Teacher extends BaseEntity {
 	@Column(length = 1000)
 	private String career;
 
+	public static Teacher signUpWithOauth(
+			String email,
+			String name,
+			SocialProvider socialProvider,
+			String socialId
+	) {
+		Teacher teacher = new Teacher();
+		teacher.email = email;
+		teacher.name = name;
+		teacher.socialProvider = socialProvider;
+		teacher.socialId = socialId;
+		return teacher;
+	}
+
 	@PrePersist
 	private void generateUuid() {
 		if (this.publicId == null) {
