@@ -24,7 +24,6 @@ public class KakaoOauthProvider implements OauthProvider {
 	private final WebClient webClient;
 	private final String clientId;
 	private final String redirectUri;
-	private final String clientSecret;
 	private final String tokenUri;
 	private final String userInfoUri;
 
@@ -32,14 +31,12 @@ public class KakaoOauthProvider implements OauthProvider {
 			WebClient webClient,
 			@Value("${oauth.kakao.client-id}") String clientId,
 			@Value("${oauth.kakao.redirect-uri}") String redirectUri,
-			@Value("${oauth.kakao.client-secret:}") String clientSecret,
 			@Value("${oauth.kakao.token-uri}") String tokenUri,
 			@Value("${oauth.kakao.user-info-uri}") String userInfoUri
 	) {
 		this.webClient = webClient;
 		this.clientId = clientId;
 		this.redirectUri = redirectUri;
-		this.clientSecret = clientSecret;
 		this.tokenUri = tokenUri;
 		this.userInfoUri = userInfoUri;
 	}

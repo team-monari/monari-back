@@ -2,8 +2,10 @@ package com.monari.monariback.auth.service;
 
 import org.springframework.stereotype.Service;
 
+import com.monari.monariback.auth.dto.AuthTokenDto;
 import com.monari.monariback.auth.dto.request.OauthLoginRequest;
 import com.monari.monariback.auth.enumerated.UserType;
+import com.monari.monariback.auth.jwt.JwtProvider;
 import com.monari.monariback.auth.oauth.OauthProvider;
 import com.monari.monariback.auth.oauth.OauthProviders;
 import com.monari.monariback.auth.oauth.userinfo.OauthUserInfo;
@@ -24,33 +26,31 @@ public class AuthService {
 	private final OauthProviders oauthProviders;
 	private final StudentRepository studentRepository;
 	private final TeacherRepository teacherRepository;
+	private final JwtProvider jwtProvider;
 
-	public void login(OauthLoginRequest request) {
+	public AuthTokenDto login(OauthLoginRequest request) {
 		OauthProvider provider = oauthProviders.getProvider(request.socialProvider());
 		String accessToken = provider.getAccessToken(request.code());
 		OauthUserInfo userInfo = provider.getUserInfo(accessToken);
-
-		log.info("소셜ID: {}", userInfo.getSocialId());
-		log.info("email: {}", userInfo.getEmail());
-		log.info("NickName: {}", userInfo.getNickName());
-		handleLogin(userInfo, request.userType(), request.socialProvider());
+		return handleLogin(
+				userInfo,
+				request.userType(),
+				request.socialProvider()
+		);
 	}
 
-	private void handleLogin(
+	private AuthTokenDto handleLogin(
 			OauthUserInfo userInfo,
-			String userTypeStr,
+			UserType userType,
 			SocialProvider socialProvider
 	) {
-		UserType userType = UserType.getMappedUserType(userTypeStr);
-		switch (userType) {
+		return switch (userType) {
 			case STUDENT -> studentLoginProcess(userInfo, socialProvider);
 			case TEACHER -> teacherLoginProcess(userInfo, socialProvider);
-			default -> throw new IllegalArgumentException(
-					"지원하지 않는 사용자 유형입니다: " + userTypeStr);
-		}
+		};
 	}
 
-	private void studentLoginProcess(
+	private AuthTokenDto studentLoginProcess(
 			OauthUserInfo userInfo,
 			SocialProvider socialProvider
 	) {
@@ -63,9 +63,12 @@ public class AuthService {
 								userInfo.getSocialId()
 						)
 				));
+		return AuthTokenDto.of(
+				jwtProvider.createAccessToken(student.getPublicId(), UserType.STUDENT)
+		);
 	}
 
-	private void teacherLoginProcess(
+	private AuthTokenDto teacherLoginProcess(
 			OauthUserInfo userInfo,
 			SocialProvider socialProvider
 	) {
@@ -78,5 +81,8 @@ public class AuthService {
 								userInfo.getSocialId()
 						)
 				));
+		return AuthTokenDto.of(
+				jwtProvider.createAccessToken(teacher.getPublicId(), UserType.TEACHER)
+		);
 	}
 }
