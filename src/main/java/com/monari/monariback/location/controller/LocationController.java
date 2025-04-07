@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/v1/location")
+@RequestMapping("/api/v1/locations")
 @RequiredArgsConstructor
 public class LocationController {
 
@@ -20,12 +20,12 @@ public class LocationController {
 
     @GetMapping()
     public ResponseEntity<List<LocationResponse>> getLocationList() {
-        return locationService.getLocationList();
+        return ResponseEntity.ok(locationService.getLocationList());
     }
 
     @GetMapping("/{locationId}")
     public ResponseEntity<LocationResponse> getLocation(
         @PathVariable(name = "locationId") final Integer locationId) {
-        return locationService.getLocation(locationId);
+        return ResponseEntity.ok(locationService.getLocation(locationId));
     }
 }
