@@ -2,12 +2,14 @@ package com.monari.monariback.location.service;
 
 import com.monari.monariback.location.config.LocationApiProperties;
 import com.monari.monariback.location.dto.response.LocationResponse;
+import com.monari.monariback.location.dto.response.OpenApiLocationResponse;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.location.repository.LocationRepository;
 import com.monari.monariback.location.util.WebClientUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +47,7 @@ public class LocationService {
      * @author Hong
      */
     private List<Location> getAllLocationsFromApi() {
-        LocationResponse responseDto = webClientUtil.get(
+        OpenApiLocationResponse responseDto = webClientUtil.get(
             webClientUtil.buildRequestUri(
                 apiProperties.getBaseUrl(),
                 apiProperties.getKey(),
@@ -54,7 +56,7 @@ public class LocationService {
                 CATEGORY,
                 START,
                 TOTAL_COUNT),
-            LocationResponse.class);
+            OpenApiLocationResponse.class);
 
         return responseDto.listPublicReservationInstitution().row().stream()
             .map(dto -> Location.ofCreate(
@@ -72,4 +74,24 @@ public class LocationService {
             .toList();
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<LocationResponse>> getLocationList() {
+        List<Location> locationList = locationRepository.findAll();
+        if (locationList.isEmpty()) {
+            throw new IllegalStateException("공공장소가 존재하지 않습니다");
+        }
+        List<LocationResponse> responseDto = locationList.stream()
+            .map(LocationResponse::from)
+            .toList();
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<LocationResponse> getLocation(final Integer locationId) {
+        Location location = locationRepository.findById(locationId).orElseThrow(() ->
+            new IllegalArgumentException("해당 공공장소는 존재하지 않습니다"));
+        return ResponseEntity.ok(
+            LocationResponse.from(location)
+        );
+    }
 }
