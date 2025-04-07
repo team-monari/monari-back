@@ -64,17 +64,17 @@ public class Location {
 
         return new Location(
             null,
-            nullIfBlank(dto.MINCLASSNM()),
-            nullIfBlank(dto.SVCSTATNM()),
-            nullIfBlank(dto.PAYATNM()),
-            nullIfBlank(dto.PLACENM()),
-            nullIfBlank(dto.SVCURL()),
-            parseDate(dto.SVCOPNBGNDT(), formatter),
-            parseDate(dto.SVCOPNENDDT(), formatter),
-            parseDate(dto.RCPTBGNDT(), formatter),
-            parseDate(dto.RCPTENDDT(), formatter),
-            nullIfBlank(dto.REVSTDDAYNM()),
-            parseInteger(dto.REVSTDDAY())
+            nullIfBlank(dto.minClassNm()),
+            nullIfBlank(dto.svcStatNm()),
+            nullIfBlank(dto.payAtNm()),
+            nullIfBlank(dto.placeNm()),
+            nullIfBlank(dto.svcUrl()),
+            parseDate(dto.svcOpnBgnDt(), formatter),
+            parseDate(dto.svcOpnEndDt(), formatter),
+            parseDate(dto.rcptBgnDt(), formatter),
+            parseDate(dto.rcptEndDt(), formatter),
+            nullIfBlank(dto.revStdDayNm()),
+            parseInteger(dto.revStdDay())
         );
     }
 
