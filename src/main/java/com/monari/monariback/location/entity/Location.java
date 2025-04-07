@@ -1,6 +1,5 @@
 package com.monari.monariback.location.entity;
 
-import com.monari.monariback.location.dto.LocationDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -59,22 +58,34 @@ public class Location {
     @Column(name = "cancellation_deadline")
     private Integer cancellationDeadline;
 
-    public static Location ofCreate(LocationDto dto) {
+    public static Location ofCreate(
+        final String serviceSubcategory,
+        final String serviceStatus,
+        final String paymentMethod,
+        final String locationName,
+        final String serviceUrl,
+        final String registrationStartDateTime,
+        final String registrationEndDateTime,
+        final String cancellationStartDateTime,
+        final String cancellationEndDateTime,
+        final String cancellationPolicyInfo,
+        final String cancellationDeadline
+    ) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
         return new Location(
             null,
-            nullIfBlank(dto.minClassNm()),
-            nullIfBlank(dto.svcStatNm()),
-            nullIfBlank(dto.payAtNm()),
-            nullIfBlank(dto.placeNm()),
-            nullIfBlank(dto.svcUrl()),
-            parseDate(dto.svcOpnBgnDt(), formatter),
-            parseDate(dto.svcOpnEndDt(), formatter),
-            parseDate(dto.rcptBgnDt(), formatter),
-            parseDate(dto.rcptEndDt(), formatter),
-            nullIfBlank(dto.revStdDayNm()),
-            parseInteger(dto.revStdDay())
+            nullIfBlank(serviceSubcategory),
+            nullIfBlank(serviceStatus),
+            nullIfBlank(paymentMethod),
+            nullIfBlank(locationName),
+            nullIfBlank(serviceUrl),
+            parseDate(registrationStartDateTime, formatter),
+            parseDate(registrationEndDateTime, formatter),
+            parseDate(cancellationStartDateTime, formatter),
+            parseDate(cancellationEndDateTime, formatter),
+            nullIfBlank(cancellationPolicyInfo),
+            parseInteger(cancellationDeadline)
         );
     }
 

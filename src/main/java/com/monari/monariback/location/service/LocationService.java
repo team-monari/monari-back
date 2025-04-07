@@ -85,7 +85,19 @@ public class LocationService {
         if (rows.isArray()) {
             for (JsonNode node : rows) {
                 LocationDto dto = objectMapper.treeToValue(node, LocationDto.class);
-                locationList.add(Location.ofCreate(dto));
+                locationList.add(Location.ofCreate(
+                    dto.MINCLASSNM(),
+                    dto.SVCSTATNM(),
+                    dto.PAYATNM(),
+                    dto.PLACENM(),
+                    dto.SVCURL(),
+                    dto.SVCOPNBGNDT(),
+                    dto.SVCOPNENDDT(),
+                    dto.RCPTBGNDT(),
+                    dto.RCPTENDDT(),
+                    dto.REVSTDDAYNM(),
+                    dto.REVSTDDAY())
+                );
             }
         }
         return locationList;
