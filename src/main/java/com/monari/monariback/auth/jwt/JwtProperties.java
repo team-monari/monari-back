@@ -12,9 +12,6 @@ import lombok.Getter;
 @Component
 public class JwtProperties {
 
-	protected static final String TOKEN_TYPE = "token_type";
-	protected static final String USER_TYPE = "user_type";
-
 	private final String secretKey;
 	private final long accessTokenExpirationMillis;
 

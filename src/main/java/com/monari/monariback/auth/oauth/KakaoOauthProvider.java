@@ -1,5 +1,7 @@
 package com.monari.monariback.auth.oauth;
 
+import static com.monari.monariback.auth.constant.KakaoOauthConstants.*;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -49,10 +51,10 @@ public class KakaoOauthProvider implements OauthProvider {
 	@Override
 	public String getAccessToken(String code) {
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-		formData.add("grant_type", "authorization_code");
-		formData.add("client_id", clientId);
-		formData.add("redirect_uri", redirectUri);
-		formData.add("code", code);
+		formData.add(GRANT_TYPE_KEY, GRANT_TYPE);
+		formData.add(CLIENT_ID_KEY, clientId);
+		formData.add(REDIRECT_URI_KEY, redirectUri);
+		formData.add(CODE_KEY, code);
 
 		return webClient.post()
 				.uri(tokenUri)
@@ -79,7 +81,7 @@ public class KakaoOauthProvider implements OauthProvider {
 				.post()
 				.uri(userInfoUri)
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + accessToken)
 				.retrieve()
 				.onStatus(
 						status -> status.is4xxClientError() || status.is5xxServerError(),
