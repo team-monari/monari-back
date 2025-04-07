@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
@@ -21,17 +22,7 @@ public class WebClientUtil {
         return webClientConfig.webClient().get()
             .uri(uri)
             .retrieve()
-            .onStatus(HttpStatusCode::isError, clientResponse ->
-            {
-                log.error("API 에러 응답: Status code {}", clientResponse.statusCode());
-                return clientResponse
-                    .bodyToMono(String.class)
-                    .flatMap(body -> {
-                        log.error("API 에러 본문: {}", body);
-                        return Mono.error(
-                            new RuntimeException("API 요청 실패: " + clientResponse.statusCode()));
-                    });
-            })
+            .onStatus(HttpStatusCode::isError, this::handleError)
             .bodyToMono(responseDtoClass)
             .block();
     }
@@ -54,5 +45,16 @@ public class WebClientUtil {
             .encode(StandardCharsets.UTF_8)
             .build()
             .toUri();
+    }
+
+    private Mono<? extends Throwable> handleError(ClientResponse clientResponse) {
+        log.error("API 에러 응답: Status code {}", clientResponse.statusCode());
+        return clientResponse.bodyToMono(String.class)
+            .flatMap(body -> {
+                    log.error("API 에러 본문: {}", body);
+                    return Mono.error(
+                        new RuntimeException("API 요청 실패: " + clientResponse.statusCode()));
+                }
+            );
     }
 }
