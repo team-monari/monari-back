@@ -59,27 +59,24 @@ public class LocationService {
 
         return responseDto.listPublicReservationInstitution().row().stream()
             .map(dto -> Location.ofCreate(
-                dto.MINCLASSNM(),
-                dto.SVCSTATNM(),
-                dto.PAYATNM(),
-                dto.PLACENM(),
-                dto.SVCURL(),
-                dto.SVCOPNBGNDT(),
-                dto.SVCOPNENDDT(),
-                dto.RCPTBGNDT(),
-                dto.RCPTENDDT(),
-                dto.REVSTDDAYNM(),
-                dto.REVSTDDAY()))
+                dto.minClassNm(),
+                dto.svcStatNm(),
+                dto.payAtNm(),
+                dto.placeNm(),
+                dto.svcUrl(),
+                dto.svcOpnBgndt(),
+                dto.svcOpnEnddt(),
+                dto.rcptBgndt(),
+                dto.rcptEnddt(),
+                dto.revStdDayNm(),
+                dto.revStdDay()))
             .toList();
     }
 
     @Transactional(readOnly = true)
     public List<LocationResponse> getLocationList() {
-        List<Location> locationList = locationRepository.findAll();
-        if (locationList.isEmpty()) {
-            throw new IllegalStateException("공공장소가 존재하지 않습니다");
-        }
-        return locationList.stream()
+        return locationRepository.findAll()
+            .stream()
             .map(LocationResponse::from)
             .toList();
     }
