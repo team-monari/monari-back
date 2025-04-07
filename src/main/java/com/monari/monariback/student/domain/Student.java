@@ -17,10 +17,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(name = "student")
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Student extends BaseEntity {
 
@@ -51,6 +53,20 @@ public class Student extends BaseEntity {
 	@Column(length = 20)
 	@Enumerated(value = EnumType.STRING)
 	private Grade grade;
+
+	public static Student signUpWithOauth(
+			String email,
+			String name,
+			SocialProvider socialProvider,
+			String socialId
+	) {
+		Student student = new Student();
+		student.email = email;
+		student.name = name;
+		student.socialProvider = socialProvider;
+		student.socialId = socialId;
+		return student;
+	}
 
 	@PrePersist
 	private void generateUuid() {

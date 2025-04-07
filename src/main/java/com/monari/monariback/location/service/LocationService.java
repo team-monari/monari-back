@@ -2,6 +2,7 @@ package com.monari.monariback.location.service;
 
 import com.monari.monariback.location.config.LocationApiProperties;
 import com.monari.monariback.location.dto.response.LocationResponse;
+import com.monari.monariback.location.dto.response.OpenApiLocationResponse;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.location.repository.LocationRepository;
 import com.monari.monariback.location.util.WebClientUtil;
@@ -45,7 +46,7 @@ public class LocationService {
      * @author Hong
      */
     private List<Location> getAllLocationsFromApi() {
-        LocationResponse responseDto = webClientUtil.get(
+        OpenApiLocationResponse responseDto = webClientUtil.get(
             webClientUtil.buildRequestUri(
                 apiProperties.getBaseUrl(),
                 apiProperties.getKey(),
@@ -54,22 +55,36 @@ public class LocationService {
                 CATEGORY,
                 START,
                 TOTAL_COUNT),
-            LocationResponse.class);
+            OpenApiLocationResponse.class);
 
         return responseDto.listPublicReservationInstitution().row().stream()
             .map(dto -> Location.ofCreate(
-                dto.MINCLASSNM(),
-                dto.SVCSTATNM(),
-                dto.PAYATNM(),
-                dto.PLACENM(),
-                dto.SVCURL(),
-                dto.SVCOPNBGNDT(),
-                dto.SVCOPNENDDT(),
-                dto.RCPTBGNDT(),
-                dto.RCPTENDDT(),
-                dto.REVSTDDAYNM(),
-                dto.REVSTDDAY()))
+                dto.minClassNm(),
+                dto.svcStatNm(),
+                dto.payAtNm(),
+                dto.placeNm(),
+                dto.svcUrl(),
+                dto.svcOpnBgndt(),
+                dto.svcOpnEnddt(),
+                dto.rcptBgndt(),
+                dto.rcptEnddt(),
+                dto.revStdDayNm(),
+                dto.revStdDay()))
             .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<LocationResponse> getLocationList() {
+        return locationRepository.findAll()
+            .stream()
+            .map(LocationResponse::from)
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public LocationResponse getLocation(final Integer locationId) {
+        Location location = locationRepository.findById(locationId).orElseThrow(() ->
+            new IllegalArgumentException("해당 공공장소는 존재하지 않습니다"));
+        return LocationResponse.from(location);
+    }
 }

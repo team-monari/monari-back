@@ -15,10 +15,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "teacher")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Teacher extends BaseEntity {
 
@@ -50,6 +52,20 @@ public class Teacher extends BaseEntity {
 
 	@Column(length = 1000)
 	private String career;
+
+	public static Teacher signUpWithOauth(
+			String email,
+			String name,
+			SocialProvider socialProvider,
+			String socialId
+	) {
+		Teacher teacher = new Teacher();
+		teacher.email = email;
+		teacher.name = name;
+		teacher.socialProvider = socialProvider;
+		teacher.socialId = socialId;
+		return teacher;
+	}
 
 	@PrePersist
 	private void generateUuid() {

@@ -25,3 +25,15 @@ spring:
 
 location:
   init: true
+
+
+oauth:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID}
+    redirect-uri: ${KAKAO_REDIRECT_URI}
+    token-uri: https://kauth.kakao.com/oauth/token
+    user-info-uri: https://kapi.kakao.com/v2/user/me
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  accessToken-expiration-millis: 1800000
