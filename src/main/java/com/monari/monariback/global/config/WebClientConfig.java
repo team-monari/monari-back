@@ -25,8 +25,4 @@ public class WebClientConfig implements WebFluxConfigurer {
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .build();
     }
-	@Bean
-	public WebClient KaKaoWebClient() {
-		return WebClient.builder().build();
-	}
 }
