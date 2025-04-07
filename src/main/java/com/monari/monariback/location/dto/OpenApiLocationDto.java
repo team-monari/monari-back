@@ -1,6 +1,6 @@
 package com.monari.monariback.location.dto;
 
-public record LocationDto(
+public record OpenApiLocationDto(
     String GUBUN,         // 서비스 구분
     String SVCID,         // 서비스 ID
     String MAXCLASSNM,    // 대분류명
