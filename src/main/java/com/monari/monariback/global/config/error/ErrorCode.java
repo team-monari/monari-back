@@ -16,13 +16,17 @@ public enum ErrorCode {
     // lesson
     LESSON_NOT_FOUND(HttpStatus.NOT_FOUND, "LESSON4041", "존재하지 않는 수업입니다."),
 
+    //student
+    STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT2001", "존재하지 않는 학생입니다"),
+
     // auth
     AUTH_TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "AUTH4001", "토큰이 만료되었습니다."),
     AUTH_TOKEN_INVALID(HttpStatus.BAD_REQUEST, "AUTH4002", "토큰 정보가 올바르지 않습니다."),
     AUTH_NOT_SUPPORTED_USER_TYPE(HttpStatus.BAD_REQUEST, "AUTH4003", "지원하지 않는 유저 타입입니다."),
-    AUTH_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH4004", "존재하지 않는 유저입니다.")
-    ;
+    AUTH_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH4004", "존재하지 않는 유저입니다."),
 
+    // enrollment
+    ENROLLMENT_DUPLICATED(HttpStatus.BAD_REQUEST, "ENROLLMENT8001", "중복 참여는 불가능합니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;
