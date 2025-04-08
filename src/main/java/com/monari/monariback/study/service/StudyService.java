@@ -18,19 +18,19 @@ public class StudyService {
 
     /**
      * 스터디 생성
-     * @param studyDto 스터디 생성 요청 DTO
+     * @param request 스터디 생성 요청 DTO
      * @author Jeong
      */
     @Transactional
-    public void createStudy(final StudyCreateRequest studyDto) {
-        Location location = locationRepository.findById(studyDto.locationId())
+    public void createStudy(final StudyCreateRequest request) {
+        Location location = locationRepository.findById(request.locationId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 공공장소는 존재하지 않습니다"));
 
         Study study = Study.ofCreate(
-                studyDto.title(),
-                studyDto.description(),
-                studyDto.subject(),
-                studyDto.schoolLevel(),
+                request.title(),
+                request.description(),
+                request.subject(),
+                request.schoolLevel(),
                 location
         );
 

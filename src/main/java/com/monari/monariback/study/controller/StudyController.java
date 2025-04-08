@@ -16,8 +16,8 @@ public class StudyController {
     private final StudyService studyService;
 
     @PostMapping()
-    public ResponseEntity<Void> createStudy(@RequestBody final StudyCreateRequest studyDto) {
-        studyService.createStudy(studyDto);
+    public ResponseEntity<Void> createStudy(@RequestBody final StudyCreateRequest request) {
+        studyService.createStudy(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
