@@ -3,6 +3,7 @@ package com.monari.monariback.study.entity;
 import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
+import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.study.entity.enumerated.StudyStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -32,5 +33,26 @@ public class Study extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private StudyStatus status;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
+
+    public static Study ofCreate(
+            String title,
+            String description,
+            Subject subject,
+            SchoolLevel schoolLevel,
+            Location location) {
+
+        Study study = new Study();
+        study.title = title;
+        study.description = description;
+        study.subject = subject;
+        study.schoolLevel = schoolLevel;
+        study.location = location;
+        study.status = StudyStatus.ACTIVE;
+        return study;
+    }
 
 }
