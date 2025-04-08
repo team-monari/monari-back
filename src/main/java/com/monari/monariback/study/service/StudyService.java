@@ -3,13 +3,17 @@ package com.monari.monariback.study.service;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.location.repository.LocationRepository;
 import com.monari.monariback.study.dto.request.StudyCreateRequest;
+import com.monari.monariback.study.dto.response.StudyResponse;
 import com.monari.monariback.study.entity.Study;
 import com.monari.monariback.study.repository.StudyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StudyService {
 
@@ -36,4 +40,19 @@ public class StudyService {
 
         studyRepository.save(study);
     }
+    
+    public List<StudyResponse> readStudies() {
+        return studyRepository.findAllWithLocation()
+                .stream()
+                .map(StudyResponse::from)
+                .toList();
+    }
+
+    public StudyResponse readStudy(Integer studyId) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 스터디가 존재하지 않습니다."));
+
+        return StudyResponse.from(study);
+    }
+
 }

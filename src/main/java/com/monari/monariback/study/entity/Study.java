@@ -34,7 +34,7 @@ public class Study extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private StudyStatus status;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
