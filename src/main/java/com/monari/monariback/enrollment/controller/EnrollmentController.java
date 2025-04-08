@@ -1,7 +1,7 @@
 package com.monari.monariback.enrollment.controller;
 
 
-import com.monari.monariback.enrollment.dto.EnrollmentRequest;
+import com.monari.monariback.enrollment.dto.request.EnrollmentCreateRequest;
 import com.monari.monariback.enrollment.service.EnrollmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +19,10 @@ public class EnrollmentController {
 
     // TODO : Jwt 적용
     @PostMapping()
-    public ResponseEntity<Integer> enrollment(
-        @RequestBody final EnrollmentRequest enrollmentRequest) {
+    public ResponseEntity<String> enrollment(
+        @RequestBody final EnrollmentCreateRequest enrollmentCreateRequest) {
         return ResponseEntity.ok(
-            enrollmentService.enrollment(enrollmentRequest)
+            enrollmentService.enrollment(enrollmentCreateRequest)
         );
     }
 }
