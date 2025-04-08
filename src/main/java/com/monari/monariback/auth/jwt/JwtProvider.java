@@ -49,10 +49,10 @@ public class JwtProvider {
 
 		return Jwts.builder()
 				.setSubject(publicId.toString())
-				.claim(TOKEN_TYPE, userType)
+				.claim(USER_TYPE, userType)
 				.setIssuedAt(now)
 				.setExpiration(expiredDate)
-				.claim(USER_TYPE, tokenType.name())
+				.claim(TOKEN_TYPE, tokenType.name())
 				.signWith(jwtProperties.getSecretKey())
 				.compact();
 	}
