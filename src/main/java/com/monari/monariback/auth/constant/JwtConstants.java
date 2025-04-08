@@ -14,6 +14,7 @@ public class JwtConstants {
 	public static final String BEARER_PREFIX = "Bearer ";
 	public static final int BEARER_PREFIX_LENGTH = BEARER_PREFIX.length();
 
+	// Request Attribute
 	public static final String REQUEST_ATTR_PUBLIC_ID = "publicId";
 	public static final String REQUEST_ATTR_USER_TYPE = "userType";
 }

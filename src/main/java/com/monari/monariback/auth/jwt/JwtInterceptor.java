@@ -31,7 +31,12 @@ public class JwtInterceptor implements HandlerInterceptor {
 
 		String token = extractToken(request);
 
-		if (token == null || !jwtResolver.isValid(token)) {
+		if (token == null) {
+			setGuestAttributes(request);
+			return true;
+		}
+
+		if (!jwtResolver.isValid(token)) {
 			throw new AuthException(ErrorCode.AUTH_TOKEN_INVALID);
 		}
 
@@ -53,5 +58,9 @@ public class JwtInterceptor implements HandlerInterceptor {
 
 		request.setAttribute(REQUEST_ATTR_PUBLIC_ID, publicId);
 		request.setAttribute(REQUEST_ATTR_USER_TYPE, userType);
+	}
+
+	private void setGuestAttributes(HttpServletRequest request) {
+		request.setAttribute(REQUEST_ATTR_USER_TYPE, UserType.GUEST);
 	}
 }

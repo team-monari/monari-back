@@ -1,6 +1,7 @@
 package com.monari.monariback.student.repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 			WHERE s.socialId = :socialId
 			""")
 	Optional<Student> findBySocialId(@Param("socialId") String socialId);
+
+	boolean existsByPublicId(UUID publicId);
 }

@@ -1,6 +1,7 @@
 package com.monari.monariback.teacher.repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 			WHERE t.socialId = :socialId
 			""")
 	Optional<Teacher> findBySocialId(@Param("socialId") String socialId);
+
+	boolean existsByPublicId(UUID publicId);
 }
