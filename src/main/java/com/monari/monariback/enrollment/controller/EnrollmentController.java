@@ -22,7 +22,7 @@ public class EnrollmentController {
     public ResponseEntity<String> enrollment(
         @RequestBody final EnrollmentCreateRequest enrollmentCreateRequest) {
         return ResponseEntity.ok(
-            enrollmentService.enrollment(enrollmentCreateRequest)
+            enrollmentService.enroll(enrollmentCreateRequest)
         );
     }
 }
