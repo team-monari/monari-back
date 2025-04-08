@@ -1,6 +1,6 @@
 package com.monari.monariback.auth.jwt;
 
-import static com.monari.monariback.auth.constant.JwtClaimNames.*;
+import static com.monari.monariback.auth.constant.JwtConstants.*;
 import static com.monari.monariback.global.config.error.ErrorCode.*;
 
 import java.util.UUID;
@@ -34,7 +34,6 @@ public class JwtResolver {
 
 	public UUID extractPublicId(String token) {
 		return UUID.fromString(parseClaims(token).getSubject());
-
 	}
 
 	public UserType extractUserType(String token) {
@@ -46,7 +45,6 @@ public class JwtResolver {
 	public TokenType extractTokenType(String token) {
 		String value = parseClaims(token).get(TOKEN_TYPE, String.class);
 		return TokenType.valueOf(value);
-
 	}
 
 	private Claims parseClaims(String token) {

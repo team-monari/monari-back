@@ -1,6 +1,6 @@
 package com.monari.monariback.auth.jwt;
 
-import static com.monari.monariback.auth.constant.JwtClaimNames.*;
+import static com.monari.monariback.auth.constant.JwtConstants.*;
 
 import java.util.Date;
 import java.util.UUID;
