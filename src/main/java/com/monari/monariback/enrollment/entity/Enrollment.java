@@ -42,10 +42,9 @@ public class Enrollment extends BaseEntity {
         final Student student,
         final Lesson lesson
     ) {
-        return new Enrollment(
-            null,
-            student,
-            lesson
-        );
+        Enrollment enrollment = new Enrollment();
+        enrollment.student = student;
+        enrollment.lesson = lesson;
+        return enrollment;
     }
 }
