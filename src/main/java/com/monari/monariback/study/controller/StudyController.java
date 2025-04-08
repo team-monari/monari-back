@@ -24,7 +24,7 @@ public class StudyController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> readStudies() {
+    public ResponseEntity<List<StudyResponse>> readStudies() {
         List<StudyResponse> responses = studyService.readStudies();
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
