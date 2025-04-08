@@ -1,7 +1,7 @@
 package com.monari.monariback.enrollment.service;
 
 
-import com.monari.monariback.enrollment.dto.EnrollmentRequest;
+import com.monari.monariback.enrollment.dto.request.EnrollmentCreateRequest;
 import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.enrollment.repository.EnrollmentRepository;
 import com.monari.monariback.global.config.error.ErrorCode;
@@ -24,22 +24,22 @@ public class EnrollmentService {
     private final StudentRepository studentRepository;
     private final LessonRepository lessonRepository;
 
-    public Integer enrollment(
-        final EnrollmentRequest enrollmentRequest) {
+    public String enrollment(
+        final EnrollmentCreateRequest enrollmentCreateRequest) {
 
         if (enrollmentRepository.existsByStudentIdAndLessonId(
-            enrollmentRequest.studentId(),
-            enrollmentRequest.lessonId())
+            enrollmentCreateRequest.studentId(),
+            enrollmentCreateRequest.lessonId())
         ) {
             throw new BusinessException(ErrorCode.ENROLLMENT_DUPLICATED);
         }
 
-        Student student = studentRepository.findById(enrollmentRequest.studentId())
+        Student student = studentRepository.findById(enrollmentCreateRequest.studentId())
             .orElseThrow(() -> new NotFoundException(
                 ErrorCode.STUDENT_NOT_FOUND)
             );
 
-        Lesson lesson = lessonRepository.findById(enrollmentRequest.lessonId())
+        Lesson lesson = lessonRepository.findById(enrollmentCreateRequest.lessonId())
             .orElseThrow(() -> new NotFoundException(
                 ErrorCode.LESSON_NOT_FOUND)
             );
@@ -48,7 +48,6 @@ public class EnrollmentService {
 
         enrollmentRepository.save(enrollment);
 
-        return enrollment.getId();
+        return "등록에 성공하였습니다";
     }
-
 }
