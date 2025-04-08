@@ -24,15 +24,10 @@ public class EnrollmentService {
     private final StudentRepository studentRepository;
     private final LessonRepository lessonRepository;
 
-    public String enrollment(
+    public String enroll(
         final EnrollmentCreateRequest enrollmentCreateRequest) {
 
-        if (enrollmentRepository.existsByStudentIdAndLessonId(
-            enrollmentCreateRequest.studentId(),
-            enrollmentCreateRequest.lessonId())
-        ) {
-            throw new BusinessException(ErrorCode.ENROLLMENT_DUPLICATED);
-        }
+        validateDuplicatedEnrollment(enrollmentCreateRequest);
 
         Student student = studentRepository.findById(enrollmentCreateRequest.studentId())
             .orElseThrow(() -> new NotFoundException(
@@ -49,5 +44,14 @@ public class EnrollmentService {
         enrollmentRepository.save(enrollment);
 
         return "등록에 성공하였습니다";
+    }
+    
+    private void validateDuplicatedEnrollment(EnrollmentCreateRequest enrollmentCreateRequest) {
+        if (enrollmentRepository.existsByStudentIdAndLessonId(
+            enrollmentCreateRequest.studentId(),
+            enrollmentCreateRequest.lessonId())
+        ) {
+            throw new BusinessException(ErrorCode.ENROLLMENT_DUPLICATED);
+        }
     }
 }
