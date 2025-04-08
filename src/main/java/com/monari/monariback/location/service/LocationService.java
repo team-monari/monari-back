@@ -32,11 +32,9 @@ public class LocationService {
      * @author Hong
      */
     public void setUp() {
-        if (locationRepository.count() == 0) {
-            List<Location> allLocations = getAllLocationsFromApi();
-            locationRepository.saveAll(allLocations);
-            log.info("총 {}개의 데이터 저장 완료", allLocations.size());
-        }
+        List<Location> allLocations = getAllLocationsFromApi();
+        locationRepository.saveAll(allLocations);
+        log.info("총 {}개의 데이터 저장 완료", allLocations.size());
     }
 
     /**
