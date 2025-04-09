@@ -19,8 +19,11 @@ public enum ErrorCode {
     STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT2001", "존재하지 않는 학생입니다"),
 
 
+    // location
+    LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "LOCATION4041", "존재하지 않는 장소입니다."),
+
     // enrollment
-    ENROLLMENT_DUPLICATED(HttpStatus.BAD_REQUEST, "ENROLLMENT8001", "중복 참여는 불가능합니다.");
+    ENROLLMENT_DUPLICATED(HttpStatus.BAD_REQUEST, "ENROLLMENT4001", "중복 참여는 불가능합니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;
