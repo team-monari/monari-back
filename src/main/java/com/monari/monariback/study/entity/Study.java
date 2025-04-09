@@ -4,7 +4,7 @@ import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.location.entity.Location;
-import com.monari.monariback.study.entity.enumerated.StudyStatus;
+import com.monari.monariback.study.enumerated.StudyStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -43,8 +43,8 @@ public class Study extends BaseEntity {
             String description,
             Subject subject,
             SchoolLevel schoolLevel,
-            Location location) {
-
+            Location location
+    ) {
         Study study = new Study();
         study.title = title;
         study.description = description;
@@ -53,6 +53,24 @@ public class Study extends BaseEntity {
         study.location = location;
         study.status = StudyStatus.ACTIVE;
         return study;
+    }
+
+    public void markAsClosed() {
+        this.status = StudyStatus.CLOSED;
+    }
+
+    public void updateStudy(
+            String title,
+            String description,
+            Subject subject,
+            SchoolLevel schoolLevel,
+            Location location
+    ) {
+        this.title = title;
+        this.description = description;
+        this.subject = subject;
+        this.schoolLevel = schoolLevel;
+        this.location = location;
     }
 
 }
