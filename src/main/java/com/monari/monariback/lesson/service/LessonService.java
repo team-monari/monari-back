@@ -1,13 +1,21 @@
 package com.monari.monariback.lesson.service;
 
+import com.monari.monariback.enrollment.repository.EnrollmentRepository;
+import com.monari.monariback.global.config.error.ErrorCode;
+import com.monari.monariback.global.config.error.exception.NotFoundException;
 import com.monari.monariback.lesson.dto.request.CreateLessonRequest;
 import com.monari.monariback.lesson.dto.request.UpdateLessonRequest;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
+import com.monari.monariback.lesson.dto.response.PageInfoResponse;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.repository.LessonRepository;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.location.repository.LocationRepository;
+import com.monari.monariback.teacher.domain.Teacher;
+import com.monari.monariback.teacher.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class LessonService {
 
     // TODO : 선생님아이디를 JWT 토큰에서 추출, teacher Repository에서 선생님 정보 가져오기
-    private static final Integer teacherId = 1;
+    private static final Integer PAGE_SIZE = 6;
 
     private final LessonRepository lessonRepository;
 
     private final LocationRepository locationRepository;
+
+    private final TeacherRepository teacherRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     /**
      * 수업 생성
@@ -31,15 +42,18 @@ public class LessonService {
      * @return CreateLessonResponse - 수업 생성 후 응답 dto 입니다.
      * @author Hong
      */
-    public ResponseEntity<?> create(final CreateLessonRequest lessonDto) {
+    public ResponseEntity<String> create(final CreateLessonRequest lessonDto) {
 
         Location location = locationRepository.findById(lessonDto.locationId()).orElseThrow(
-            () -> new IllegalArgumentException("해당 장소가 존재하지 않습니다.") // TODO : 커스텀 예외 처리
+            () -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND)
         );
+        Teacher teacher = teacherRepository.findById(lessonDto.teacherId())
+            .orElseThrow(() -> new NotFoundException(ErrorCode.BAD_REQUEST));
 
         Lesson lesson = Lesson.ofCreate(
             location,
-            teacherId,
+            teacher,
+            lessonDto.title(),
             lessonDto.description(),
             lessonDto.amount(),
             lessonDto.minStudent(),
@@ -52,7 +66,6 @@ public class LessonService {
         );
 
         lessonRepository.save(lesson);
-        // 이렇게 String 으로 해도 되는지 논의
         return ResponseEntity.ok("생성에 성공하였습니다");
     }
 
@@ -64,18 +77,19 @@ public class LessonService {
      * @return LessonResponse - 수정된 수업 정보가 담긴 dto
      * @author Hong
      */
-    public ResponseEntity<?> update(final Integer lessonId, final UpdateLessonRequest lessonDto) {
+    public ResponseEntity<String> update(final Integer lessonId,
+        final UpdateLessonRequest lessonDto) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
-            () -> new IllegalArgumentException("해당 수업이 존재하지 않습니다.") // TODO : 커스텀 예외 처리
+            () -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND)
         );
 
         Location location = locationRepository.findById(lessonDto.locationId()).orElseThrow(() ->
-            new IllegalArgumentException("해당 장소가 존재하지 않습니다.") // TODO : 커스텀 예외 처리
+            new NotFoundException(ErrorCode.LOCATION_NOT_FOUND)
         );
 
         lesson.update(
             location,
-            lessonDto.teacherId(),
+            lessonDto.title(),
             lessonDto.description(),
             lessonDto.amount(),
             lessonDto.minStudent(),
@@ -100,13 +114,15 @@ public class LessonService {
     @Transactional(readOnly = true)
     public LessonResponse read(final Integer lessonId) {
         final Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
-            () -> new IllegalArgumentException("해당 수업이 존재하지 않습니다.") // TODO : 커스텀 예외 처리
+            () -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND)
         );
 
-        return new LessonResponse(
+        return LessonResponse.ofCreate(
             lesson.getId(),
             lesson.getLocation().getId(),
-            lesson.getTeacherId(),
+            lesson.getTeacher().getId(),
+            lesson.getTitle(),
+            enrollmentRepository.countByLessonId(lessonId),
             lesson.getDescription(),
             lesson.getAmount(),
             lesson.getMinStudent(),
@@ -118,5 +134,45 @@ public class LessonService {
             lesson.getSchoolLevel().name(),
             lesson.getSubject().name()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public Page<LessonResponse> readLessons(
+        final Integer pageNumber,
+        final Integer pageSize
+    ) {
+        return new PageImpl<>(
+            lessonRepository
+                .findLessonsByPageSize(pageSize, pageNumber)
+                .stream()
+                .map(lesson -> {
+                    int currStudent = enrollmentRepository.countByLessonId(lesson.getId());
+                    return LessonResponse.ofCreatePage(lesson, currStudent);
+                })
+                .toList()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Page<LessonResponse> searchLessons(
+        final String keyword,
+        final Integer pageNumber,
+        final Integer pageSize
+    ) {
+        return new PageImpl<>(
+            lessonRepository
+                .searchLessons(keyword, pageSize, pageNumber)
+                .stream()
+                .map(lesson -> {
+                    int currStudent = enrollmentRepository.countByLessonId(lesson.getId());
+                    return LessonResponse.ofCreatePage(lesson, currStudent);
+                })
+                .toList()
+        );
+    }
+
+    public PageInfoResponse getTotalPages() {
+        int totalPages = lessonRepository.getTotalLessonPages(PAGE_SIZE);
+        return new PageInfoResponse(totalPages);
     }
 }

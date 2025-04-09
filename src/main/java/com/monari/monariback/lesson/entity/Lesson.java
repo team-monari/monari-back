@@ -2,9 +2,10 @@ package com.monari.monariback.lesson.entity;
 
 import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.SchoolLevel;
-import com.monari.monariback.lesson.entity.enurmurated.LessonStatus;
 import com.monari.monariback.common.enumerated.Subject;
+import com.monari.monariback.lesson.entity.enurmurated.LessonStatus;
 import com.monari.monariback.location.entity.Location;
+import com.monari.monariback.teacher.domain.Teacher;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
@@ -37,9 +39,12 @@ public class Lesson extends BaseEntity {
     @JoinColumn(nullable = false)
     private Location location;
 
-    //TODO : Join ���ֱ�
-    @Column(name = "teacher_id", nullable = false)
-    private Integer teacherId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Teacher teacher;
+
+    @Column(name = "title", unique = true, nullable = false)
+    private String title;
 
     @Column(name = "description", nullable = false)
     private String description;
@@ -76,7 +81,8 @@ public class Lesson extends BaseEntity {
 
     public static Lesson ofCreate(
         final Location location,
-        final Integer teacherId,
+        final Teacher teacher,
+        final String title,
         final String description,
         final Integer amount,
         final Integer minStudent,
@@ -89,7 +95,8 @@ public class Lesson extends BaseEntity {
     ) {
         Lesson lesson = new Lesson();
         lesson.location = location;
-        lesson.teacherId = teacherId;
+        lesson.teacher = teacher;
+        lesson.title = title;
         lesson.description = description;
         lesson.amount = amount;
         lesson.minStudent = minStudent;
@@ -104,7 +111,7 @@ public class Lesson extends BaseEntity {
 
     public void update(
         final Location newLocation,
-        final Integer newTeacherId,
+        final String newTitle,
         final String newDescription,
         final Integer newAmount,
         final Integer newMinStudent,
@@ -116,7 +123,7 @@ public class Lesson extends BaseEntity {
         final Subject newSubject
     ) {
         location = newLocation;
-        teacherId = newTeacherId;
+        title = newTitle;
         description = newDescription;
         amount = newAmount;
         minStudent = newMinStudent;
