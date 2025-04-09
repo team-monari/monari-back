@@ -2,7 +2,7 @@ package com.monari.monariback.enrollment.entity;
 
 import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.lesson.entity.Lesson;
-import com.monari.monariback.student.domain.Student;
+import com.monari.monariback.student.entity.Student;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

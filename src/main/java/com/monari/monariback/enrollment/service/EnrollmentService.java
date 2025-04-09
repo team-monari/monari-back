@@ -9,7 +9,7 @@ import com.monari.monariback.global.config.error.exception.BusinessException;
 import com.monari.monariback.global.config.error.exception.NotFoundException;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.repository.LessonRepository;
-import com.monari.monariback.student.domain.Student;
+import com.monari.monariback.student.entity.Student;
 import com.monari.monariback.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
