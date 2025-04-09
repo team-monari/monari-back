@@ -14,6 +14,7 @@ import com.monari.monariback.teacher.dto.request.TeacherUpdateRequest;
 import com.monari.monariback.teacher.dto.response.TeacherResponse;
 import com.monari.monariback.teacher.service.TeacherService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -37,7 +38,7 @@ public class TeacherController {
 	@PatchMapping("/me")
 	public ResponseEntity<TeacherResponse> updateProfile(
 			@Auth Accessor accessor,
-			@RequestBody TeacherUpdateRequest request
+			@RequestBody @Valid TeacherUpdateRequest request
 	) {
 		return ResponseEntity.ok().body(
 				TeacherResponse.from(

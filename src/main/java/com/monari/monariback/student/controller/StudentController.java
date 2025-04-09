@@ -14,6 +14,7 @@ import com.monari.monariback.student.dto.request.StudentUpdateRequest;
 import com.monari.monariback.student.dto.response.StudentResponse;
 import com.monari.monariback.student.service.StudentService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -37,7 +38,7 @@ public class StudentController {
 	@PatchMapping("/me")
 	public ResponseEntity<StudentResponse> updateProfile(
 			@Auth Accessor accessor,
-			@RequestBody StudentUpdateRequest request
+			@RequestBody @Valid StudentUpdateRequest request
 	) {
 		return ResponseEntity.ok().body(
 				StudentResponse.from(
