@@ -16,9 +16,9 @@ import com.monari.monariback.auth.oauth.OauthProviders;
 import com.monari.monariback.auth.oauth.userinfo.OauthUserInfo;
 import com.monari.monariback.common.enumerated.SocialProvider;
 import com.monari.monariback.global.config.error.exception.AuthException;
-import com.monari.monariback.student.domain.Student;
+import com.monari.monariback.student.entity.Student;
 import com.monari.monariback.student.repository.StudentRepository;
-import com.monari.monariback.teacher.domain.Teacher;
+import com.monari.monariback.teacher.entity.Teacher;
 import com.monari.monariback.teacher.repository.TeacherRepository;
 
 import lombok.RequiredArgsConstructor;

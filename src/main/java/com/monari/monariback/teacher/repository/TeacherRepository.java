@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.monari.monariback.teacher.domain.Teacher;
+import com.monari.monariback.teacher.entity.Teacher;
 
 @Repository
-public interface TeacherRepository extends JpaRepository<Teacher, Long> {
+public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
 	@Query("""
 			select t from Teacher t
 			WHERE t.socialId = :socialId
