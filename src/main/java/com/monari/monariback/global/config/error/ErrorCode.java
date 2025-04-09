@@ -26,7 +26,10 @@ public enum ErrorCode {
     AUTH_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH4004", "존재하지 않는 유저입니다."),
 
     // enrollment
-    ENROLLMENT_DUPLICATED(HttpStatus.BAD_REQUEST, "ENROLLMENT8001", "중복 참여는 불가능합니다.");
+    ENROLLMENT_DUPLICATED(HttpStatus.BAD_REQUEST, "ENROLLMENT8001", "중복 참여는 불가능합니다."),
+
+    // teacher
+    TEACHER_NOT_FOUND(HttpStatus.NOT_FOUND, "TEACHER4041", "존재하지 않는 선생님입니다");
     private final HttpStatus status;
     private final String code;
     private final String message;

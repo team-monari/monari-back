@@ -3,6 +3,7 @@ package com.monari.monariback.student.service;
 import static com.monari.monariback.global.config.error.ErrorCode.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.global.config.error.exception.NotFoundException;
@@ -17,6 +18,7 @@ public class StudentService {
 
 	private final StudentRepository studentRepository;
 
+	@Transactional(readOnly = true)
 	public StudentDto findMyProfile(Accessor accessor) {
 		return StudentDto.from(
 				studentRepository.findByPublicId(accessor.getPublicId())
