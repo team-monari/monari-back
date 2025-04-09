@@ -9,5 +9,5 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
 
     Integer countByLessonId(Integer lessonId);
 
-    boolean existsByStudentIdAndLessonId(Long studentId, Integer lessonId);
+    boolean existsByStudentIdAndLessonId(Integer studentId, Integer lessonId);
 }

@@ -11,7 +11,7 @@ import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.repository.LessonRepository;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.location.repository.LocationRepository;
-import com.monari.monariback.teacher.domain.Teacher;
+import com.monari.monariback.teacher.entity.Teacher;
 import com.monari.monariback.teacher.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

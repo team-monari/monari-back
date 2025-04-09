@@ -1,4 +1,4 @@
-package com.monari.monariback.teacher.domain;
+package com.monari.monariback.teacher.entity;
 
 import java.util.UUID;
 
