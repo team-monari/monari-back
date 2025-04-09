@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.monari.monariback.auth.aop.Auth;
+import com.monari.monariback.auth.aop.OnlyTeacher;
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.teacher.dto.response.TeacherResponse;
 import com.monari.monariback.teacher.service.TeacherService;
@@ -19,6 +20,7 @@ public class TeacherController {
 
 	private final TeacherService teacherService;
 
+	@OnlyTeacher
 	@GetMapping("/me")
 	public ResponseEntity<TeacherResponse> getMyProfile(@Auth Accessor accessor) {
 		return ResponseEntity.ok().body(
