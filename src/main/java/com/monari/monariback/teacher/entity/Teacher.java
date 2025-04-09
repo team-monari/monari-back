@@ -70,6 +70,19 @@ public class Teacher extends BaseEntity {
 		return teacher;
 	}
 
+	public Teacher updateProfile(
+			String university,
+			String major,
+			String career,
+			String profileImageUrl
+	) {
+		this.university = university;
+		this.major = major;
+		this.career = career;
+		this.profileImageUrl = profileImageUrl;
+		return this;
+	}
+
 	@PrePersist
 	private void generateUuid() {
 		if (this.publicId == null) {
