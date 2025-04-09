@@ -10,7 +10,8 @@ public record TeacherDto(
 		String name,
 		String university,
 		String major,
-		String career
+		String career,
+		String profileImageUrl
 ) {
 	public static TeacherDto from(Teacher teacher) {
 		return new TeacherDto(
@@ -19,7 +20,8 @@ public record TeacherDto(
 				teacher.getName(),
 				teacher.getUniversity(),
 				teacher.getMajor(),
-				teacher.getCareer()
+				teacher.getCareer(),
+				teacher.getProfileImageUrl()
 		);
 	}
 }

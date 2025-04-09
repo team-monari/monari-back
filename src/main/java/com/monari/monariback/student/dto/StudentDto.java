@@ -8,14 +8,16 @@ public record StudentDto(
 		String email,
 		String name,
 		SchoolLevel schoolLevel,
-		Grade grade
+		Grade grade,
+		String profileImageUrl
 ) {
 	public static StudentDto from(Student student) {
 		return new StudentDto(
 				student.getEmail(),
 				student.getName(),
 				student.getSchoolLevel(),
-				student.getGrade()
+				student.getGrade(),
+				student.getProfileImageUrl()
 		);
 	}
 }

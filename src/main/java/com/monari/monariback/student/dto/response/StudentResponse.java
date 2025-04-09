@@ -8,14 +8,16 @@ public record StudentResponse(
 		String email,
 		String name,
 		SchoolLevel schoolLevel,
-		Grade grade
+		Grade grade,
+		String profileImageUrl
 ) {
 	public static StudentResponse from(StudentDto studentDto) {
 		return new StudentResponse(
 				studentDto.email(),
 				studentDto.name(),
 				studentDto.schoolLevel(),
-				studentDto.grade()
+				studentDto.grade(),
+				studentDto.profileImageUrl()
 		);
 	}
 }

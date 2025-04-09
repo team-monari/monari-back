@@ -10,7 +10,8 @@ public record TeacherResponse(
 		String name,
 		String university,
 		String major,
-		String career
+		String career,
+		String profileImageUrl
 ) {
 	public static TeacherResponse from(TeacherDto teacherDto) {
 		return new TeacherResponse(
@@ -19,7 +20,8 @@ public record TeacherResponse(
 				teacherDto.name(),
 				teacherDto.university(),
 				teacherDto.major(),
-				teacherDto.career()
+				teacherDto.career(),
+				teacherDto.profileImageUrl()
 		);
 	}
 }
