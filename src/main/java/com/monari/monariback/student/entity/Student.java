@@ -71,6 +71,17 @@ public class Student extends BaseEntity {
 		return student;
 	}
 
+	public Student updateProfile(
+			SchoolLevel schoolLevel,
+			Grade grade,
+			String profileImageUrl
+	) {
+		this.schoolLevel = schoolLevel;
+		this.grade = grade;
+		this.profileImageUrl = profileImageUrl;
+		return this;
+	}
+
 	@PrePersist
 	private void generateUuid() {
 		if (this.publicId == null) {
