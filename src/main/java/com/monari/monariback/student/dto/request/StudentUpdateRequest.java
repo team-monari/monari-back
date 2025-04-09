@@ -1,6 +1,6 @@
 package com.monari.monariback.student.dto.request;
 
-import static com.monari.monariback.teacher.constant.TeacherValidationConstants.*;
+import static com.monari.monariback.student.constant.StudentValidationConstants.*;
 
 import com.monari.monariback.common.enumerated.Grade;
 import com.monari.monariback.common.enumerated.SchoolLevel;
