@@ -26,7 +26,9 @@ public class AuthController {
 			@RequestBody OauthLoginRequest request
 	) {
 		return ResponseEntity.ok().body(
-				OauthLoginResponse.of(authService.login(request))
+				OauthLoginResponse.of(
+						authService.login(request), request.userType()
+				)
 		);
 	}
 }
