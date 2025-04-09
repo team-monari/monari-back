@@ -53,6 +53,9 @@ public class Teacher extends BaseEntity {
 	@Column(length = 1000)
 	private String career;
 
+	@Column(length = 255)
+	private String profileImageUrl;
+
 	public static Teacher signUpWithOauth(
 			String email,
 			String name,
