@@ -1,5 +1,6 @@
 package com.monari.monariback.global.config.error;
 
+import com.monari.monariback.global.config.error.exception.AuthException;
 import com.monari.monariback.global.config.error.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,12 @@ public class GlobalExceptionHandler {
                 error -> errors.put(error.getField(), error.getDefaultMessage()));
 
         return createErrorResponseEntity(ErrorCode.BAD_REQUEST, errors);
+    }
+
+    @ExceptionHandler(AuthException.class)
+    protected ResponseEntity<ErrorResponse<Void>> handleAuthException(AuthException e) {
+        log.error("AuthException", e);
+        return createErrorResponseEntity(e.getErrorCode(), e.getMessage());
     }
 
     // 커스텀 비즈니스 예외 처리
