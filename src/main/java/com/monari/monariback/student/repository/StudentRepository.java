@@ -19,4 +19,10 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
 	Optional<Student> findBySocialId(@Param("socialId") String socialId);
 
 	boolean existsByPublicId(UUID publicId);
+
+	@Query("""
+			select s from Student s
+			WHERE s.publicId = :publicId
+			""")
+	Optional<Student> findByPublicId(@Param("publicId") UUID publicId);
 }

@@ -22,4 +22,12 @@ public class Accessor {
 	public static Accessor guest() {
 		return new Accessor(null, UserType.GUEST);
 	}
+
+	public boolean isStudent() {
+		return userType == UserType.STUDENT;
+	}
+
+	public boolean isTeacher() {
+		return userType == UserType.TEACHER;
+	}
 }
