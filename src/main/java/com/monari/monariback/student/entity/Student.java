@@ -54,6 +54,9 @@ public class Student extends BaseEntity {
 	@Enumerated(value = EnumType.STRING)
 	private Grade grade;
 
+	@Column(length = 255)
+	private String profileImageUrl;
+
 	public static Student signUpWithOauth(
 			String email,
 			String name,
