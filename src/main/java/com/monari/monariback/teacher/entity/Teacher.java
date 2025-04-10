@@ -53,7 +53,7 @@ public class Teacher extends BaseEntity {
 	@Column(length = 1000)
 	private String career;
 
-	@Column(length = 255)
+	@Column(length = 500)
 	private String profileImageUrl;
 
 	public static Teacher signUpWithOauth(
@@ -68,6 +68,19 @@ public class Teacher extends BaseEntity {
 		teacher.socialProvider = socialProvider;
 		teacher.socialId = socialId;
 		return teacher;
+	}
+
+	public Teacher updateProfile(
+			String university,
+			String major,
+			String career,
+			String profileImageUrl
+	) {
+		this.university = university;
+		this.major = major;
+		this.career = career;
+		this.profileImageUrl = profileImageUrl;
+		return this;
 	}
 
 	@PrePersist

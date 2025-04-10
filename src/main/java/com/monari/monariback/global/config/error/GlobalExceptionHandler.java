@@ -1,16 +1,22 @@
 package com.monari.monariback.global.config.error;
 
-import com.monari.monariback.global.config.error.exception.AuthException;
-import com.monari.monariback.global.config.error.exception.BusinessException;
-import lombok.extern.slf4j.Slf4j;
+import static com.monari.monariback.global.config.error.ErrorCode.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.monari.monariback.global.config.error.exception.AuthException;
+import com.monari.monariback.global.config.error.exception.BusinessException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
@@ -33,6 +39,16 @@ public class GlobalExceptionHandler {
                 error -> errors.put(error.getField(), error.getDefaultMessage()));
 
         return createErrorResponseEntity(ErrorCode.BAD_REQUEST, errors);
+    }
+
+    // Enum 관련 예외
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException e) {
+        if (isEnumBindingError(e)) {
+            return handleEnumBindingError((InvalidFormatException) e.getCause());
+        }
+        return createErrorResponseEntity(MESSAGE_BODY_UNREADABLE, MESSAGE_BODY_UNREADABLE.getMessage());
     }
 
     @ExceptionHandler(AuthException.class)
@@ -62,6 +78,13 @@ public class GlobalExceptionHandler {
         return createErrorResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
+    private ResponseEntity<ErrorResponse<Void>> handleEnumBindingError(InvalidFormatException e) {
+        String enumName = e.getTargetType().getSimpleName();
+        String invalidValue = String.valueOf(e.getValue());
+        String message = String.format(INVALID_ENUM_FORMAT.getMessage(), invalidValue, enumName);
+        return createErrorResponseEntity(INVALID_ENUM_FORMAT, message);
+    }
+
     private ResponseEntity<ErrorResponse<Void>> createErrorResponseEntity(ErrorCode errorCode) {
         return new ResponseEntity<>(
                 ErrorResponse.of(errorCode),
@@ -80,4 +103,8 @@ public class GlobalExceptionHandler {
                 errorCode.getStatus());
     }
 
+    private boolean isEnumBindingError(HttpMessageNotReadableException e) {
+        return e.getCause() instanceof InvalidFormatException ife
+                && ife.getTargetType().isEnum();
+    }
 }
