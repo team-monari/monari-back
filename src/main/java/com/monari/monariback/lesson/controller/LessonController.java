@@ -1,5 +1,8 @@
 package com.monari.monariback.lesson.controller;
 
+import com.monari.monariback.auth.aop.Auth;
+import com.monari.monariback.auth.aop.OnlyTeacher;
+import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.lesson.dto.request.CreateLessonRequest;
 import com.monari.monariback.lesson.dto.request.SearchLessonRequest;
 import com.monari.monariback.lesson.dto.request.UpdateLessonRequest;
@@ -25,13 +28,16 @@ public class LessonController {
 
     private final LessonService lessonService;
 
+    @OnlyTeacher
     @PostMapping()
     public ResponseEntity<String> createLesson(
-        @RequestBody final CreateLessonRequest lessonDto
+        @RequestBody final CreateLessonRequest lessonDto,
+        @Auth final Accessor accessor
     ) {
-        return lessonService.createLesson(lessonDto);
+        return lessonService.createLesson(lessonDto, accessor);
     }
 
+    @OnlyTeacher
     @PatchMapping("/{lessonId}")
     public ResponseEntity<String> updateLesson(
         @PathVariable("lessonId") final Integer lessonId,

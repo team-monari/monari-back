@@ -1,5 +1,6 @@
 package com.monari.monariback.lesson.service;
 
+import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.enrollment.repository.EnrollmentRepository;
 import com.monari.monariback.global.config.error.ErrorCode;
 import com.monari.monariback.global.config.error.exception.NotFoundException;
@@ -41,15 +42,19 @@ public class LessonService {
      * 수업 생성
      *
      * @param lessonDto - 수업 생성 정보가 들어간 dto 입니다.
+     * @param accessor
      * @return CreateLessonResponse - 수업 생성 후 응답 dto 입니다.
      * @author Hong
      */
-    public ResponseEntity<String> createLesson(final CreateLessonRequest lessonDto) {
+    public ResponseEntity<String> createLesson(
+        final CreateLessonRequest lessonDto,
+        final Accessor accessor
+    ) {
 
         Location location = locationRepository.findById(lessonDto.locationId()).orElseThrow(
             () -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND)
         );
-        Teacher teacher = teacherRepository.findById(lessonDto.teacherId())
+        Teacher teacher = teacherRepository.findBySocialId(accessor.getPublicId().toString())
             .orElseThrow(() -> new NotFoundException(ErrorCode.TEACHER_NOT_FOUND));
 
         final Lesson lesson = Lesson.ofCreate(
