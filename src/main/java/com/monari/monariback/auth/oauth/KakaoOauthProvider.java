@@ -1,6 +1,7 @@
 package com.monari.monariback.auth.oauth;
 
 import static com.monari.monariback.auth.constant.KakaoOauthConstants.*;
+import static com.monari.monariback.global.config.error.ErrorCode.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -13,11 +14,12 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.monari.monariback.auth.dto.response.KakaoUserInfoResponse;
 import com.monari.monariback.auth.dto.response.KakaoAccessTokenResponse;
+import com.monari.monariback.auth.dto.response.KakaoUserInfoResponse;
 import com.monari.monariback.auth.oauth.userinfo.KakaoUserInfo;
 import com.monari.monariback.auth.oauth.userinfo.OauthUserInfo;
 import com.monari.monariback.common.enumerated.SocialProvider;
+import com.monari.monariback.global.config.error.exception.AuthException;
 
 import reactor.core.publisher.Mono;
 
@@ -90,13 +92,13 @@ public class KakaoOauthProvider implements OauthProvider {
 				)
 				.bodyToMono(KakaoUserInfoResponse.class)
 				.blockOptional()
-				.orElseThrow(() -> new RuntimeException("카카오 사용자 정보 응답이 비어 있습니다"));
+				.orElseThrow(() -> new AuthException(OAUTH_USERINFO_RESPONSE_EMPTY));
 	}
 
 	private Mono<? extends Throwable> handleOauthError(ClientResponse response) {
 		return response.bodyToMono(String.class)
 				.flatMap(errorBody ->
-						Mono.error(new RuntimeException("카카오 토큰 요청 실패: " + errorBody))
+						Mono.error(new AuthException(OAUTH_TOKEN_REQUEST_FAILED))
 				);
 	}
 }

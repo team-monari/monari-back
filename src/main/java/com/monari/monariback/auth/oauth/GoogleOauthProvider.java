@@ -1,6 +1,7 @@
 package com.monari.monariback.auth.oauth;
 
 import static com.monari.monariback.auth.constant.GoogleOauthConstants.*;
+import static com.monari.monariback.global.config.error.ErrorCode.*;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +22,7 @@ import com.monari.monariback.auth.dto.response.GoogleUserInfoResponse;
 import com.monari.monariback.auth.oauth.userinfo.GoogleUserInfo;
 import com.monari.monariback.auth.oauth.userinfo.OauthUserInfo;
 import com.monari.monariback.common.enumerated.SocialProvider;
+import com.monari.monariback.global.config.error.exception.AuthException;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -99,13 +101,13 @@ public class GoogleOauthProvider implements OauthProvider {
 				)
 				.bodyToMono(GoogleUserInfoResponse.class)
 				.blockOptional()
-				.orElseThrow(() -> new RuntimeException("구글 사용자 정보 응답이 비어 있습니다."));
+				.orElseThrow(() -> new AuthException(OAUTH_USERINFO_RESPONSE_EMPTY));
 	}
 
 	private Mono<? extends Throwable> handleOauthError(ClientResponse response) {
 		return response.bodyToMono(String.class)
 				.flatMap(errorBody ->
-						Mono.error(new RuntimeException("구글 OAuth 요청 실패: " + errorBody))
+						Mono.error(new AuthException(OAUTH_TOKEN_REQUEST_FAILED))
 				);
 	}
 }
