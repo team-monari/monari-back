@@ -1,7 +1,5 @@
 package com.monari.monariback.auth.aop;
 
-import static com.monari.monariback.global.config.error.ErrorCode.*;
-
 import java.util.Arrays;
 import java.util.function.Predicate;
 
@@ -11,7 +9,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
 import com.monari.monariback.auth.entity.Accessor;
-import com.monari.monariback.global.config.error.exception.AuthException;
+import com.monari.monariback.common.exception.AuthException;
+
+import static com.monari.monariback.common.error.ErrorCode.AUTH_FORBIDDEN;
 
 @Aspect
 @Component

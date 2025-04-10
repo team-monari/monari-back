@@ -1,7 +1,5 @@
 package com.monari.monariback.auth.service;
 
-import static com.monari.monariback.global.config.error.ErrorCode.*;
-
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -15,7 +13,7 @@ import com.monari.monariback.auth.oauth.OauthProvider;
 import com.monari.monariback.auth.oauth.OauthProviders;
 import com.monari.monariback.auth.oauth.userinfo.OauthUserInfo;
 import com.monari.monariback.common.enumerated.SocialProvider;
-import com.monari.monariback.global.config.error.exception.AuthException;
+import com.monari.monariback.common.exception.AuthException;
 import com.monari.monariback.student.entity.Student;
 import com.monari.monariback.student.repository.StudentRepository;
 import com.monari.monariback.teacher.entity.Teacher;
@@ -23,6 +21,9 @@ import com.monari.monariback.teacher.repository.TeacherRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.monari.monariback.common.error.ErrorCode.AUTH_NOT_SUPPORTED_USER_TYPE;
+import static com.monari.monariback.common.error.ErrorCode.AUTH_USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

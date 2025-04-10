@@ -1,4 +1,4 @@
-package com.monari.monariback.global.config;
+package com.monari.monariback.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

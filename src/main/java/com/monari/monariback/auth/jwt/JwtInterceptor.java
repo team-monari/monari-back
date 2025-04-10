@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.monari.monariback.auth.enumerated.UserType;
-import com.monari.monariback.global.config.error.ErrorCode;
-import com.monari.monariback.global.config.error.exception.AuthException;
+import com.monari.monariback.common.error.ErrorCode;
+import com.monari.monariback.common.exception.AuthException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

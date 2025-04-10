@@ -1,10 +1,12 @@
-package com.monari.monariback.global.config.error;
+package com.monari.monariback.common.error;
 
-import static com.monari.monariback.global.config.error.ErrorCode.*;
+import static com.monari.monariback.common.error.ErrorCode.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.monari.monariback.common.exception.AuthException;
+import com.monari.monariback.common.exception.BusinessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.monari.monariback.global.config.error.exception.AuthException;
-import com.monari.monariback.global.config.error.exception.BusinessException;
 
 import lombok.extern.slf4j.Slf4j;
 

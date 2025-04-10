@@ -4,7 +4,8 @@ import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.location.entity.Location;
-import com.monari.monariback.study.entity.enumerated.StudyStatus;
+import com.monari.monariback.student.entity.Student;
+import com.monari.monariback.study.enumerated.StudyStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -38,21 +39,45 @@ public class Study extends BaseEntity {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
+
     public static Study ofCreate(
             String title,
             String description,
             Subject subject,
             SchoolLevel schoolLevel,
-            Location location) {
-
+            Location location,
+            Student student
+    ) {
         Study study = new Study();
         study.title = title;
         study.description = description;
         study.subject = subject;
         study.schoolLevel = schoolLevel;
-        study.location = location;
         study.status = StudyStatus.ACTIVE;
+        study.location = location;
+        study.student = student;
         return study;
+    }
+
+    public void updateStudyStatus(StudyStatus status) {
+        this.status = status;
+    }
+
+    public void updateStudy(
+            String title,
+            String description,
+            Subject subject,
+            SchoolLevel schoolLevel,
+            Location location
+    ) {
+        this.title = title;
+        this.description = description;
+        this.subject = subject;
+        this.schoolLevel = schoolLevel;
+        this.location = location;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.monari.monariback.global.config.error;
+package com.monari.monariback.common.error;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ public enum ErrorCode {
     // lesson
     LESSON_NOT_FOUND(HttpStatus.NOT_FOUND, "LESSON4041", "존재하지 않는 수업입니다."),
 
-    //student
+    // student
     STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT2001", "존재하지 않는 학생입니다"),
 
     // auth
@@ -34,7 +34,11 @@ public enum ErrorCode {
     ENROLLMENT_DUPLICATED(HttpStatus.BAD_REQUEST, "ENROLLMENT4001", "중복 참여는 불가능합니다."),
 
     // teacher
-    TEACHER_NOT_FOUND(HttpStatus.NOT_FOUND, "TEACHER4041", "존재하지 않는 선생입니다");
+    TEACHER_NOT_FOUND(HttpStatus.NOT_FOUND, "TEACHER4041", "존재하지 않는 선생입니다."),
+
+    // study
+    STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY4041", "존재하지 않는 스터디입니다.");
+
     private final HttpStatus status;
     private final String code;
     private final String message;
