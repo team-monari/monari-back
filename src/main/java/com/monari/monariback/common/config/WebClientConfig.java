@@ -1,4 +1,4 @@
-package com.monari.monariback.global.config;
+package com.monari.monariback.common.config;
 
 import io.netty.channel.ChannelOption;
 import org.springframework.context.annotation.Bean;

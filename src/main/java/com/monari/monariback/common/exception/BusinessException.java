@@ -1,6 +1,6 @@
-package com.monari.monariback.global.config.error.exception;
+package com.monari.monariback.common.exception;
 
-import com.monari.monariback.global.config.error.ErrorCode;
+import com.monari.monariback.common.error.ErrorCode;
 
 public class BusinessException extends RuntimeException {
 

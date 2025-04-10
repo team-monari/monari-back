@@ -1,7 +1,8 @@
 package com.monari.monariback.auth.jwt;
 
 import static com.monari.monariback.auth.constant.JwtConstants.*;
-import static com.monari.monariback.global.config.error.ErrorCode.*;
+import static com.monari.monariback.common.error.ErrorCode.AUTH_TOKEN_EXPIRED;
+import static com.monari.monariback.common.error.ErrorCode.AUTH_TOKEN_INVALID;
 
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.monari.monariback.auth.enumerated.TokenType;
 import com.monari.monariback.auth.enumerated.UserType;
-import com.monari.monariback.global.config.error.exception.AuthException;
+import com.monari.monariback.common.exception.AuthException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

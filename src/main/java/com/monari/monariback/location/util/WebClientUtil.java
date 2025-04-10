@@ -1,6 +1,6 @@
 package com.monari.monariback.location.util;
 
-import com.monari.monariback.global.config.WebClientConfig;
+import com.monari.monariback.common.config.WebClientConfig;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;

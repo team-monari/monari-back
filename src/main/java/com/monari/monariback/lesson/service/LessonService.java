@@ -1,8 +1,8 @@
 package com.monari.monariback.lesson.service;
 
 import com.monari.monariback.enrollment.repository.EnrollmentRepository;
-import com.monari.monariback.global.config.error.ErrorCode;
-import com.monari.monariback.global.config.error.exception.NotFoundException;
+import com.monari.monariback.common.error.ErrorCode;
+import com.monari.monariback.common.exception.NotFoundException;
 import com.monari.monariback.lesson.dto.request.CreateLessonRequest;
 import com.monari.monariback.lesson.dto.request.SearchLessonRequest;
 import com.monari.monariback.lesson.dto.request.UpdateLessonRequest;

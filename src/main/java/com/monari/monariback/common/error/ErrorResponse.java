@@ -1,4 +1,4 @@
-package com.monari.monariback.global.config.error;
+package com.monari.monariback.common.error;
 
 import lombok.AccessLevel;
 import lombok.Getter;
