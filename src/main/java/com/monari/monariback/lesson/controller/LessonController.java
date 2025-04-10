@@ -35,17 +35,21 @@ public class LessonController {
         @RequestBody @Valid final CreateLessonRequest lessonDto,
         @Auth final Accessor accessor
     ) {
-        return lessonService.createLesson(lessonDto, accessor);
+        return ResponseEntity.ok(
+            lessonService.createLesson(lessonDto, accessor)
+        );
     }
 
     @OnlyTeacher
     @PatchMapping("/{lessonId}")
     public ResponseEntity<String> updateLesson(
         @PathVariable("lessonId") final Integer lessonId,
-        @RequestBody @Valid final UpdateLessonRequest lessonDto
+        @RequestBody @Valid final UpdateLessonRequest lessonDto,
+        @Auth final Accessor accessor
     ) {
-        return lessonService.updateLesson(lessonId, lessonDto);
-
+        return ResponseEntity.ok(
+            lessonService.updateLesson(lessonId, lessonDto, accessor)
+        );
     }
 
     @GetMapping("/{lessonId}")

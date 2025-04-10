@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LessonService {
 
-    // TODO : 선생님아이디를 JWT 토큰에서 추출, teacher Repository에서 선생님 정보 가져오기
     private static final Integer PAGE_SIZE = 6;
 
     private final LessonRepository lessonRepository;
@@ -39,6 +37,7 @@ public class LessonService {
     private final LocationRepository locationRepository;
 
     private final TeacherRepository teacherRepository;
+
     private final EnrollmentRepository enrollmentRepository;
 
     /**
@@ -49,15 +48,15 @@ public class LessonService {
      * @return CreateLessonResponse - 수업 생성 후 응답 dto 입니다.
      * @author Hong
      */
-    public ResponseEntity<String> createLesson(
+    public String createLesson(
         final CreateLessonRequest lessonDto,
         final Accessor accessor
     ) {
 
-        Location location = locationRepository.findById(lessonDto.locationId()).orElseThrow(
+        final Location location = locationRepository.findById(lessonDto.locationId()).orElseThrow(
             () -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND)
         );
-        Teacher teacher = teacherRepository.findBySocialId(accessor.getPublicId().toString())
+        final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
             .orElseThrow(() -> new NotFoundException(ErrorCode.TEACHER_NOT_FOUND));
 
         final Lesson lesson = Lesson.ofCreate(
@@ -77,7 +76,7 @@ public class LessonService {
 
         lessonRepository.save(lesson);
 
-        return ResponseEntity.ok(LESSON_CREATE_SUCCESS);
+        return LESSON_CREATE_SUCCESS;
     }
 
     /**
@@ -85,13 +84,14 @@ public class LessonService {
      *
      * @param lessonId  - 수정할 수업의 id
      * @param lessonDto - 수정할 수업 정보가 담긴 dto
+     * @param accessor
      * @return LessonResponse - 수정된 수업 정보가 담긴 dto
      * @author Hong
      */
-    public ResponseEntity<String> updateLesson(
+    public String updateLesson(
         final Integer lessonId,
-        final UpdateLessonRequest lessonDto
-    ) {
+        final UpdateLessonRequest lessonDto,
+        final Accessor accessor) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
             () -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND)
         );
@@ -101,8 +101,12 @@ public class LessonService {
             new NotFoundException(ErrorCode.LOCATION_NOT_FOUND)
         );
 
+        final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
+            .orElseThrow(() -> new NotFoundException(ErrorCode.TEACHER_NOT_FOUND));
+
         lesson.update(
             location,
+            teacher,
             lessonDto.title(),
             lessonDto.description(),
             lessonDto.amount(),
@@ -115,7 +119,7 @@ public class LessonService {
             lessonDto.subject()
         );
 
-        return ResponseEntity.ok(LESSON_UPDATE_SUCCESS);
+        return LESSON_UPDATE_SUCCESS;
     }
 
     /**
@@ -179,9 +183,6 @@ public class LessonService {
      * 검색기능
      *
      * @param searchLessonRequest 아래의 요소를 포함한 Dto
-     * @param keyword             제목 혹은 내용을 찾을 키워드
-     * @param pageNumber          요청 페이지 쪽수
-     * @param pageSize            요청하는 페이지 크기
      * @return Page<LessonResponse> LessonsDto 를 담은 Page
      * @author Hong
      */
