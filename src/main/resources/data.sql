@@ -123,9 +123,40 @@ VALUES (1, 1, '고등수학 미적분 심화 과정', '미적분의 개념부터
         8, 18, DATE '2025-11-01', DATE '2026-02-28',
         DATE '2025-10-20', 'ACTIVE', 'HIGH', 'MATH', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 
-       (10, 10, '천체물리학 맛보기 강좌', '별, 행성, 우주에 대한 흥미로운 주제를 중심으로 천체물리학의 기초 개념을 배워보는 체험형 수업입니다.', 140000,
+       (10, 8, '천체물리학 맛보기 강좌', '별, 행성, 우주에 대한 흥미로운 주제를 중심으로 천체물리학의 기초 개념을 배워보는 체험형 수업입니다.', 140000,
         5, 12, DATE '2025-09-15', DATE '2025-12-18',
-        DATE '2025-09-01', 'ACTIVE', 'HIGH', 'SCIENCE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+        DATE '2025-09-01', 'ACTIVE', 'HIGH', 'SCIENCE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (2, 3, '고등수학 II 집중반', '함수와 그래프, 지수와 로그 등 고등수학 II 전범위를 다루는 과정입니다.', 110000, 3, 1,
+        DATE '2025-09-01', DATE '2025-12-01', DATE '2025-08-20', 'ACTIVE', 'HIGH', 'SCIENCE',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (3, 1, '중등 수학 심화과정', '중학교 수학의 전 단원을 빠짐없이 심화 학습하며 수학적 사고력을 기릅니다.', 95000, 1, 2,
+        DATE '2025-09-05', DATE '2025-11-30', DATE '2025-08-15', 'ACTIVE', 'HIGH', 'SCIENCE',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (4, 5, '기초 연산과 수 감각', '초등학생을 위한 덧셈, 뺄셈, 곱셈, 나눗셈 집중 훈련 과정입니다.', 70000, 5, 3,
+        DATE '2025-09-03', DATE '2025-11-20', DATE '2025-08-10', 'ACTIVE', 'HIGH', 'SCIENCE',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (5, 4, '수능 대비 확률과 통계', '수능 특화 확률과 통계 집중 훈련 과정으로, 실전 문제 위주로 진행됩니다.', 125000, 2, 4,
+        DATE '2025-09-01', DATE '2025-12-10', DATE '2025-08-25', 'ACTIVE', 'HIGH', 'SCIENCE',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (6, 6, '함수 마스터 클래스', '중고등학생을 대상으로 한 함수 심화 과정. 다양한 함수의 성질과 그래프 분석 중심.', 115000, 4, 5,
+        DATE '2025-09-02', DATE '2025-12-05', DATE '2025-08-22', 'ACTIVE', 'HIGH', 'SCIENCE',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (7, 2, '초등 고학년 수학 도약반', '6학년 수준의 수학을 중학교 과정을 염두에 두고 미리 학습하는 과정입니다.', 80000, 2, 6,
+        DATE '2025-09-07', DATE '2025-11-29', DATE '2025-08-18', 'ACTIVE', 'HIGH', 'SCIENCE',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (8, 7, '중등 함수와 방정식 집중반', '중학교 수학에서 핵심인 함수와 방정식 단원을 심도 깊게 학습합니다.', 98000, 7, 7,
+        DATE '2025-09-04', DATE '2025-12-01', DATE '2025-08-19', 'ACTIVE', 'HIGH', 'SCIENCE',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (9, 8, '수학 올림피아드 대비반', '수학적 창의력과 사고력을 바탕으로 한 수학 경시대회 대비 심화 과정입니다.', 135000, 6, 8,
+        DATE '2025-09-06', DATE '2025-12-12', DATE '2025-08-20', 'ACTIVE', 'HIGH', 'SCIENCE',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (10, 10, '중3 내신 만점반', '중3 수학 내신 대비를 위한 전 범위 문제 풀이 중심의 집중 수업입니다.', 102000, 9, 9,
+        DATE '2025-09-01', DATE '2025-11-25', DATE '2025-08-17', 'ACTIVE', 'HIGH', 'MATH',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (2, 9, '수학 개념 탄탄 기초반', '수학의 기초 개념을 처음부터 체계적으로 정리하고 이해하는 초급자 대상 과정입니다.', 65000, 10, 10,
+        DATE '2025-09-08', DATE '2025-11-15', DATE '2025-08-10', 'ACTIVE', 'HIGH', 'SCIENCE',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
 
 -- Study (스터디) 데이터 (10건) - status 'INACTIVE' -> 'CLOSED' 수정됨
 -- Location ID 1-10 사용 가정
