@@ -48,20 +48,22 @@ public class Study extends BaseEntity {
             String description,
             Subject subject,
             SchoolLevel schoolLevel,
-            Location location
+            Location location,
+            Student student
     ) {
         Study study = new Study();
         study.title = title;
         study.description = description;
         study.subject = subject;
         study.schoolLevel = schoolLevel;
-        study.location = location;
         study.status = StudyStatus.ACTIVE;
+        study.location = location;
+        study.student = student;
         return study;
     }
 
-    public void markAsClosed() {
-        this.status = StudyStatus.CLOSED;
+    public void updateStudyStatus(StudyStatus status) {
+        this.status = status;
     }
 
     public void updateStudy(

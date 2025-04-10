@@ -3,8 +3,9 @@ package com.monari.monariback.study.controller;
 import com.monari.monariback.auth.aop.Auth;
 import com.monari.monariback.auth.aop.OnlyStudent;
 import com.monari.monariback.auth.entity.Accessor;
+import com.monari.monariback.study.dto.request.StudyChangeStatusRequest;
 import com.monari.monariback.study.dto.request.StudyCreateRequest;
-import com.monari.monariback.study.dto.request.StudyUpdateRequest;
+import com.monari.monariback.study.dto.request.StudyEditRequest;
 import com.monari.monariback.study.dto.response.StudyResponse;
 import com.monari.monariback.study.service.StudyService;
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ public class StudyController {
     @PostMapping
     public ResponseEntity<Void> createStudy(@Auth final Accessor accessor,
                                             @RequestBody @Valid final StudyCreateRequest request) {
-        studyService.createStudy(request);
+        studyService.createStudy(accessor, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -43,10 +44,11 @@ public class StudyController {
     }
 
     @OnlyStudent
-    @PostMapping("/{studyId}/closed")
-    public ResponseEntity<Void> closeStudy(@Auth final Accessor accessor,
-                                           @PathVariable("studyId") final Integer studyId) {
-        studyService.closeStudy(accessor, studyId);
+    @PatchMapping("/{studyId}/status")
+    public ResponseEntity<Void> changeStudyStatus(@Auth final Accessor accessor,
+                                                  @PathVariable("studyId") final Integer studyId,
+                                                  @RequestBody @Valid final StudyChangeStatusRequest request) {
+        studyService.changeStudyStatus(accessor, studyId, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -54,7 +56,7 @@ public class StudyController {
     @PutMapping("/{studyId}")
     public ResponseEntity<Void> editStudy(@Auth final Accessor accessor,
                                           @PathVariable("studyId") final Integer studyId,
-                                          @RequestBody @Valid final StudyUpdateRequest request) {
+                                          @RequestBody @Valid final StudyEditRequest request) {
         studyService.editStudy(accessor, studyId, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }

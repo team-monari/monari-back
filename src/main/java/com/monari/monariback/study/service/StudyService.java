@@ -5,8 +5,11 @@ import com.monari.monariback.common.exception.AuthException;
 import com.monari.monariback.common.exception.NotFoundException;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.location.repository.LocationRepository;
+import com.monari.monariback.student.entity.Student;
+import com.monari.monariback.student.repository.StudentRepository;
+import com.monari.monariback.study.dto.request.StudyChangeStatusRequest;
 import com.monari.monariback.study.dto.request.StudyCreateRequest;
-import com.monari.monariback.study.dto.request.StudyUpdateRequest;
+import com.monari.monariback.study.dto.request.StudyEditRequest;
 import com.monari.monariback.study.dto.response.StudyResponse;
 import com.monari.monariback.study.entity.Study;
 import com.monari.monariback.study.repository.StudyRepository;
@@ -25,18 +28,23 @@ public class StudyService {
 
     private final StudyRepository studyRepository;
     private final LocationRepository locationRepository;
+    private final StudentRepository studentRepository;
 
     @Transactional
-    public void createStudy(final StudyCreateRequest request) {
+    public void createStudy(final Accessor accessor, final StudyCreateRequest request) {
         Location location = locationRepository.findById(request.locationId())
                 .orElseThrow(() -> new NotFoundException(LOCATION_NOT_FOUND));
+
+        Student student = studentRepository.findByPublicId(accessor.getPublicId())
+                .orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
 
         Study study = Study.ofCreate(
                 request.title(),
                 request.description(),
                 request.subject(),
                 request.schoolLevel(),
-                location
+                location,
+                student
         );
 
         studyRepository.save(study);
@@ -57,20 +65,22 @@ public class StudyService {
     }
 
     @Transactional
-    public void closeStudy(final Accessor accessor, final Integer studyId) {
-        Study study = studyRepository.findById(studyId)
+    public void changeStudyStatus(final Accessor accessor,
+                                  final Integer studyId,
+                                  final StudyChangeStatusRequest request) {
+        Study study = studyRepository.findByIdWithStudent(studyId)
                 .orElseThrow(() -> new NotFoundException(STUDY_NOT_FOUND));
 
         validateStudyCreator(accessor, study);
 
-        study.markAsClosed();
+        study.updateStudyStatus(request.status());
     }
 
     @Transactional
     public void editStudy(final Accessor accessor,
                           final Integer studyId,
-                          final StudyUpdateRequest request) {
-        Study study = studyRepository.findById(studyId)
+                          final StudyEditRequest request) {
+        Study study = studyRepository.findByIdWithStudent(studyId)
                 .orElseThrow(() -> new NotFoundException(STUDY_NOT_FOUND));
 
         validateStudyCreator(accessor, study);

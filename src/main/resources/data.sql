@@ -160,27 +160,27 @@ VALUES (1, 1, '고등수학 미적분 심화 과정', '미적분의 개념부터
 
 -- Study (스터디) 데이터 (10건) - status 'INACTIVE' -> 'CLOSED' 수정됨
 -- Location ID 1-10 사용 가정
-INSERT INTO study (title, description, subject, school_level, status, location_id, created_at,
+INSERT INTO study (title, description, subject, school_level, status, location_id, student_id, created_at,
                    updated_at)
-VALUES ('고등수학 스터디 - 미적분 문제풀이', '매주 모여 미적분 심화 문제를 함께 풀이합니다.', 'MATH', 'HIGH', 'ACTIVE', 1,
+VALUES ('고등수학 스터디 - 미적분 문제풀이', '매주 모여 미적분 심화 문제를 함께 풀이합니다.', 'MATH', 'HIGH', 'ACTIVE', 1, 2,
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       ('물리 스터디 - 역학 집중 탐구', '뉴턴 역학 중심으로 개념 이해 및 문제 해결 능력 향상.', 'SCIENCE', 'HIGH', 'ACTIVE', 2,
+       ('물리 스터디 - 역학 집중 탐구', '뉴턴 역학 중심으로 개념 이해 및 문제 해결 능력 향상.', 'SCIENCE', 'HIGH', 'ACTIVE', 2, 3,
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       ('중학수학 내신 대비 스터디', '학교 시험 범위 맞춰 개념 정리 및 문제 풀이 진행.', 'MATH', 'MIDDLE', 'CLOSED', 3,
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- 'INACTIVE' -> 'CLOSED' 수정
-       ('화학 반응식 완전 정복', '다양한 화학 반응식을 이해하고 암기하는 스터디.', 'SCIENCE', 'HIGH', 'ACTIVE', 7,
+       ('중학수학 내신 대비 스터디', '학교 시험 범위 맞춰 개념 정리 및 문제 풀이 진행.', 'MATH', 'MIDDLE', 'CLOSED', 3, 4,
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       ('생명과학 토론 스터디', '최신 생명과학 이슈에 대해 토론하고 발표합니다.', 'SCIENCE', 'HIGH', 'ACTIVE', 9,
+       ('화학 반응식 완전 정복', '다양한 화학 반응식을 이해하고 암기하는 스터디.', 'SCIENCE', 'HIGH', 'ACTIVE', 7, 1,
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       ('확률과 통계 개념 완성', '확률과 통계 기본 개념부터 응용까지 함께 공부합니다.', 'MATH', 'HIGH', 'ACTIVE', 5,
+       ('생명과학 토론 스터디', '최신 생명과학 이슈에 대해 토론하고 발표합니다.', 'SCIENCE', 'HIGH', 'ACTIVE', 9, 6,
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       ('과학 실험 보고서 작성법', '실험 설계부터 결과 분석, 보고서 작성까지 연습합니다.', 'SCIENCE', 'MIDDLE', 'ACTIVE', 7,
+       ('확률과 통계 개념 완성', '확률과 통계 기본 개념부터 응용까지 함께 공부합니다.', 'MATH', 'HIGH', 'ACTIVE', 5, 8,
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       ('수학 경시대회 준비 모임', '고난도 수학 문제 풀이 및 전략 공유.', 'MATH', 'HIGH', 'CLOSED', 1, CURRENT_TIMESTAMP,
-        CURRENT_TIMESTAMP),                    -- 'INACTIVE' -> 'CLOSED' 수정
-       ('중학 과학 개념 노트 정리', '과학 교과서 핵심 내용을 함께 정리하고 복습합니다.', 'SCIENCE', 'MIDDLE', 'ACTIVE', 3,
+       ('과학 실험 보고서 작성법', '실험 설계부터 결과 분석, 보고서 작성까지 연습합니다.', 'SCIENCE', 'MIDDLE', 'ACTIVE', 7, 8,
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       ('물리 심화 문제 도전', '물리 올림피아드 수준의 문제 풀이에 도전합니다.', 'SCIENCE', 'HIGH', 'ACTIVE', 2,
+       ('수학 경시대회 준비 모임', '고난도 수학 문제 풀이 및 전략 공유.', 'MATH', 'HIGH', 'CLOSED', 1, 10,
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('중학 과학 개념 노트 정리', '과학 교과서 핵심 내용을 함께 정리하고 복습합니다.', 'SCIENCE', 'MIDDLE', 'ACTIVE', 3, 5,
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('물리 심화 문제 도전', '물리 올림피아드 수준의 문제 풀이에 도전합니다.', 'SCIENCE', 'HIGH', 'ACTIVE', 2, 1,
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 
