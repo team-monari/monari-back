@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.global.config.error.exception.NotFoundException;
 import com.monari.monariback.teacher.dto.TeacherDto;
+import com.monari.monariback.teacher.dto.request.TeacherUpdateRequest;
+import com.monari.monariback.teacher.entity.Teacher;
 import com.monari.monariback.teacher.repository.TeacherRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,20 @@ public class TeacherService {
 		return TeacherDto.from(
 				teacherRepository.findByPublicId(accessor.getPublicId())
 						.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND))
+		);
+	}
+
+	@Transactional
+	public TeacherDto updateProfile(Accessor accessor, TeacherUpdateRequest request) {
+		Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
+				.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
+		return TeacherDto.from(
+				teacher.updateProfile(
+						request.university(),
+						request.major(),
+						request.career(),
+						request.profileImageUrl()
+				)
 		);
 	}
 }
