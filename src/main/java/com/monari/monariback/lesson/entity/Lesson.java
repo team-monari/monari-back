@@ -16,7 +16,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AccessLevel;
@@ -35,7 +34,7 @@ public class Lesson extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Location location;
 
@@ -43,7 +42,7 @@ public class Lesson extends BaseEntity {
     @JoinColumn(nullable = false)
     private Teacher teacher;
 
-    @Column(name = "title", unique = true, nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "description", nullable = false)

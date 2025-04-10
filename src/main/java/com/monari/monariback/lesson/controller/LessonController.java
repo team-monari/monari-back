@@ -1,6 +1,7 @@
 package com.monari.monariback.lesson.controller;
 
 import com.monari.monariback.lesson.dto.request.CreateLessonRequest;
+import com.monari.monariback.lesson.dto.request.SearchLessonRequest;
 import com.monari.monariback.lesson.dto.request.UpdateLessonRequest;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
 import com.monari.monariback.lesson.dto.response.PageInfoResponse;
@@ -28,7 +29,7 @@ public class LessonController {
     public ResponseEntity<String> createLesson(
         @RequestBody final CreateLessonRequest lessonDto
     ) {
-        return lessonService.create(lessonDto);
+        return lessonService.createLesson(lessonDto);
     }
 
     @PatchMapping("/{lessonId}")
@@ -36,7 +37,7 @@ public class LessonController {
         @PathVariable("lessonId") final Integer lessonId,
         @RequestBody final UpdateLessonRequest lessonDto
     ) {
-        return lessonService.update(lessonId, lessonDto);
+        return lessonService.updateLesson(lessonId, lessonDto);
 
     }
 
@@ -45,7 +46,7 @@ public class LessonController {
         @PathVariable("lessonId") final Integer lessonId
     ) {
         return ResponseEntity.ok(
-            lessonService.read(lessonId)
+            lessonService.readLesson(lessonId)
         );
     }
 
@@ -61,12 +62,10 @@ public class LessonController {
 
     @GetMapping("/search")
     public ResponseEntity<Page<LessonResponse>> searchLessons(
-        @RequestParam(name = "keyword") final String keyword,
-        @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
-        @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
+        final SearchLessonRequest searchLessonRequest
     ) {
         return ResponseEntity.ok(
-            lessonService.searchLessons(keyword, pageNumber, pageSize)
+            lessonService.searchLessons(searchLessonRequest)
         );
     }
 

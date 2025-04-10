@@ -7,10 +7,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LessonCustomRepository {
 
-    List<Lesson> findLessonsByPageSize(Integer pageSize, Integer pageNum);
+    List<Lesson> findLessonsByPageSize(final Integer pageSize, final Integer pageNum);
 
-    List<Lesson> searchLessons(String keyword, Integer pageSize, Integer pageNum);
+    List<Lesson> searchLessons(final String keyword, final Integer pageSize, final Integer pageNum);
 
-    int getTotalLessonPages(int pageSize);
+    int getTotalLessonPages(final int pageSize, final String keyword);
+
+    long getTotalLessonCount(final String keyword);
 
 }

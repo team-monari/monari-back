@@ -4,6 +4,7 @@ import com.monari.monariback.enrollment.repository.EnrollmentRepository;
 import com.monari.monariback.global.config.error.ErrorCode;
 import com.monari.monariback.global.config.error.exception.NotFoundException;
 import com.monari.monariback.lesson.dto.request.CreateLessonRequest;
+import com.monari.monariback.lesson.dto.request.SearchLessonRequest;
 import com.monari.monariback.lesson.dto.request.UpdateLessonRequest;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
 import com.monari.monariback.lesson.dto.response.PageInfoResponse;
@@ -16,6 +17,7 @@ import com.monari.monariback.teacher.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,15 +44,15 @@ public class LessonService {
      * @return CreateLessonResponse - 수업 생성 후 응답 dto 입니다.
      * @author Hong
      */
-    public ResponseEntity<String> create(final CreateLessonRequest lessonDto) {
+    public ResponseEntity<String> createLesson(final CreateLessonRequest lessonDto) {
 
         Location location = locationRepository.findById(lessonDto.locationId()).orElseThrow(
             () -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND)
         );
         Teacher teacher = teacherRepository.findById(lessonDto.teacherId())
-            .orElseThrow(() -> new NotFoundException(ErrorCode.BAD_REQUEST));
+            .orElseThrow(() -> new NotFoundException(ErrorCode.TEACHER_NOT_FOUND));
 
-        Lesson lesson = Lesson.ofCreate(
+        final Lesson lesson = Lesson.ofCreate(
             location,
             teacher,
             lessonDto.title(),
@@ -77,13 +79,16 @@ public class LessonService {
      * @return LessonResponse - 수정된 수업 정보가 담긴 dto
      * @author Hong
      */
-    public ResponseEntity<String> update(final Integer lessonId,
-        final UpdateLessonRequest lessonDto) {
+    public ResponseEntity<String> updateLesson(
+        final Integer lessonId,
+        final UpdateLessonRequest lessonDto
+    ) {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
             () -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND)
         );
 
-        Location location = locationRepository.findById(lessonDto.locationId()).orElseThrow(() ->
+        final Location location = locationRepository.findById(
+            lessonDto.locationId()).orElseThrow(() ->
             new NotFoundException(ErrorCode.LOCATION_NOT_FOUND)
         );
 
@@ -112,7 +117,7 @@ public class LessonService {
      * @author Hong
      */
     @Transactional(readOnly = true)
-    public LessonResponse read(final Integer lessonId) {
+    public LessonResponse readLesson(final Integer lessonId) {
         final Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(
             () -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND)
         );
@@ -136,6 +141,14 @@ public class LessonService {
         );
     }
 
+    /**
+     * 페이지 목록 리스트업 기능
+     *
+     * @param pageNumber 요청 페이지 쪽수
+     * @param pageSize   요청하는 페이지 크기
+     * @return Page<LessonResponse> LessonsDto 를 담은 Page
+     * @author Hong
+     */
     @Transactional(readOnly = true)
     public Page<LessonResponse> readLessons(
         final Integer pageNumber,
@@ -153,26 +166,54 @@ public class LessonService {
         );
     }
 
+    /**
+     * 검색기능
+     *
+     * @param searchLessonRequest 아래의 요소를 포함한 Dto
+     * @param keyword             제목 혹은 내용을 찾을 키워드
+     * @param pageNumber          요청 페이지 쪽수
+     * @param pageSize            요청하는 페이지 크기
+     * @return Page<LessonResponse> LessonsDto 를 담은 Page
+     * @author Hong
+     */
     @Transactional(readOnly = true)
     public Page<LessonResponse> searchLessons(
-        final String keyword,
-        final Integer pageNumber,
-        final Integer pageSize
+        final SearchLessonRequest searchLessonRequest
     ) {
+
+        long totalLessonCount = lessonRepository.getTotalLessonCount(
+            searchLessonRequest.keyword()
+        );
+
         return new PageImpl<>(
             lessonRepository
-                .searchLessons(keyword, pageSize, pageNumber)
+                .searchLessons(
+                    searchLessonRequest.keyword(),
+                    searchLessonRequest.pageSize(),
+                    searchLessonRequest.pageNumber())
                 .stream()
                 .map(lesson -> {
                     int currStudent = enrollmentRepository.countByLessonId(lesson.getId());
                     return LessonResponse.ofCreatePage(lesson, currStudent);
                 })
-                .toList()
+                .toList(),
+            PageRequest.of(
+                searchLessonRequest.pageNumber() - 1,
+                searchLessonRequest.pageSize()
+            ),
+            totalLessonCount
         );
     }
 
+    /**
+     * 총 페이지를 반환하는 기능
+     *
+     * @return - 총 페이지의 갯수
+     * @author Hong
+     */
+
+    @Transactional(readOnly = true)
     public PageInfoResponse getTotalPages() {
-        int totalPages = lessonRepository.getTotalLessonPages(PAGE_SIZE);
-        return new PageInfoResponse(totalPages);
+        return new PageInfoResponse(lessonRepository.getTotalLessonPages(PAGE_SIZE, null));
     }
 }
