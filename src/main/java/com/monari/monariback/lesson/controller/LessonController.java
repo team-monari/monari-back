@@ -9,6 +9,7 @@ import com.monari.monariback.lesson.dto.request.UpdateLessonRequest;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
 import com.monari.monariback.lesson.dto.response.PageInfoResponse;
 import com.monari.monariback.lesson.service.LessonService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class LessonController {
     @OnlyTeacher
     @PostMapping()
     public ResponseEntity<String> createLesson(
-        @RequestBody final CreateLessonRequest lessonDto,
+        @RequestBody @Valid final CreateLessonRequest lessonDto,
         @Auth final Accessor accessor
     ) {
         return lessonService.createLesson(lessonDto, accessor);
@@ -41,7 +42,7 @@ public class LessonController {
     @PatchMapping("/{lessonId}")
     public ResponseEntity<String> updateLesson(
         @PathVariable("lessonId") final Integer lessonId,
-        @RequestBody final UpdateLessonRequest lessonDto
+        @RequestBody @Valid final UpdateLessonRequest lessonDto
     ) {
         return lessonService.updateLesson(lessonId, lessonDto);
 
@@ -68,7 +69,7 @@ public class LessonController {
 
     @GetMapping("/search")
     public ResponseEntity<Page<LessonResponse>> searchLessons(
-        final SearchLessonRequest searchLessonRequest
+        @Valid final SearchLessonRequest searchLessonRequest
     ) {
         return ResponseEntity.ok(
             lessonService.searchLessons(searchLessonRequest)

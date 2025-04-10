@@ -1,5 +1,8 @@
 package com.monari.monariback.lesson.service;
 
+import static com.monari.monariback.lesson.constant.LessonResponseConstants.LESSON_CREATE_SUCCESS;
+import static com.monari.monariback.lesson.constant.LessonResponseConstants.LESSON_UPDATE_SUCCESS;
+
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.enrollment.repository.EnrollmentRepository;
 import com.monari.monariback.global.config.error.ErrorCode;
@@ -73,7 +76,8 @@ public class LessonService {
         );
 
         lessonRepository.save(lesson);
-        return ResponseEntity.ok("생성에 성공하였습니다");
+
+        return ResponseEntity.ok(LESSON_CREATE_SUCCESS);
     }
 
     /**
@@ -111,7 +115,7 @@ public class LessonService {
             lessonDto.subject()
         );
 
-        return ResponseEntity.ok("수정이 완료되었습니다.");
+        return ResponseEntity.ok(LESSON_UPDATE_SUCCESS);
     }
 
     /**
