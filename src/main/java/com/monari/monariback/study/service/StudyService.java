@@ -7,13 +7,18 @@ import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.location.repository.LocationRepository;
 import com.monari.monariback.student.entity.Student;
 import com.monari.monariback.student.repository.StudentRepository;
+import com.monari.monariback.study.dto.StudyDto;
 import com.monari.monariback.study.dto.request.StudyChangeStatusRequest;
 import com.monari.monariback.study.dto.request.StudyCreateRequest;
 import com.monari.monariback.study.dto.request.StudyEditRequest;
+import com.monari.monariback.study.dto.response.StudyDetailResponse;
 import com.monari.monariback.study.dto.response.StudyResponse;
 import com.monari.monariback.study.entity.Study;
 import com.monari.monariback.study.repository.StudyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,19 +54,56 @@ public class StudyService {
 
         studyRepository.save(study);
     }
-    
-    public List<StudyResponse> readStudies() {
-        return studyRepository.findAllWithLocation()
-                .stream()
-                .map(StudyResponse::from)
+
+    /**
+     * 페이지별 스터디 목록 조회
+     * @param pageNum - 페이지 번호
+     * @param pageSize - 한 페이지에 조회될 스터디 개수
+     * @return Page<StudyResponse>
+     * @author Jeong
+     */
+    @Transactional(readOnly = true)
+    public Page<StudyResponse> getStudies(final int pageNum, final int pageSize) {
+        List<StudyResponse> content = studyRepository.findOrderByCreatedAtDesc(pageNum, pageSize)
+                .stream().map(StudyResponse::from)
                 .toList();
+
+        return new PageImpl<>(
+                content, PageRequest.of(pageNum - 1, pageSize), studyRepository.count()
+        );
     }
 
-    public StudyResponse readStudy(Integer studyId) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 스터디가 존재하지 않습니다."));
+    /**
+     * 스터디 검색 기반 페이지별 목록 조회
+     * @param pageNum - 페이지 번호
+     * @param pageSize - 한 페이지에 조회될 스터디 개수
+     * @param titleKeyword - 제목 키워드
+     * @param descriptionKeyword - 설명 키워드
+     * @return Page<StudyResponse>
+     * @author Jeong
+     */
+    @Transactional(readOnly = true)
+    public Page<StudyResponse> searchStudies(final int pageNum,
+                                             final int pageSize,
+                                             final String titleKeyword,
+                                             final String descriptionKeyword) {
+        List<StudyDto> studies = studyRepository.findByKeywordOrderByCreatedAtDesc(pageNum, pageSize, titleKeyword, descriptionKeyword);
+        List<StudyResponse> content = studies.stream()
+                .map(StudyResponse::from)
+                .toList();
 
-        return StudyResponse.from(study);
+        long totalStudiesCount = studyRepository.countByKeyword(titleKeyword, descriptionKeyword);
+
+        return new PageImpl<>(
+                content, PageRequest.of(pageNum - 1, pageSize), totalStudiesCount
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public StudyDetailResponse getStudy(final Integer studyId) {
+        Study study = studyRepository.findByIdWithStudentAndLocation(studyId)
+                .orElseThrow(() -> new NotFoundException(STUDY_NOT_FOUND));
+        return StudyDetailResponse.from(study);
     }
 
     @Transactional
