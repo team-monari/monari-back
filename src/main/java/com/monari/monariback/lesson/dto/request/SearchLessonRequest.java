@@ -5,6 +5,8 @@ import static com.monari.monariback.lesson.constant.LessonValidationConstants.KE
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.PAGE_NUMBER_MIN;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.PAGE_SIZE_MIN;
 
+import com.monari.monariback.common.enumerated.SchoolLevel;
+import com.monari.monariback.common.enumerated.Subject;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
@@ -17,8 +19,10 @@ public record SearchLessonRequest(
     Integer pageNumber,
 
     @Min(value = 1, message = PAGE_SIZE_MIN)
-    Integer pageSize
+    Integer pageSize,
 
+    SchoolLevel schoolLevel,
+    Subject subject
 ) {
 
 }
