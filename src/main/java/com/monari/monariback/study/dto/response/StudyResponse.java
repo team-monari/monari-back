@@ -1,28 +1,40 @@
 package com.monari.monariback.study.dto.response;
 
-import com.monari.monariback.study.entity.Study;
+import com.monari.monariback.common.enumerated.SchoolLevel;
+import com.monari.monariback.common.enumerated.Subject;
+import com.monari.monariback.study.dto.StudyDto;
+import com.monari.monariback.study.enumerated.StudyStatus;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record StudyResponse(
         Integer id,
         String title,
         String description,
-        String subject,
-        String schoolLevel,
-        String status,
+        Subject subject,
+        SchoolLevel schoolLevel,
+        StudyStatus status,
+        LocalDateTime createdAt,
         String locationName,
-        String locationServiceUrl
+        String locationServiceUrl,
+        UUID studentPublicId,
+        String studentName
 ) {
 
-    public static StudyResponse from(Study study) {
+    public static StudyResponse from(StudyDto studyDto) {
         return new StudyResponse(
-                study.getId(),
-                study.getTitle(),
-                study.getDescription(),
-                study.getSubject().name(),
-                study.getSchoolLevel().name(),
-                study.getStatus().name(),
-                study.getLocation().getLocationName(),
-                study.getLocation().getServiceUrl()
+                studyDto.id(),
+                studyDto.title(),
+                studyDto.description(),
+                studyDto.subject(),
+                studyDto.schoolLevel(),
+                studyDto.status(),
+                studyDto.createdAt(),
+                studyDto.locationName(),
+                studyDto.locationServiceUrl(),
+                studyDto.studentPublicId(),
+                studyDto.studentName()
         );
     }
 }

@@ -6,18 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface StudyRepository extends JpaRepository<Study, Integer> {
-
-    @Query("""
-        SELECT s
-        FROM Study s
-        JOIN FETCH s.location
-    """)
-    List<Study> findAllWithLocation();
+public interface StudyRepository extends JpaRepository<Study, Integer>, StudyCustomRepository {
 
     @Query("""
         SELECT s
@@ -26,4 +18,13 @@ public interface StudyRepository extends JpaRepository<Study, Integer> {
         WHERE s.id = :id
     """)
     Optional<Study> findByIdWithStudent(@Param("id") Integer id) ;
+
+    @Query("""
+        SELECT s
+        FROM Study s
+        JOIN FETCH s.student
+        JOIN FETCH s.location
+        WHERE s.id = :id
+    """)
+    Optional<Study> findByIdWithStudentAndLocation(@Param("id") Integer id) ;
 }
