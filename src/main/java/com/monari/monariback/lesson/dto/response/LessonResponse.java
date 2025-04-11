@@ -57,7 +57,10 @@ public record LessonResponse(
         );
     }
 
-    public static LessonResponse ofCreatePage(Lesson lesson, Integer currentStudent) {
+    public static LessonResponse ofCreatePage(
+        final Lesson lesson,
+        final Integer currentStudent
+    ) {
         return new LessonResponse(
             lesson.getId(),
             lesson.getLocation().getId(),

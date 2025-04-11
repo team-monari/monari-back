@@ -56,6 +56,16 @@ VALUES (RANDOM_UUID(), 'student1@example.com', '김민지', 'KAKAO', 'kakao123',
        (RANDOM_UUID(), 'student9@example.com', '배수아', 'KAKAO', 'kakao404', 'HIGH', 'FIRST',
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
        (RANDOM_UUID(), 'student10@example.com', '송현우', null, null, 'MIDDLE', 'SECOND',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (RANDOM_UUID(), 'student11@example.com', '서지훈', 'KAKAO', 'kakao505', 'HIGH', 'SECOND',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (RANDOM_UUID(), 'student12@example.com', '문채영', 'NAVER', 'naver606', 'MIDDLE', 'FIRST',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (RANDOM_UUID(), 'student13@example.com', '임태현', 'KAKAO', 'kakao707', 'HIGH', 'FIRST',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (RANDOM_UUID(), 'student14@example.com', '조예린', 'KAKAO', 'kakao808', 'MIDDLE', 'SECOND',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (RANDOM_UUID(), 'student15@example.com', '홍도윤', 'NAVER', 'naver909', 'HIGH', 'THIRD',
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Teacher (선생님) 데이터 (10건)
@@ -87,7 +97,7 @@ VALUES (RANDOM_UUID(), 'teacher1@example.com', '김철수 교수', 'KAKAO', 't_k
 INSERT INTO lesson (location_id, teacher_id, title, description, amount, min_student, max_student,
                     start_date, end_date, deadline, status, school_level, subject, created_at,
                     updated_at)
-VALUES (1, 1, '고등수학 미적분 심화 과정', '미적분의 개념부터 심화 문제까지 단계적으로 학습하는 고등학생 대상의 집중 수학 과정입니다.', 120000, 1, 2,
+VALUES (1, 1, '고등수학 미적분 심화 과정', '미적분의 개념부터 심화 문제까지 단계적으로 학습하는 고등학생 대상의 집중 수학 과정입니다.', 120000, 1, 4,
         DATE '2025-09-01', DATE '2025-12-15',
         DATE '2025-08-25', 'ACTIVE', 'HIGH', 'MATH', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 
@@ -195,4 +205,14 @@ VALUES (1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1),
        (7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 3),
        (8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 5),
        (9, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, 4),
-       (10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, 5);
+       (10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, 5),
+       (11, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 6, 1),
+       (12, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 6, 3),
+       (13, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 7, 2),
+       (14, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 7, 4),
+       (15, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 8, 3),
+       (16, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 8, 5),
+       (17, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 9, 1),
+       (18, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 9, 2),
+       (19, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 10, 4),
+       (20, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 10, 5);

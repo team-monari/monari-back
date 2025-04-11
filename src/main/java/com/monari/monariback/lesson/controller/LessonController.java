@@ -1,11 +1,15 @@
 package com.monari.monariback.lesson.controller;
 
+import com.monari.monariback.auth.aop.Auth;
+import com.monari.monariback.auth.aop.OnlyTeacher;
+import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.lesson.dto.request.CreateLessonRequest;
 import com.monari.monariback.lesson.dto.request.SearchLessonRequest;
 import com.monari.monariback.lesson.dto.request.UpdateLessonRequest;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
 import com.monari.monariback.lesson.dto.response.PageInfoResponse;
 import com.monari.monariback.lesson.service.LessonService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,20 +29,27 @@ public class LessonController {
 
     private final LessonService lessonService;
 
+    @OnlyTeacher
     @PostMapping()
     public ResponseEntity<String> createLesson(
-        @RequestBody final CreateLessonRequest lessonDto
+        @RequestBody @Valid final CreateLessonRequest lessonDto,
+        @Auth final Accessor accessor
     ) {
-        return lessonService.createLesson(lessonDto);
+        return ResponseEntity.ok(
+            lessonService.createLesson(lessonDto, accessor)
+        );
     }
 
+    @OnlyTeacher
     @PatchMapping("/{lessonId}")
     public ResponseEntity<String> updateLesson(
         @PathVariable("lessonId") final Integer lessonId,
-        @RequestBody final UpdateLessonRequest lessonDto
+        @RequestBody @Valid final UpdateLessonRequest lessonDto,
+        @Auth final Accessor accessor
     ) {
-        return lessonService.updateLesson(lessonId, lessonDto);
-
+        return ResponseEntity.ok(
+            lessonService.updateLesson(lessonId, lessonDto, accessor)
+        );
     }
 
     @GetMapping("/{lessonId}")
@@ -62,7 +73,7 @@ public class LessonController {
 
     @GetMapping("/search")
     public ResponseEntity<Page<LessonResponse>> searchLessons(
-        final SearchLessonRequest searchLessonRequest
+        @Valid final SearchLessonRequest searchLessonRequest
     ) {
         return ResponseEntity.ok(
             lessonService.searchLessons(searchLessonRequest)

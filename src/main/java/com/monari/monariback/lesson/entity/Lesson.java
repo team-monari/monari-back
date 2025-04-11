@@ -45,7 +45,7 @@ public class Lesson extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, length = 2000)
     private String description;
 
     @Column(name = "amount", nullable = false)
@@ -110,6 +110,7 @@ public class Lesson extends BaseEntity {
 
     public void update(
         final Location newLocation,
+        final Teacher newTeacher,
         final String newTitle,
         final String newDescription,
         final Integer newAmount,
@@ -122,6 +123,7 @@ public class Lesson extends BaseEntity {
         final Subject newSubject
     ) {
         location = newLocation;
+        teacher = newTeacher;
         title = newTitle;
         description = newDescription;
         amount = newAmount;

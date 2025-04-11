@@ -27,11 +27,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
     public List<Lesson> findLessonsByPageSize(
         final Integer pageSize,
         final Integer pageNum) {
-        return queryFactory.selectFrom(lesson)
-            .orderBy(lesson.createdAt.desc(), lesson.id.desc())
-            .limit(pageSize)
-            .offset((long) (pageNum - 1) * pageSize)
-            .fetch();
+        return fetchLessonsWithPaging(null, pageSize, pageNum);
     }
 
     /**
@@ -47,13 +43,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final String keyword,
         final Integer pageSize,
         final Integer pageNum) {
-
-        return queryFactory.selectFrom(lesson)
-            .where(buildKeywordPredicate(keyword))
-            .orderBy(lesson.createdAt.desc(), lesson.id.desc())
-            .limit(pageSize)
-            .offset((long) (pageNum - 1) * pageSize)
-            .fetch();
+        return fetchLessonsWithPaging(keyword, pageSize, pageNum);
     }
 
     /**
@@ -70,17 +60,8 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final String keyword
     ) {
 
-        Long totalCount = queryFactory
-            .select(lesson.count())
-            .from(lesson)
-            .where(buildKeywordPredicate(keyword))
-            .fetchFirst();
-
-        if (totalCount == null || totalCount == 0) {
-            return 0;
-        }
-
-        return (int) Math.ceil((double) totalCount / pageSize);
+        long totalCount = getTotalLessonCount(keyword);
+        return totalCount == 0 ? 0 : (int) Math.ceil((double) totalCount / pageSize);
     }
 
     /**
@@ -99,6 +80,15 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return count != null ? count : 0L;
     }
 
+    private List<Lesson> fetchLessonsWithPaging(final String keyword, final Integer pageSize,
+        final Integer pageNum) {
+        return queryFactory.selectFrom(lesson)
+            .where(buildKeywordPredicate(keyword))
+            .orderBy(lesson.createdAt.desc(), lesson.id.desc())
+            .limit(pageSize)
+            .offset((long) (pageNum - 1) * pageSize)
+            .fetch();
+    }
 
     /**
      * 키워드에 따른 검색 조건을 생성합니다.
