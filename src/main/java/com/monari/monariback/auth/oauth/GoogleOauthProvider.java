@@ -1,7 +1,7 @@
 package com.monari.monariback.auth.oauth;
 
 import static com.monari.monariback.auth.constant.GoogleOauthConstants.*;
-import static com.monari.monariback.global.config.error.ErrorCode.*;
+import static com.monari.monariback.common.error.ErrorCode.*;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +22,7 @@ import com.monari.monariback.auth.dto.response.GoogleUserInfoResponse;
 import com.monari.monariback.auth.oauth.userinfo.GoogleUserInfo;
 import com.monari.monariback.auth.oauth.userinfo.OauthUserInfo;
 import com.monari.monariback.common.enumerated.SocialProvider;
-import com.monari.monariback.global.config.error.exception.AuthException;
+import com.monari.monariback.common.exception.AuthException;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;

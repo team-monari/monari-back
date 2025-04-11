@@ -34,6 +34,7 @@ public class StudentService {
 				.orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
 		return StudentDto.from(
 				student.updateProfile(
+						request.schoolName(),
 						request.schoolLevel(),
 						request.grade(),
 						request.profileImageUrl()

@@ -1,7 +1,7 @@
 package com.monari.monariback.auth.oauth;
 
 import static com.monari.monariback.auth.constant.KakaoOauthConstants.*;
-import static com.monari.monariback.global.config.error.ErrorCode.*;
+import static com.monari.monariback.common.error.ErrorCode.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +19,7 @@ import com.monari.monariback.auth.dto.response.KakaoUserInfoResponse;
 import com.monari.monariback.auth.oauth.userinfo.KakaoUserInfo;
 import com.monari.monariback.auth.oauth.userinfo.OauthUserInfo;
 import com.monari.monariback.common.enumerated.SocialProvider;
-import com.monari.monariback.global.config.error.exception.AuthException;
+import com.monari.monariback.common.exception.AuthException;
 
 import reactor.core.publisher.Mono;
 
