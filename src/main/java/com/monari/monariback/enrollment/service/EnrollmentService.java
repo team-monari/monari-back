@@ -1,12 +1,15 @@
 package com.monari.monariback.enrollment.service;
 
 
-import com.monari.monariback.enrollment.dto.request.EnrollmentCreateRequest;
-import com.monari.monariback.enrollment.entity.Enrollment;
-import com.monari.monariback.enrollment.repository.EnrollmentRepository;
+import static com.monari.monariback.enrollment.constant.EnrollmentResponseConstants.ENROLLMENT_SUCCESS;
+
+import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.common.error.ErrorCode;
 import com.monari.monariback.common.exception.BusinessException;
 import com.monari.monariback.common.exception.NotFoundException;
+import com.monari.monariback.enrollment.dto.request.EnrollmentCreateRequest;
+import com.monari.monariback.enrollment.entity.Enrollment;
+import com.monari.monariback.enrollment.repository.EnrollmentRepository;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.repository.LessonRepository;
 import com.monari.monariback.student.entity.Student;
@@ -25,31 +28,34 @@ public class EnrollmentService {
     private final LessonRepository lessonRepository;
 
     public String enroll(
-        final EnrollmentCreateRequest enrollmentCreateRequest) {
+        final EnrollmentCreateRequest enrollmentCreateRequest,
+        final Accessor accessor
+    ) {
 
-        validateDuplicatedEnrollment(enrollmentCreateRequest);
-
-        Student student = studentRepository.findById(enrollmentCreateRequest.studentId())
+        final Student student = studentRepository.findByPublicId(accessor.getPublicId())
             .orElseThrow(() -> new NotFoundException(
                 ErrorCode.STUDENT_NOT_FOUND)
             );
 
-        Lesson lesson = lessonRepository.findById(enrollmentCreateRequest.lessonId())
+        final Lesson lesson = lessonRepository.findById(enrollmentCreateRequest.lessonId())
             .orElseThrow(() -> new NotFoundException(
                 ErrorCode.LESSON_NOT_FOUND)
             );
 
-        Enrollment enrollment = Enrollment.ofCreate(student, lesson);
+        validateDuplicatedEnrollment(lesson, student);
+
+        final Enrollment enrollment = Enrollment.ofCreate(student, lesson);
 
         enrollmentRepository.save(enrollment);
 
-        return "등록에 성공하였습니다";
+        return ENROLLMENT_SUCCESS;
     }
-    
-    private void validateDuplicatedEnrollment(EnrollmentCreateRequest enrollmentCreateRequest) {
+
+    private void validateDuplicatedEnrollment(final Lesson lesson, final Student student) {
         if (enrollmentRepository.existsByStudentIdAndLessonId(
-            enrollmentCreateRequest.studentId(),
-            enrollmentCreateRequest.lessonId())
+            student.getId(),
+            lesson.getId()
+        )
         ) {
             throw new BusinessException(ErrorCode.ENROLLMENT_DUPLICATED);
         }
