@@ -46,6 +46,9 @@ public class Student extends BaseEntity {
 	@Column(length = 255)
 	private String socialId;
 
+	@Column(length = 50)
+	private String schoolName;
+
 	@Column(length = 20)
 	@Enumerated(value = EnumType.STRING)
 	private SchoolLevel schoolLevel;
@@ -72,10 +75,12 @@ public class Student extends BaseEntity {
 	}
 
 	public Student updateProfile(
+			String schoolName,
 			SchoolLevel schoolLevel,
 			Grade grade,
 			String profileImageUrl
 	) {
+		this.schoolName = schoolName;
 		this.schoolLevel = schoolLevel;
 		this.grade = grade;
 		this.profileImageUrl = profileImageUrl;

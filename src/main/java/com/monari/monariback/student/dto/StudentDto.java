@@ -10,6 +10,7 @@ public record StudentDto(
 		UUID publicId,
 		String email,
 		String name,
+		String schoolName,
 		SchoolLevel schoolLevel,
 		Grade grade,
 		String profileImageUrl
@@ -19,6 +20,7 @@ public record StudentDto(
 				student.getPublicId(),
 				student.getEmail(),
 				student.getName(),
+				student.getSchoolName(),
 				student.getSchoolLevel(),
 				student.getGrade(),
 				student.getProfileImageUrl()

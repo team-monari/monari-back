@@ -1,5 +1,5 @@
 package com.monari.monariback.common.enumerated;
 
 public enum SocialProvider {
-	KAKAO, NAVER
+	KAKAO, NAVER, GOOGLE
 }

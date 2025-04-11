@@ -8,7 +8,7 @@ import com.monari.monariback.common.enumerated.SchoolLevel;
 import jakarta.validation.constraints.Size;
 
 public record StudentUpdateRequest(
-
+		String schoolName,
 		SchoolLevel schoolLevel,
 		Grade grade,
 

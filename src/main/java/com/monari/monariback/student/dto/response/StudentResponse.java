@@ -10,6 +10,7 @@ public record StudentResponse(
 		UUID publicId,
 		String email,
 		String name,
+		String schoolName,
 		SchoolLevel schoolLevel,
 		Grade grade,
 		String profileImageUrl
@@ -19,6 +20,7 @@ public record StudentResponse(
 				studentDto.publicId(),
 				studentDto.email(),
 				studentDto.name(),
+				studentDto.schoolName(),
 				studentDto.schoolLevel(),
 				studentDto.grade(),
 				studentDto.profileImageUrl()
