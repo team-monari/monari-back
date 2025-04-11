@@ -221,3 +221,4 @@ gradle-app.setting
 # QueryDSL generated Q-classes
 build/generated/
 build/generated/sources/
+src/generated/
