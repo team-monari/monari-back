@@ -1,18 +1,18 @@
 package com.monari.monariback.teacher.service;
 
-import static com.monari.monariback.global.config.error.ErrorCode.*;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.monari.monariback.auth.entity.Accessor;
-import com.monari.monariback.global.config.error.exception.NotFoundException;
+import com.monari.monariback.common.exception.NotFoundException;
 import com.monari.monariback.teacher.dto.TeacherDto;
 import com.monari.monariback.teacher.dto.request.TeacherUpdateRequest;
 import com.monari.monariback.teacher.entity.Teacher;
 import com.monari.monariback.teacher.repository.TeacherRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.monari.monariback.common.error.ErrorCode.TEACHER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

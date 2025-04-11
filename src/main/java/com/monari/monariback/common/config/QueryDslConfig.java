@@ -1,4 +1,4 @@
-package com.monari.monariback.global.config;
+package com.monari.monariback.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
