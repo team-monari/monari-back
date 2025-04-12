@@ -17,7 +17,7 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Integer countByLessonId(final Integer lessonId) {
+    public Integer countCurrentStudentByLessonId(final Integer lessonId) {
         final Long count = queryFactory.select(enrollment.count())
             .from(enrollment)
             .where(enrollment.lesson.id.eq(lessonId))
@@ -35,7 +35,7 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     }
 
     @Override
-    public List<Enrollment> getPagesByStudentId(
+    public List<Enrollment> findAllByStudentIdWithPagination(
         final Integer studentId,
         final Integer pageSize,
         final Integer pageNumber
@@ -43,7 +43,7 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
         return queryFactory.selectFrom(enrollment)
             .where(enrollment.student.id.eq(studentId))
             .limit(pageSize)
-            .offset((long) (pageNumber - 1) * pageSize)
+            .offset(getOffset(pageSize, pageNumber))
             .fetch();
     }
 
@@ -58,4 +58,9 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
         return count != null ? count : 0L;
 
     }
+
+    private long getOffset(final Integer pageSize, final Integer pageNumber) {
+        return (long) (pageNumber - 1) * pageSize;
+    }
+
 }

@@ -138,7 +138,7 @@ public class LessonService {
             lesson.getLocation().getId(),
             lesson.getTeacher().getId(),
             lesson.getTitle(),
-            enrollmentRepository.countByLessonId(lessonId),
+            enrollmentRepository.countCurrentStudentByLessonId(lessonId),
             lesson.getDescription(),
             lesson.getAmount(),
             lesson.getMinStudent(),
@@ -170,7 +170,8 @@ public class LessonService {
                 .findLessonsByPageSize(pageSize, pageNumber)
                 .stream()
                 .map(lesson -> {
-                    int currStudent = enrollmentRepository.countByLessonId(lesson.getId());
+                    int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
+                        lesson.getId());
                     return LessonResponse.ofCreatePage(lesson, currStudent);
                 })
                 .toList()
@@ -205,7 +206,8 @@ public class LessonService {
                 )
                 .stream()
                 .map(lesson -> {
-                    int currStudent = enrollmentRepository.countByLessonId(lesson.getId());
+                    int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
+                        lesson.getId());
                     return LessonResponse.ofCreatePage(lesson, currStudent);
                 })
                 .toList(),
@@ -270,13 +272,14 @@ public class LessonService {
         final Long totalStudent = enrollmentRepository.countByStudentId(student.getId());
 
         final List<LessonResponse> enrolledList = enrollmentRepository.
-            getPagesByStudentId(student.getId()
+            findAllByStudentIdWithPagination(student.getId()
                 , pageNumber,
                 pageSize)
             .stream()
             .map(enrollment -> {
                 Lesson lesson = enrollment.getLesson();
-                int currStudent = enrollmentRepository.countByLessonId(lesson.getId());
+                int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
+                    lesson.getId());
                 return LessonResponse.ofCreatePage(lesson, currStudent);
             })
             .toList();
@@ -312,7 +315,8 @@ public class LessonService {
             )
             .stream()
             .map(lesson -> {
-                int currStudent = enrollmentRepository.countByLessonId(lesson.getId());
+                int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
+                    lesson.getId());
                 return LessonResponse.ofCreatePage(lesson, currStudent);
             })
             .toList();

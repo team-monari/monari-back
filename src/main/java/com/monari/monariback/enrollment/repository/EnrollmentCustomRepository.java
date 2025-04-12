@@ -5,11 +5,11 @@ import java.util.List;
 
 public interface EnrollmentCustomRepository {
 
-    Integer countByLessonId(final Integer lessonId);
+    Integer countCurrentStudentByLessonId(final Integer lessonId);
 
     boolean existsByStudentIdAndLessonId(final Integer studentId, final Integer lessonId);
 
-    List<Enrollment> getPagesByStudentId(
+    List<Enrollment> findAllByStudentIdWithPagination(
         final Integer studentId,
         final Integer pageNumber,
         final Integer pageSize

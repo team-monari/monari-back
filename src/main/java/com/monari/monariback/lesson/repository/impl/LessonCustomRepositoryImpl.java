@@ -7,6 +7,7 @@ import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.repository.LessonCustomRepository;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,10 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class LessonCustomRepositoryImpl implements LessonCustomRepository {
 
+    private static final OrderSpecifier<?>[] LESSON_DEFAULT_ORDER = {
+        lesson.createdAt.desc(),
+        lesson.id.desc()
+    };
     private final JPAQueryFactory queryFactory;
 
     /**
@@ -91,12 +96,9 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return queryFactory
             .selectFrom(lesson)
             .where(lesson.teacher.id.eq(teacherId))
-            .orderBy(
-                lesson.createdAt.desc(),  // 최신순 정렬
-                lesson.id.desc()
-            )
+            .orderBy(LESSON_DEFAULT_ORDER)
             .limit(pageSize)
-            .offset((long) (pageNum - 1) * pageSize)
+            .offset(getOffset(pageSize, pageNum))
             .fetch();
     }
 
@@ -150,13 +152,15 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return queryFactory
             .selectFrom(lesson)
             .where(buildKeywordPredicate(keyword, schoolLevel, subject))
-            .orderBy(
-                lesson.createdAt.desc(),
-                lesson.id.desc()
-            )
+            .orderBy(LESSON_DEFAULT_ORDER)
             .limit(pageSize)
-            .offset((long) (pageNum - 1) * pageSize)
+            .offset(getOffset(pageSize, pageNum))
             .fetch();
+    }
+
+    private long getOffset(
+        final Integer pageSize, final Integer pageNum) {
+        return (long) (pageNum - 1) * pageSize;
     }
 
     /**
