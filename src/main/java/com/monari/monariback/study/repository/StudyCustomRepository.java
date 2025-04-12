@@ -8,9 +8,13 @@ import java.util.List;
 @Repository
 public interface StudyCustomRepository {
 
-    List<StudyDto> findOrderByCreatedAtDesc(Integer pageNum, Integer pageSize);
+    List<StudyDto> findOrderByCreatedAtDesc(int pageNum, int pageSize);
 
-    List<StudyDto> findByKeywordOrderByCreatedAtDesc(Integer pageNum, Integer pageSize, String titleKeyword, String descriptionKeyword);
+    List<StudyDto> findByKeywordOrderByCreatedAtDesc(int pageNum, int pageSize, String titleKeyword, String descriptionKeyword);
+
+    List<StudyDto> findByStudentIdOrderByCreatedAtDesc(int pageNum, int pageSize, Integer studentId);
 
     long countByKeyword(String titleKeyword, String descriptionKeyword);
+
+    long countByStudentId(Integer studentId);
 }

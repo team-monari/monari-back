@@ -2,6 +2,7 @@ package com.monari.monariback.study.repository.impl;
 
 import com.monari.monariback.study.dto.StudyDto;
 import com.monari.monariback.study.repository.StudyCustomRepository;
+import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,21 +23,9 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<StudyDto> findOrderByCreatedAtDesc(Integer pageNum, Integer pageSize) {
+    public List<StudyDto> findOrderByCreatedAtDesc(int pageNum, int pageSize) {
         return queryFactory
-                .select(Projections.constructor(StudyDto.class,
-                        study.id,
-                        study.title,
-                        study.description,
-                        study.subject,
-                        study.schoolLevel,
-                        study.status,
-                        study.createdAt,
-                        study.location.locationName,
-                        study.location.serviceUrl,
-                        study.student.publicId,
-                        study.student.name
-                        ))
+                .select(createStudyDto())
                 .from(study)
                 .innerJoin(study.location, location)
                 .innerJoin(study.student, student)
@@ -47,26 +36,28 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     }
 
     @Override
-    public List<StudyDto> findByKeywordOrderByCreatedAtDesc(Integer pageNum, Integer pageSize, String titleKeyword, String descriptionKeyword) {
+    public List<StudyDto> findByKeywordOrderByCreatedAtDesc(int pageNum, int pageSize, String titleKeyword, String descriptionKeyword) {
         return queryFactory
-                .select(Projections.constructor(StudyDto.class,
-                        study.id,
-                        study.title,
-                        study.description,
-                        study.subject,
-                        study.schoolLevel,
-                        study.status,
-                        study.createdAt,
-                        study.location.locationName,
-                        study.location.serviceUrl,
-                        study.student.publicId,
-                        study.student.name
-                        ))
+                .select(createStudyDto())
                 .from(study)
                 .innerJoin(study.location, location)
                 .innerJoin(study.student, student)
-                .where(containsTitleKeyword(titleKeyword))
-                .where(containsDescriptionKeyword(descriptionKeyword))
+                .where(containsTitleKeyword(titleKeyword),
+                        containsDescriptionKeyword(descriptionKeyword))
+                .orderBy(study.createdAt.desc(), study.id.desc())
+                .limit(pageSize)
+                .offset((long) pageSize * (pageNum - 1))
+                .fetch();
+    }
+
+    @Override
+    public List<StudyDto> findByStudentIdOrderByCreatedAtDesc(int pageNum, int pageSize, Integer studentId) {
+        return queryFactory
+                .select(createStudyDto())
+                .from(study)
+                .innerJoin(study.location, location)
+                .innerJoin(study.student, student)
+                .where(study.student.id.eq(studentId))
                 .orderBy(study.createdAt.desc(), study.id.desc())
                 .limit(pageSize)
                 .offset((long) pageSize * (pageNum - 1))
@@ -77,11 +68,37 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     public long countByKeyword(String titleKeyword, String descriptionKeyword) {
         Long count = queryFactory.select(study.count())
                 .from(study)
-                .where(containsTitleKeyword(titleKeyword))
-                .where(containsDescriptionKeyword(descriptionKeyword))
+                .where(containsTitleKeyword(titleKeyword),
+                        containsDescriptionKeyword(descriptionKeyword))
                 .fetchOne();
 
         return count != null ? count : 0L;
+    }
+
+    @Override
+    public long countByStudentId(Integer studentId) {
+        Long count = queryFactory.select(study.count())
+                .from(study)
+                .where(study.student.id.eq(studentId))
+                .fetchOne();
+
+        return count != null ? count : 0L;
+    }
+
+    private ConstructorExpression<StudyDto> createStudyDto() {
+        return Projections.constructor(StudyDto.class,
+                study.id,
+                study.title,
+                study.description,
+                study.subject,
+                study.schoolLevel,
+                study.status,
+                study.createdAt,
+                study.location.locationName,
+                study.location.serviceUrl,
+                study.student.publicId,
+                study.student.name
+        );
     }
 
     private BooleanExpression containsTitleKeyword(String keyword) {

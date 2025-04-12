@@ -65,6 +65,24 @@ public class StudyController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /**
+     * 내가 개설한 스터디 목록 조회
+     * @param accessor - 학생 회원
+     * @param pageNum - 페이지 번호
+     * @param pageSize - 한 페이지에 조회될 스터디 개수
+     * @author Jeong
+     */
+    @OnlyStudent
+    @GetMapping("/me")
+    public ResponseEntity<Page<StudyResponse>> getMyStudies(
+            @Auth final Accessor accessor,
+            @RequestParam(name = "pageNum", defaultValue = "1") final int pageNum,
+            @RequestParam(name = "pageSize", defaultValue = "6") final int pageSize
+    ) {
+        Page<StudyResponse> response = studyService.getMyStudies(accessor, pageNum, pageSize);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping("/{studyId}")
     public ResponseEntity<StudyDetailResponse> getStudy(@PathVariable("studyId") final Integer studyId) {
         StudyDetailResponse response = studyService.getStudy(studyId);

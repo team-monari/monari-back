@@ -57,6 +57,7 @@ public class StudyService {
 
     /**
      * 페이지별 스터디 목록 조회
+     * 최신순 정렬
      * @param pageNum - 페이지 번호
      * @param pageSize - 한 페이지에 조회될 스터디 개수
      * @return Page<StudyResponse>
@@ -75,6 +76,7 @@ public class StudyService {
 
     /**
      * 스터디 검색 기반 페이지별 목록 조회
+     * 최신순 정렬
      * @param pageNum - 페이지 번호
      * @param pageSize - 한 페이지에 조회될 스터디 개수
      * @param titleKeyword - 제목 키워드
@@ -92,10 +94,42 @@ public class StudyService {
                 .map(StudyResponse::from)
                 .toList();
 
-        long totalStudiesCount = studyRepository.countByKeyword(titleKeyword, descriptionKeyword);
+        long totalStudyCount = studyRepository.countByKeyword(titleKeyword, descriptionKeyword);
 
         return new PageImpl<>(
-                content, PageRequest.of(pageNum - 1, pageSize), totalStudiesCount
+                content, PageRequest.of(pageNum - 1, pageSize), totalStudyCount
+        );
+    }
+
+    /**
+     * 개설한 스터디 목록 조회
+     * 최신순 정렬
+     * @param accessor - 학생 회원
+     * @param pageNum - 페이지 번호
+     * @param pageSize - 한 페이지에 조회될 스터디 개수
+     * @return Page<StudyResponse>
+     * @author Jeong
+     */
+    @Transactional(readOnly = true)
+    public Page<StudyResponse> getMyStudies(final Accessor accessor,
+                                            final int pageNum,
+                                            final int pageSize) {
+        //학생 회원 조회
+        Student student = studentRepository.findByPublicId(accessor.getPublicId())
+                .orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
+        Integer studentId = student.getId();
+
+        //한 페이지에 반환할 스터디 리스트 조회
+        List<StudyDto> myStudies = studyRepository.findByStudentIdOrderByCreatedAtDesc(pageNum, pageSize, studentId);
+        List<StudyResponse> content = myStudies.stream()
+                .map(StudyResponse::from)
+                .toList();
+
+        //학생이 개설한 전체 스터디 개수 조회
+        long totalMyStudyCount = studyRepository.countByStudentId(studentId);
+
+        return new PageImpl<>(
+                content, PageRequest.of(pageNum - 1, pageSize), totalMyStudyCount
         );
     }
 
