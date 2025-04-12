@@ -121,6 +121,15 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return count != null ? count : 0L;
     }
 
+    @Override
+    public Long getTotalLessenByTeacherId(final int teacherId) {
+        Long count = queryFactory.select(lesson.count())
+            .from(lesson)
+            .where(lesson.teacher.id.eq(teacherId))
+            .fetchOne();
+        return count != null ? count : 0L;
+    }
+
     /**
      * 내부적으로 페이징을 처리하며 강의 목록을 조회합니다.
      *

@@ -21,4 +21,6 @@ public interface LessonCustomRepository {
     long getTotalLessonCount(final String keyword, final SchoolLevel schoolLevel,
         final Subject subject);
 
+    Long getTotalLessenByTeacherId(final int teacherId);
+
 }

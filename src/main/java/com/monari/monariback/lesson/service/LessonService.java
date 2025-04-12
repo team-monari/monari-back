@@ -267,8 +267,12 @@ public class LessonService {
         final Student student = studentRepository.findByPublicId(accessor.getPublicId())
             .orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
 
-        final List<LessonResponse> enrolledList = enrollmentRepository.findAllByStudentId(
-                student.getId())
+        final Long totalStudent = enrollmentRepository.countByStudentId(student.getId());
+
+        final List<LessonResponse> enrolledList = enrollmentRepository.
+            getPagesByStudentId(student.getId()
+                , pageNumber,
+                pageSize)
             .stream()
             .map(enrollment -> {
                 Lesson lesson = enrollment.getLesson();
@@ -280,7 +284,7 @@ public class LessonService {
         return new PageImpl<>(
             enrolledList,
             PageRequest.of(pageNumber - 1, pageSize),
-            enrolledList.size()
+            totalStudent
         );
     }
 
@@ -301,6 +305,8 @@ public class LessonService {
         final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
             .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
 
+        final Long TotalLessons = lessonRepository.getTotalLessenByTeacherId(teacher.getId());
+
         final List<LessonResponse> teachingLessons = lessonRepository.findAllByTeacherId(
                 teacher.getId(), pageSize, pageNumber
             )
@@ -314,7 +320,7 @@ public class LessonService {
         return new PageImpl<>(
             teachingLessons,
             PageRequest.of(pageNumber - 1, pageSize),
-            teachingLessons.size()
+            TotalLessons
         );
     }
 }

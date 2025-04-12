@@ -9,5 +9,12 @@ public interface EnrollmentCustomRepository {
 
     boolean existsByStudentIdAndLessonId(final Integer studentId, final Integer lessonId);
 
-    List<Enrollment> findAllByStudentId(final Integer studentId);
+    List<Enrollment> getPagesByStudentId(
+        final Integer studentId,
+        final Integer pageNumber,
+        final Integer pageSize
+    );
+
+    Long countByStudentId(final Integer studentId);
+
 }

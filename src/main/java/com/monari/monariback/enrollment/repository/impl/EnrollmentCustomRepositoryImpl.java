@@ -35,9 +35,27 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     }
 
     @Override
-    public List<Enrollment> findAllByStudentId(final Integer studentId) {
+    public List<Enrollment> getPagesByStudentId(
+        final Integer studentId,
+        final Integer pageSize,
+        final Integer pageNumber
+    ) {
         return queryFactory.selectFrom(enrollment)
             .where(enrollment.student.id.eq(studentId))
+            .limit(pageSize)
+            .offset((long) (pageNumber - 1) * pageSize)
             .fetch();
+    }
+
+
+    @Override
+    public Long countByStudentId(final Integer studentId) {
+
+        Long count = queryFactory.select(enrollment.count())
+            .from(enrollment)
+            .where(enrollment.student.id.eq(studentId))
+            .fetchFirst();
+        return count != null ? count : 0L;
+
     }
 }
