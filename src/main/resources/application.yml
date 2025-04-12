@@ -19,7 +19,7 @@ spring:
     password:
   api:
     base-url: http://openAPI.seoul.go.kr:8088
-    key: 676e4f796567776133304b6b444764
+    key: ${SEOUL_API_KEY}
     service-name: ListPublicReservationInstitution
     data-type: json
 

@@ -2,8 +2,10 @@ package com.monari.monariback.enrollment.repository.impl;
 
 import static com.monari.monariback.enrollment.entity.QEnrollment.enrollment;
 
+import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.enrollment.repository.EnrollmentCustomRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -15,8 +17,9 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Integer countByLessonId(final Integer lessonId) {
+    public Integer countCurrentStudentByLessonId(final Integer lessonId) {
         final Long count = queryFactory.select(enrollment.count())
+            .from(enrollment)
             .where(enrollment.lesson.id.eq(lessonId))
             .fetchOne();
         return (int) (count != null ? count : 0);
@@ -30,4 +33,34 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
             .fetchFirst() != null;
 
     }
+
+    @Override
+    public List<Enrollment> findAllByStudentIdWithPagination(
+        final Integer studentId,
+        final Integer pageSize,
+        final Integer pageNumber
+    ) {
+        return queryFactory.selectFrom(enrollment)
+            .where(enrollment.student.id.eq(studentId))
+            .limit(pageSize)
+            .offset(getOffset(pageSize, pageNumber))
+            .fetch();
+    }
+
+
+    @Override
+    public Long countByStudentId(final Integer studentId) {
+
+        Long count = queryFactory.select(enrollment.count())
+            .from(enrollment)
+            .where(enrollment.student.id.eq(studentId))
+            .fetchFirst();
+        return count != null ? count : 0L;
+
+    }
+
+    private long getOffset(final Integer pageSize, final Integer pageNumber) {
+        return (long) (pageNumber - 1) * pageSize;
+    }
+
 }

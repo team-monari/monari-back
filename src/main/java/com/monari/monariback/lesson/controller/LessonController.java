@@ -1,6 +1,7 @@
 package com.monari.monariback.lesson.controller;
 
 import com.monari.monariback.auth.aop.Auth;
+import com.monari.monariback.auth.aop.OnlyStudent;
 import com.monari.monariback.auth.aop.OnlyTeacher;
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.lesson.dto.request.CreateLessonRequest;
@@ -11,6 +12,7 @@ import com.monari.monariback.lesson.dto.response.PageInfoResponse;
 import com.monari.monariback.lesson.service.LessonService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/lessons")
 @RequiredArgsConstructor
@@ -69,6 +72,28 @@ public class LessonController {
         return ResponseEntity.ok(
             lessonService.readLessons(pageNumber, pageSize)
         );
+    }
+
+    @OnlyStudent
+    @GetMapping("student/me")
+    public ResponseEntity<Page<LessonResponse>> readMyEnrolledLesson(
+        @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
+        @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize,
+        @Auth final Accessor accessor
+    ) {
+        return ResponseEntity.ok(
+            lessonService.getMyEnrolledLessons(pageNumber, pageSize, accessor));
+    }
+
+    @OnlyTeacher
+    @GetMapping("teacher/me")
+    public ResponseEntity<Page<LessonResponse>> readMyLessons(
+        @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
+        @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize,
+        @Auth final Accessor accessor
+    ) {
+        return ResponseEntity.ok(
+            lessonService.getMyEnrolledLessons(pageNumber, pageSize, accessor));
     }
 
     @GetMapping("/search")
