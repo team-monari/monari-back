@@ -1,6 +1,7 @@
 package com.monari.monariback.lesson.controller;
 
 import com.monari.monariback.auth.aop.Auth;
+import com.monari.monariback.auth.aop.OnlyStudent;
 import com.monari.monariback.auth.aop.OnlyTeacher;
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.lesson.dto.request.CreateLessonRequest;
@@ -73,8 +74,19 @@ public class LessonController {
         );
     }
 
-    @GetMapping("/me")
+    @OnlyStudent
+    @GetMapping("student/me")
+    public ResponseEntity<Page<LessonResponse>> readMyEnrolledLesson(
+        @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
+        @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize,
+        @Auth final Accessor accessor
+    ) {
+        return ResponseEntity.ok(
+            lessonService.getMyEnrolledLessons(pageNumber, pageSize, accessor));
+    }
+
     @OnlyTeacher
+    @GetMapping("teacher/me")
     public ResponseEntity<Page<LessonResponse>> readMyLessons(
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize,
