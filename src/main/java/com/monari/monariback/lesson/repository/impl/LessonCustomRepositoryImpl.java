@@ -2,6 +2,7 @@ package com.monari.monariback.lesson.repository.impl;
 
 import static com.monari.monariback.lesson.entity.QLesson.lesson;
 
+import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.entity.Lesson;
@@ -37,7 +38,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final Integer pageNum
     ) {
         // 페이징 처리를 위한 공통 메서드 사용
-        return fetchLessonsWithPaging(null, pageSize, pageNum, null, null);
+        return fetchLessonsWithPaging(null, pageSize, pageNum, null, null, null);
     }
 
     /**
@@ -55,10 +56,11 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final Integer pageSize,
         final Integer pageNum,
         final SchoolLevel schoolLevel,
-        final Subject subject
+        final Subject subject,
+        final Region region
     ) {
         // 페이징 처리를 위한 공통 메서드 사용
-        return fetchLessonsWithPaging(keyword, pageSize, pageNum, schoolLevel, subject);
+        return fetchLessonsWithPaging(keyword, pageSize, pageNum, schoolLevel, subject, region);
     }
 
     /**
@@ -74,7 +76,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final int pageSize,
         final String keyword
     ) {
-        long totalCount = getTotalLessonCount(keyword, null, null);
+        long totalCount = getTotalLessonCount(keyword, null, null, null);
         return totalCount == 0 ? 0 : (int) Math.ceil((double) totalCount / pageSize);
     }
 
@@ -113,11 +115,12 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
     public long getTotalLessonCount(
         final String keyword,
         final SchoolLevel schoolLevel,
-        final Subject subject) {
+        final Subject subject,
+        final Region region) {
         Long count = queryFactory
             .select(lesson.count())
             .from(lesson)
-            .where(buildKeywordPredicate(keyword, schoolLevel, subject))
+            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region))
             .fetchOne();
 
         return count != null ? count : 0L;
@@ -148,10 +151,11 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final Integer pageSize,
         final Integer pageNum,
         final SchoolLevel schoolLevel,
-        final Subject subject) {
+        final Subject subject,
+        final Region region) {
         return queryFactory
             .selectFrom(lesson)
-            .where(buildKeywordPredicate(keyword, schoolLevel, subject))
+            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region))
             .orderBy(LESSON_DEFAULT_ORDER)
             .limit(pageSize)
             .offset(getOffset(pageSize, pageNum))
@@ -169,13 +173,15 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
      * @param keyword     검색 키워드 (null 또는 공백이면 조건 없이 전체 검색)
      * @param schoolLevel 검색 필터(null 또는 공백이면 조건 없이 전체 검색)
      * @param subject     검색 필터(null 또는 공백이면 조건 없이 전체 검색)
+     * @param region      검색 필터(null 또는 공백이면 조건 없이 전체 검색)
      * @return QueryDSL의 BooleanBuilder 조건
      * @author Hong
      */
     private BooleanBuilder buildKeywordPredicate(
         final String keyword,
         final SchoolLevel schoolLevel,
-        final Subject subject) {
+        final Subject subject,
+        final Region region) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (keyword != null && !keyword.trim().isEmpty()) {
@@ -191,6 +197,9 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
 
         if (subject != null) {
             builder.and(lesson.subject.eq(subject));
+        }
+        if (region != null) {
+            builder.and(lesson.region.eq(region));
         }
         return builder;
     }
