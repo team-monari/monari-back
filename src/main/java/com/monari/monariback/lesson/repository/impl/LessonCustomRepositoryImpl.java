@@ -7,8 +7,8 @@ import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.repository.LessonCustomRepository;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -174,33 +174,41 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
      * @param schoolLevel 검색 필터(null 또는 공백이면 조건 없이 전체 검색)
      * @param subject     검색 필터(null 또는 공백이면 조건 없이 전체 검색)
      * @param region      검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @return QueryDSL의 BooleanBuilder 조건
+     * @return QueryDSL의 BooleanExpression 조건
      * @author Hong
      */
-    private BooleanBuilder buildKeywordPredicate(
+    private BooleanExpression[] buildKeywordPredicate(
         final String keyword,
         final SchoolLevel schoolLevel,
         final Subject subject,
         final Region region) {
-        BooleanBuilder builder = new BooleanBuilder();
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            builder.and(
-                lesson.title.containsIgnoreCase(keyword)
-                    .or(lesson.description.containsIgnoreCase(keyword))
-            );
-        }
+        return new BooleanExpression[]{
+            keywordCondition(keyword),
+            schoolLevelCondition(schoolLevel),
+            subjectCondition(subject),
+            regionCondition(region)
+        };
 
-        if (schoolLevel != null) {
-            builder.and(lesson.schoolLevel.eq(schoolLevel));
-        }
+    }
 
-        if (subject != null) {
-            builder.and(lesson.subject.eq(subject));
+    private BooleanExpression keywordCondition(final String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return null;
         }
-        if (region != null) {
-            builder.and(lesson.region.eq(region));
-        }
-        return builder;
+        return lesson.title.containsIgnoreCase(keyword)
+            .or(lesson.description.containsIgnoreCase(keyword));
+    }
+
+    private BooleanExpression schoolLevelCondition(final SchoolLevel schoolLevel) {
+        return schoolLevel != null ? lesson.schoolLevel.eq(schoolLevel) : null;
+    }
+
+    private BooleanExpression subjectCondition(final Subject subject) {
+        return subject != null ? lesson.subject.eq(subject) : null;
+    }
+
+    private BooleanExpression regionCondition(final Region region) {
+        return region != null ? lesson.region.eq(region) : null;
     }
 }
