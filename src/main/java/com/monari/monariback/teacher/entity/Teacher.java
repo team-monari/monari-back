@@ -56,6 +56,15 @@ public class Teacher extends BaseEntity {
 	@Column(length = 500)
 	private String profileImageUrl;
 
+	@Column(length = 100)
+	private String bankName;
+
+	@Column(length = 50)
+	private String accountNumber;
+
+	@Column(length = 50)
+	private String accountHolder;
+
 	public static Teacher signUpWithOauth(
 			String email,
 			String name,
@@ -74,12 +83,18 @@ public class Teacher extends BaseEntity {
 			String university,
 			String major,
 			String career,
-			String profileImageUrl
+			String profileImageUrl,
+			String bankName,
+			String accountNumber,
+			String accountHolder
 	) {
 		this.university = university;
 		this.major = major;
 		this.career = career;
 		this.profileImageUrl = profileImageUrl;
+		this.bankName = bankName;
+		this.accountNumber = accountNumber;
+		this.accountHolder = accountHolder;
 		return this;
 	}
 

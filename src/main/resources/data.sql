@@ -69,28 +69,51 @@ VALUES (RANDOM_UUID(), 'student1@example.com', '김민지', 'KAKAO', 'kakao123',
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Teacher (선생님) 데이터 (10건)
-INSERT INTO teacher (public_id, email, name, social_provider, social_id, university, major, career,
-                     created_at, updated_at)
-VALUES (RANDOM_UUID(), 'teacher1@example.com', '김철수 교수', 'KAKAO', 't_kakao1', '한국대학교', '수학과',
-        '10년 강의 경력, 미적분학 전문', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       (RANDOM_UUID(), 'teacher2@example.com', '이영희 박사', 'NAVER', 't_naver2', '서울대학교', '물리학과',
-        '5년 연구 및 3년 강의, 양자역학', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       (RANDOM_UUID(), 'teacher3@example.com', '박민준 선생님', 'NAVER', 't_naver3', '연세대학교', '화학과',
-        '고등학교 화학 교사 7년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       (RANDOM_UUID(), 'teacher4@example.com', '최지우 교사', 'KAKAO', 't_kakao4', '고려대학교', '생명과학과',
-        '중학교 과학 교사 5년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       (RANDOM_UUID(), 'teacher5@example.com', '정다빈 연구원', 'NAVER', 't_naver5', 'KAIST', '수학과',
-        '응용수학 연구 8년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       (RANDOM_UUID(), 'teacher6@example.com', '강태현 선생님', 'NAVER', 't_naver6', '성균관대학교', '물리학과',
-        '물리 올림피아드 지도 경험 다수', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       (RANDOM_UUID(), 'teacher7@example.com', '윤서아 박사', 'KAKAO', 't_kakao7', '포항공과대학교', '화학과',
-        '유기화학 연구 및 특강 전문', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       (RANDOM_UUID(), 'teacher8@example.com', '한지민 교사', 'NAVER', 't_naver8', '한양대학교', '생명과학과',
-        '과학 탐구반 지도 6년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       (RANDOM_UUID(), 'teacher9@example.com', '배준호 교수', 'NAVER', 't_naver9', '경희대학교', '수학과',
-        '확률 및 통계 강의 12년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-       (RANDOM_UUID(), 'teacher10@example.com', '송지효 연구원', 'KAKAO', 't_kakao10', '중앙대학교', '물리학과',
-        '천체물리학 연구 4년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO teacher (
+    public_id,
+    email,
+    name,
+    social_provider,
+    social_id,
+    university,
+    major,
+    career,
+    created_at,
+    updated_at,
+    bank_name,
+    account_number,
+    account_holder
+)
+VALUES
+    (RANDOM_UUID(), 'teacher1@example.com', '김철수 교수', 'KAKAO', 't_kakao1', '한국대학교', '수학과',
+     '10년 강의 경력, 미적분학 전문', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '국민은행', '1111111111', '김철수 교수'),
+
+    (RANDOM_UUID(), 'teacher2@example.com', '이영희 박사', 'NAVER', 't_naver2', '서울대학교', '물리학과',
+     '5년 연구 및 3년 강의, 양자역학', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '신한은행', '2222222222', '이영희 박사'),
+
+    (RANDOM_UUID(), 'teacher3@example.com', '박민준 선생님', 'NAVER', 't_naver3', '연세대학교', '화학과',
+     '고등학교 화학 교사 7년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '하나은행', '3333333333', '박민준 선생님'),
+
+    (RANDOM_UUID(), 'teacher4@example.com', '최지우 교사', 'KAKAO', 't_kakao4', '고려대학교', '생명과학과',
+     '중학교 과학 교사 5년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '우리은행', '4444444444', '최지우 교사'),
+
+    (RANDOM_UUID(), 'teacher5@example.com', '정다빈 연구원', 'NAVER', 't_naver5', 'KAIST', '수학과',
+     '응용수학 연구 8년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '농협은행', '5555555555', '정다빈 연구원'),
+
+    (RANDOM_UUID(), 'teacher6@example.com', '강태현 선생님', 'NAVER', 't_naver6', '성균관대학교', '물리학과',
+     '물리 올림피아드 지도 경험 다수', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '국민은행', '6666666666', '강태현 선생님'),
+
+    (RANDOM_UUID(), 'teacher7@example.com', '윤서아 박사', 'KAKAO', 't_kakao7', '포항공과대학교', '화학과',
+     '유기화학 연구 및 특강 전문', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '신한은행', '7777777777', '윤서아 박사'),
+
+    (RANDOM_UUID(), 'teacher8@example.com', '한지민 교사', 'NAVER', 't_naver8', '한양대학교', '생명과학과',
+     '과학 탐구반 지도 6년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '하나은행', '8888888888', '한지민 교사'),
+
+    (RANDOM_UUID(), 'teacher9@example.com', '배준호 교수', 'NAVER', 't_naver9', '경희대학교', '수학과',
+     '확률 및 통계 강의 12년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '우리은행', '9999999999', '배준호 교수'),
+
+    (RANDOM_UUID(), 'teacher10@example.com', '송지효 연구원', 'KAKAO', 't_kakao10', '중앙대학교', '물리학과',
+     '천체물리학 연구 4년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '농협은행', '1010101010', '송지효 연구원');
 
 -- Lesson (수업) 데이터 (10건) - location_id 고유하게 수정됨
 -- Location ID 1-10 및 Teacher ID 1-10 사용 가정
