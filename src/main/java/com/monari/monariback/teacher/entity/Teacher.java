@@ -83,12 +83,18 @@ public class Teacher extends BaseEntity {
 			String university,
 			String major,
 			String career,
-			String profileImageUrl
+			String profileImageUrl,
+			String bankName,
+			String accountNumber,
+			String accountHolder
 	) {
 		this.university = university;
 		this.major = major;
 		this.career = career;
 		this.profileImageUrl = profileImageUrl;
+		this.bankName = bankName;
+		this.accountNumber = accountNumber;
+		this.accountHolder = accountHolder;
 		return this;
 	}
 
