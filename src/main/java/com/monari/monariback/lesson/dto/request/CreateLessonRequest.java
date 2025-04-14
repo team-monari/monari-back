@@ -17,6 +17,7 @@ import static com.monari.monariback.lesson.constant.LessonValidationConstants.MA
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.MIN_STUDENT_MIN;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.MIN_STUDENT_MIN_VALUE;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.MIN_STUDENT_REQUIRED;
+import static com.monari.monariback.lesson.constant.LessonValidationConstants.REGION_REQUIRED;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.SCHOOL_LEVEL_REQUIRED;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.START_DATE_FUTURE_OR_PRESENT;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.START_DATE_REQUIRED;
@@ -26,6 +27,7 @@ import static com.monari.monariback.lesson.constant.LessonValidationConstants.TI
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.TITLE_REQUIRED;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.TITLE_SIZE;
 
+import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.entity.enurmurated.LessonStatus;
@@ -80,6 +82,9 @@ public record CreateLessonRequest(
     @NotNull(message = STATUS_REQUIRED)
     LessonStatus status,
 
+    @NotNull(message = REGION_REQUIRED)
+    Region region,
+    
     @NotNull(message = SCHOOL_LEVEL_REQUIRED)
     SchoolLevel schoolLevel,
 

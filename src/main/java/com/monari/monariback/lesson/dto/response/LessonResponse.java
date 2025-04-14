@@ -17,6 +17,7 @@ public record LessonResponse(
     LocalDate endDate,
     LocalDate deadline,
     String status,
+    String region,
     String schoolLevel,
     String subject
 ) {
@@ -35,6 +36,7 @@ public record LessonResponse(
         final LocalDate endDate,
         final LocalDate deadline,
         final String status,
+        final String region,
         final String schoolLevel,
         final String subject
     ) {
@@ -52,6 +54,7 @@ public record LessonResponse(
             endDate,
             deadline,
             status,
+            region,
             schoolLevel,
             subject
         );
@@ -75,6 +78,7 @@ public record LessonResponse(
             lesson.getEndDate(),
             lesson.getDeadline(),
             lesson.getStatus().name(),
+            lesson.getRegion().name(),
             lesson.getSchoolLevel().name(),
             lesson.getSubject().name()
         );

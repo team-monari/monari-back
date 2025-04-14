@@ -1,6 +1,7 @@
 package com.monari.monariback.lesson.entity;
 
 import com.monari.monariback.common.entity.BaseEntity;
+import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.entity.enurmurated.LessonStatus;
@@ -66,6 +67,10 @@ public class Lesson extends BaseEntity {
     @Column(name = "deadline", nullable = false)
     private LocalDate deadline;
 
+    @Column(name = "region", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Region region;
+
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private LessonStatus status = LessonStatus.ACTIVE;
@@ -89,6 +94,7 @@ public class Lesson extends BaseEntity {
         final LocalDate startDate,
         final LocalDate endDate,
         final LocalDate deadline,
+        final Region region,
         final SchoolLevel schoolLevel,
         final Subject subject
     ) {
@@ -103,6 +109,7 @@ public class Lesson extends BaseEntity {
         lesson.startDate = startDate;
         lesson.endDate = endDate;
         lesson.deadline = deadline;
+        lesson.region = region;
         lesson.schoolLevel = schoolLevel;
         lesson.subject = subject;
         return lesson;
@@ -119,6 +126,7 @@ public class Lesson extends BaseEntity {
         final LocalDate newStartDate,
         final LocalDate newEndDate,
         final LocalDate newDeadline,
+        final Region newRegion,
         final SchoolLevel newSchoolLevel,
         final Subject newSubject
     ) {
@@ -132,6 +140,7 @@ public class Lesson extends BaseEntity {
         startDate = newStartDate;
         endDate = newEndDate;
         deadline = newDeadline;
+        region = newRegion;
         schoolLevel = newSchoolLevel;
         subject = newSubject;
     }
