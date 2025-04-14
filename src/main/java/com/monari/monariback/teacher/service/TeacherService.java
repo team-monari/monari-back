@@ -1,5 +1,9 @@
 package com.monari.monariback.teacher.service;
 
+import static com.monari.monariback.common.error.ErrorCode.*;
+
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +15,6 @@ import com.monari.monariback.teacher.entity.Teacher;
 import com.monari.monariback.teacher.repository.TeacherRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.monari.monariback.common.error.ErrorCode.TEACHER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +44,14 @@ public class TeacherService {
 						request.accountNumber(),
 						request.accountHolder()
 				)
+		);
+	}
+
+	@Transactional(readOnly = true)
+	public TeacherDto getTeacher(UUID publicId) {
+		return TeacherDto.from(
+				teacherRepository.findByPublicId(publicId)
+						.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND))
 		);
 	}
 }
