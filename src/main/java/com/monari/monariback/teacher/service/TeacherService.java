@@ -25,8 +25,7 @@ public class TeacherService {
 	@Transactional(readOnly = true)
 	public TeacherDto findMyProfile(Accessor accessor) {
 		return TeacherDto.from(
-				teacherRepository.findByPublicId(accessor.getPublicId())
-						.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND))
+				getTeacherByPublicId(accessor.getPublicId())
 		);
 	}
 
@@ -49,9 +48,11 @@ public class TeacherService {
 
 	@Transactional(readOnly = true)
 	public TeacherDto getTeacher(UUID publicId) {
-		return TeacherDto.from(
-				teacherRepository.findByPublicId(publicId)
-						.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND))
-		);
+		return TeacherDto.from(getTeacherByPublicId(publicId));
+	}
+
+	private Teacher getTeacherByPublicId(UUID publicId) {
+		return teacherRepository.findByPublicId(publicId)
+				.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
 	}
 }
