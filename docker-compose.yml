@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   app:
-    image: juwon0909/monari-test:latest
+    image: juwon0909/monari:latest
     container_name: springboot-app
     ports:
       - "8080:8080"
