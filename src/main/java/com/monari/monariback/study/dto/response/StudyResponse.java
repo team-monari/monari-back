@@ -1,5 +1,6 @@
 package com.monari.monariback.study.dto.response;
 
+import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.study.dto.StudyDto;
@@ -14,6 +15,7 @@ public record StudyResponse(
         String description,
         Subject subject,
         SchoolLevel schoolLevel,
+        Region region,
         StudyStatus status,
         LocalDateTime createdAt,
         String locationName,
@@ -29,6 +31,7 @@ public record StudyResponse(
                 studyDto.description(),
                 studyDto.subject(),
                 studyDto.schoolLevel(),
+                studyDto.region(),
                 studyDto.status(),
                 studyDto.createdAt(),
                 studyDto.locationName(),
