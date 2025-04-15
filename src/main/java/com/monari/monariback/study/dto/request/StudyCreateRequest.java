@@ -7,9 +7,17 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+import static com.monari.monariback.study.constant.StudyValidationConstants.*;
+
 public record StudyCreateRequest (
-        @Size(max = 100) @NotNull String title,
-        @Size(max = 5000) @NotNull String description,
+        @NotNull
+        @Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MESSAGE)
+        String title,
+
+        @NotNull
+        @Size(max = MAX_DESCRIPTION_LENGTH, message = MAX_DESCRIPTION_LENGTH_MESSAGE)
+        String description,
+
         @NotNull Subject subject,
         @NotNull SchoolLevel schoolLevel,
         @NotNull Region region,
