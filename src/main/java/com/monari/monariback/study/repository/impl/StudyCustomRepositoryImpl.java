@@ -1,5 +1,8 @@
 package com.monari.monariback.study.repository.impl;
 
+import com.monari.monariback.common.enumerated.Region;
+import com.monari.monariback.common.enumerated.SchoolLevel;
+import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.study.dto.StudyDto;
 import com.monari.monariback.study.repository.StudyCustomRepository;
 import com.querydsl.core.types.ConstructorExpression;
@@ -36,14 +39,13 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     }
 
     @Override
-    public List<StudyDto> findByKeywordOrderByCreatedAtDesc(int pageNum, int pageSize, String titleKeyword, String descriptionKeyword) {
+    public List<StudyDto> findByKeywordsOrderByCreatedAtDesc(int pageNum, int pageSize, String titleKeyword, String descriptionKeyword, SchoolLevel schoolLevel, Subject subject, Region region) {
         return queryFactory
                 .select(createStudyDto())
                 .from(study)
                 .innerJoin(study.location, location)
                 .innerJoin(study.student, student)
-                .where(containsTitleKeyword(titleKeyword),
-                        containsDescriptionKeyword(descriptionKeyword))
+                .where(createFilterConditions(titleKeyword, descriptionKeyword, schoolLevel, subject, region))
                 .orderBy(study.createdAt.desc(), study.id.desc())
                 .limit(pageSize)
                 .offset((long) pageSize * (pageNum - 1))
@@ -65,11 +67,10 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     }
 
     @Override
-    public long countByKeyword(String titleKeyword, String descriptionKeyword) {
+    public long countByKeywords(String titleKeyword, String descriptionKeyword, SchoolLevel schoolLevel, Subject subject, Region region) {
         Long count = queryFactory.select(study.count())
                 .from(study)
-                .where(containsTitleKeyword(titleKeyword),
-                        containsDescriptionKeyword(descriptionKeyword))
+                .where(createFilterConditions(titleKeyword, descriptionKeyword, schoolLevel, subject, region))
                 .fetchOne();
 
         return count != null ? count : 0L;
@@ -92,6 +93,7 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                 study.description,
                 study.subject,
                 study.schoolLevel,
+                study.region,
                 study.status,
                 study.createdAt,
                 study.location.locationName,
@@ -100,6 +102,18 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                 study.student.name
         );
     }
+
+    private BooleanExpression[] createFilterConditions(String titleKeyword, String descriptionKeyword,
+                                                       SchoolLevel schoolLevel, Subject subject, Region region) {
+        return new BooleanExpression[] {
+                containsTitleKeyword(titleKeyword),
+                containsDescriptionKeyword(descriptionKeyword),
+                eqSchoolLevel(schoolLevel),
+                eqSubject(subject),
+                eqRegion(region)
+        };
+    }
+
 
     private BooleanExpression containsTitleKeyword(String keyword) {
         if (StringUtils.isEmpty(keyword)) {
@@ -113,5 +127,17 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
             return null;
         }
         return study.description.containsIgnoreCase(keyword);
+    }
+
+    private BooleanExpression eqSchoolLevel(SchoolLevel schoolLevel) {
+        return schoolLevel == null ? null : study.schoolLevel.eq(schoolLevel);
+    }
+
+    private BooleanExpression eqSubject(Subject subject) {
+        return subject == null ? null : study.subject.eq(subject);
+    }
+
+    private BooleanExpression eqRegion(Region region) {
+        return region == null ? null : study.region.eq(region);
     }
 }

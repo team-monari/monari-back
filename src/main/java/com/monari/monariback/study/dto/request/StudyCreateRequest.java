@@ -1,5 +1,6 @@
 package com.monari.monariback.study.dto.request;
 
+import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ public record StudyCreateRequest (
         @Size(max = 5000) @NotNull String description,
         @NotNull Subject subject,
         @NotNull SchoolLevel schoolLevel,
+        @NotNull Region region,
         @Positive @NotNull Integer locationId
 ) {
 }

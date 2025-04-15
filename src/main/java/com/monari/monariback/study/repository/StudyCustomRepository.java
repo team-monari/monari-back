@@ -1,5 +1,8 @@
 package com.monari.monariback.study.repository;
 
+import com.monari.monariback.common.enumerated.Region;
+import com.monari.monariback.common.enumerated.SchoolLevel;
+import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.study.dto.StudyDto;
 import org.springframework.stereotype.Repository;
 
@@ -10,11 +13,24 @@ public interface StudyCustomRepository {
 
     List<StudyDto> findOrderByCreatedAtDesc(int pageNum, int pageSize);
 
-    List<StudyDto> findByKeywordOrderByCreatedAtDesc(int pageNum, int pageSize, String titleKeyword, String descriptionKeyword);
+    List<StudyDto> findByKeywordsOrderByCreatedAtDesc(
+            int pageNum,
+            int pageSize,
+            String titleKeyword,
+            String descriptionKeyword,
+            SchoolLevel schoolLevel,
+            Subject subject, Region region
+    );
 
     List<StudyDto> findByStudentIdOrderByCreatedAtDesc(int pageNum, int pageSize, Integer studentId);
 
-    long countByKeyword(String titleKeyword, String descriptionKeyword);
+    long countByKeywords(
+            String titleKeyword,
+            String descriptionKeyword,
+            SchoolLevel schoolLevel,
+            Subject subject,
+            Region region
+    );
 
     long countByStudentId(Integer studentId);
 }
