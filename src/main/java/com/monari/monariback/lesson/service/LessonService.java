@@ -25,12 +25,14 @@ import com.monari.monariback.teacher.entity.Teacher;
 import com.monari.monariback.teacher.repository.TeacherRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -73,6 +75,7 @@ public class LessonService {
             lessonDto.startDate(),
             lessonDto.endDate(),
             lessonDto.deadline(),
+            lessonDto.region(),
             lessonDto.schoolLevel(),
             lessonDto.subject()
         );
@@ -114,6 +117,7 @@ public class LessonService {
             lessonDto.startDate(),
             lessonDto.endDate(),
             lessonDto.deadline(),
+            lessonDto.region(),
             lessonDto.schoolLevel(),
             lessonDto.subject()
         );
@@ -147,6 +151,7 @@ public class LessonService {
             lesson.getEndDate(),
             lesson.getDeadline(),
             lesson.getStatus().name(),
+            lesson.getRegion().name(),
             lesson.getSchoolLevel().name(),
             lesson.getSubject().name()
         );
@@ -192,7 +197,8 @@ public class LessonService {
         long totalLessonCount = lessonRepository.getTotalLessonCount(
             searchLessonRequest.keyword(),
             searchLessonRequest.schoolLevel(),
-            searchLessonRequest.subject()
+            searchLessonRequest.subject(),
+            searchLessonRequest.region()
         );
 
         return new PageImpl<>(
@@ -202,7 +208,9 @@ public class LessonService {
                     searchLessonRequest.pageSize(),
                     searchLessonRequest.pageNumber(),
                     searchLessonRequest.schoolLevel(),
-                    searchLessonRequest.subject()
+                    searchLessonRequest.subject(),
+                    searchLessonRequest.region()
+
                 )
                 .stream()
                 .map(lesson -> {
@@ -272,12 +280,14 @@ public class LessonService {
         final Long totalStudent = enrollmentRepository.countByStudentId(student.getId());
 
         final List<LessonResponse> enrolledList = enrollmentRepository.
-            findAllByStudentIdWithPagination(student.getId()
-                , pageNumber,
-                pageSize)
+            findAllByStudentIdWithPagination(
+                student.getId()
+                , pageSize
+                , pageNumber)
             .stream()
             .map(enrollment -> {
                 Lesson lesson = enrollment.getLesson();
+                log.info(lesson.toString());
                 int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
                     lesson.getId());
                 return LessonResponse.ofCreatePage(lesson, currStudent);

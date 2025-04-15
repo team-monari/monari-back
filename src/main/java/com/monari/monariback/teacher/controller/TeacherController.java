@@ -1,8 +1,11 @@
 package com.monari.monariback.teacher.controller;
 
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +26,15 @@ import lombok.RequiredArgsConstructor;
 public class TeacherController {
 
 	private final TeacherService teacherService;
+
+	@GetMapping("/{publicId}")
+	public ResponseEntity<TeacherResponse> getTeacher(@PathVariable UUID publicId) {
+		return ResponseEntity.ok().body(
+				TeacherResponse.from(
+						teacherService.getTeacher(publicId)
+				)
+		);
+	}
 
 	@OnlyTeacher
 	@GetMapping("/me")
