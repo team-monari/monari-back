@@ -4,7 +4,7 @@ import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
-import com.monari.monariback.lesson.entity.enurmurated.LessonStatus;
+import com.monari.monariback.lesson.entity.enurmerated.LessonStatus;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.teacher.entity.Teacher;
 import jakarta.persistence.Column;

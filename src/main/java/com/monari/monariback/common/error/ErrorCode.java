@@ -27,13 +27,18 @@ public enum ErrorCode {
     AUTH_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH4004", "존재하지 않는 유저입니다."),
     AUTH_FORBIDDEN(HttpStatus.BAD_REQUEST, "AUTH4005", "해당 리소스에 접근할 권한이 없습니다."),
     OAUTH_TOKEN_REQUEST_FAILED(HttpStatus.BAD_REQUEST, "AUTH4006", "소셜 로그인 중 액세스 토큰 요청에 실패했습니다."),
-    OAUTH_USERINFO_RESPONSE_EMPTY(HttpStatus.BAD_REQUEST, "AUTH4007", "소셜 로그인 중 사용자 정보 응답이 비어 있습니다."),
+    OAUTH_USERINFO_RESPONSE_EMPTY(HttpStatus.BAD_REQUEST, "AUTH4007",
+        "소셜 로그인 중 사용자 정보 응답이 비어 있습니다."),
 
     // location
     LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "LOCATION4041", "존재하지 않는 장소입니다."),
 
     // enrollment
+    ENROLLMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "ENROLLMENT4041", "참여 이력을 찾을 수 없습니다."),
     ENROLLMENT_DUPLICATED(HttpStatus.BAD_REQUEST, "ENROLLMENT4001", "중복 참여는 불가능합니다."),
+    ENROLLMENT_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "ENROLLMENT4002", "최소 인원이 미달입니다."),
+    ENROLLMENT_IS_EMPTY(HttpStatus.BAD_REQUEST, "ENROLLMENT4003", "수업에 참가한 인원이 0명 입니다."),
+
 
     // teacher
     TEACHER_NOT_FOUND(HttpStatus.NOT_FOUND, "TEACHER4041", "존재하지 않는 선생입니다."),
