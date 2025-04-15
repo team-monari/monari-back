@@ -35,6 +35,16 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     }
 
     @Override
+    public List<Enrollment> findAllByLessonId(
+        final Integer lessonId
+    ) {
+        return queryFactory.selectFrom(enrollment)
+            .where(enrollment.lesson.id.eq(lessonId))
+            .fetch();
+    }
+
+
+    @Override
     public List<Enrollment> findAllByStudentIdWithPagination(
         final Integer studentId,
         final Integer pageSize,
@@ -57,6 +67,16 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
             .fetchFirst();
         return count != null ? count : 0L;
 
+    }
+
+    @Override
+    public Enrollment findByLessonIdAndStudentId(
+        final Integer studentId,
+        final Integer lessonId
+    ) {
+        return queryFactory.selectFrom(enrollment)
+            .where(enrollment.student.id.eq(studentId)
+                .and(enrollment.lesson.id.eq(lessonId))).fetchFirst();
     }
 
     private long getOffset(final Integer pageSize, final Integer pageNumber) {

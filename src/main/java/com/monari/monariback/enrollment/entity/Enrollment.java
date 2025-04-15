@@ -1,9 +1,13 @@
 package com.monari.monariback.enrollment.entity;
 
 import com.monari.monariback.common.entity.BaseEntity;
+import com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.student.entity.Student;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,6 +42,13 @@ public class Enrollment extends BaseEntity {
     @JoinColumn(nullable = false)
     private Lesson lesson;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private EnrollmentStatus status = EnrollmentStatus.PENDING;
+
+    @Column
+    private Integer finalPrice;
+
     public static Enrollment ofCreate(
         final Student student,
         final Lesson lesson
@@ -45,6 +56,11 @@ public class Enrollment extends BaseEntity {
         Enrollment enrollment = new Enrollment();
         enrollment.student = student;
         enrollment.lesson = lesson;
+        enrollment.finalPrice = lesson.getAmount();
         return enrollment;
+    }
+
+    public void updateStatus(final EnrollmentStatus enrollmentStatus) {
+        this.status = enrollmentStatus;
     }
 }
