@@ -2,6 +2,7 @@ package com.monari.monariback.enrollment.repository;
 
 import com.monari.monariback.enrollment.entity.Enrollment;
 import java.util.List;
+import java.util.Optional;
 
 public interface EnrollmentCustomRepository {
 
@@ -21,7 +22,7 @@ public interface EnrollmentCustomRepository {
 
     Long countByStudentId(final Integer studentId);
 
-    Enrollment findByLessonIdAndStudentId(
+    Optional<Enrollment> findByLessonIdAndStudentId(
         final Integer studentId,
         final Integer lessonId
     );

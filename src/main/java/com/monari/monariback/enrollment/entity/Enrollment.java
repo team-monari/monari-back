@@ -44,7 +44,7 @@ public class Enrollment extends BaseEntity {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private EnrollmentStatus status = EnrollmentStatus.PENDING;
+    private EnrollmentStatus status;
 
     @Column
     private Integer finalPrice;
@@ -56,11 +56,17 @@ public class Enrollment extends BaseEntity {
         Enrollment enrollment = new Enrollment();
         enrollment.student = student;
         enrollment.lesson = lesson;
+        enrollment.status = EnrollmentStatus.PENDING;
         enrollment.finalPrice = lesson.getAmount();
         return enrollment;
     }
 
     public void updateStatus(final EnrollmentStatus enrollmentStatus) {
         this.status = enrollmentStatus;
+    }
+
+    public void updateFinalPrice(final int finalPrice) {
+        this.finalPrice = finalPrice;
+        updateStatus(EnrollmentStatus.REQUESTED);
     }
 }

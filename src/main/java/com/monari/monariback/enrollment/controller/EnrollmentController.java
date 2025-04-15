@@ -63,5 +63,12 @@ public class EnrollmentController {
         );
     }
 
-    
+    @PatchMapping("/{lessonId}/price")
+    public ResponseEntity<String> decideFinalPrice(
+        @PathVariable(name = "lessonId") final Integer lessonId
+    ) {
+        return ResponseEntity.ok(
+            enrollmentService.decideFinalPrice(lessonId)
+        );
+    }
 }
