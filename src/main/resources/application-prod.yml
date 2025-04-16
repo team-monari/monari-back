@@ -1,0 +1,28 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    defer-datasource-initialization: true
+  datasource:
+    url: ${DB_URL}
+    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+oauth:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID}
+    redirect-uri: ${KAKAO_REDIRECT_URI}
+    token-uri: https://kauth.kakao.com/oauth/token
+    user-info-uri: https://kapi.kakao.com/v2/user/me
+
+  google:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    redirect-uri: ${GOOGLE_REDIRECT_URI}
+    token-uri: https://oauth2.googleapis.com/token
+    user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo

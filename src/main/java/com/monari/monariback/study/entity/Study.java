@@ -1,6 +1,7 @@
 package com.monari.monariback.study.entity;
 
 import com.monari.monariback.common.entity.BaseEntity;
+import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.location.entity.Location;
@@ -33,6 +34,9 @@ public class Study extends BaseEntity {
     private SchoolLevel schoolLevel;
 
     @Enumerated(EnumType.STRING)
+    private Region region;
+
+    @Enumerated(EnumType.STRING)
     private StudyStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,6 +52,7 @@ public class Study extends BaseEntity {
             String description,
             Subject subject,
             SchoolLevel schoolLevel,
+            Region region,
             Location location,
             Student student
     ) {
@@ -57,6 +62,7 @@ public class Study extends BaseEntity {
         study.subject = subject;
         study.schoolLevel = schoolLevel;
         study.status = StudyStatus.ACTIVE;
+        study.region = region;
         study.location = location;
         study.student = student;
         return study;

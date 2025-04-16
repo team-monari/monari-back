@@ -6,6 +6,7 @@ import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.study.dto.request.StudyChangeStatusRequest;
 import com.monari.monariback.study.dto.request.StudyCreateRequest;
 import com.monari.monariback.study.dto.request.StudyEditRequest;
+import com.monari.monariback.study.dto.request.StudySearchRequest;
 import com.monari.monariback.study.dto.response.StudyDetailResponse;
 import com.monari.monariback.study.dto.response.StudyResponse;
 import com.monari.monariback.study.service.StudyService;
@@ -48,20 +49,23 @@ public class StudyController {
 
     /**
      * 스터디 검색 기반 페이지별 목록 조회
-     * @param pageNum - 페이지 번호
-     * @param pageSize - 한 페이지에 조회될 스터디 개수
-     * @param titleKeyword - 제목 키워드
-     * @param descriptionKeyword - 설명 키워드
+     * 최신순 정렬
+     * @param int pageNum - 페이지 번호
+     * @param int pageSize - 한 페이지에 조회될 스터디 개수
+     * @param String titleKeyword - 제목 키워드
+     * @param String descriptionKeyword - 설명 키워드
+     * @param SchoolLevel schoolLevel, - 학교급
+     * @param Subject subject, - 과목
+     * @param Region region - 지역구
      * @author Jeong
      */
     @GetMapping("/search")
     public ResponseEntity<Page<StudyResponse>> searchStudies(
             @RequestParam(name = "pageNum", defaultValue = "1") final int pageNum,
             @RequestParam(name = "pageSize", defaultValue = "6") final int pageSize,
-            @RequestParam(name = "titleKeyword", required = false) String titleKeyword,
-            @RequestParam(name = "descriptionKeyword", required = false) String descriptionKeyword
+            @Valid final StudySearchRequest request
     ) {
-        Page<StudyResponse> response = studyService.searchStudies(pageNum, pageSize, titleKeyword, descriptionKeyword);
+        Page<StudyResponse> response = studyService.searchStudies(pageNum, pageSize, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

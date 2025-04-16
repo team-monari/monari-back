@@ -11,6 +11,7 @@ import com.monari.monariback.study.dto.StudyDto;
 import com.monari.monariback.study.dto.request.StudyChangeStatusRequest;
 import com.monari.monariback.study.dto.request.StudyCreateRequest;
 import com.monari.monariback.study.dto.request.StudyEditRequest;
+import com.monari.monariback.study.dto.request.StudySearchRequest;
 import com.monari.monariback.study.dto.response.StudyDetailResponse;
 import com.monari.monariback.study.dto.response.StudyResponse;
 import com.monari.monariback.study.entity.Study;
@@ -48,6 +49,7 @@ public class StudyService {
                 request.description(),
                 request.subject(),
                 request.schoolLevel(),
+                request.region(),
                 location,
                 student
         );
@@ -77,24 +79,38 @@ public class StudyService {
     /**
      * 스터디 검색 기반 페이지별 목록 조회
      * 최신순 정렬
-     * @param pageNum - 페이지 번호
-     * @param pageSize - 한 페이지에 조회될 스터디 개수
-     * @param titleKeyword - 제목 키워드
-     * @param descriptionKeyword - 설명 키워드
+     * @param int pageNum - 페이지 번호
+     * @param int pageSize - 한 페이지에 조회될 스터디 개수
+     * @param String titleKeyword - 제목 키워드
+     * @param String descriptionKeyword - 설명 키워드
+     * @param SchoolLevel schoolLevel, - 학교급
+     * @param Subject subject, - 과목
+     * @param Region region - 지역구
      * @return Page<StudyResponse>
      * @author Jeong
      */
     @Transactional(readOnly = true)
-    public Page<StudyResponse> searchStudies(final int pageNum,
-                                             final int pageSize,
-                                             final String titleKeyword,
-                                             final String descriptionKeyword) {
-        List<StudyDto> studies = studyRepository.findByKeywordOrderByCreatedAtDesc(pageNum, pageSize, titleKeyword, descriptionKeyword);
+    public Page<StudyResponse> searchStudies(final int pageNum, final int pageSize, final StudySearchRequest request) {
+        List<StudyDto> studies = studyRepository.findByKeywordsOrderByCreatedAtDesc(
+                pageNum,
+                pageSize,
+                request.titleKeyword(),
+                request.descriptionKeyword(),
+                request.schoolLevel(),
+                request.subject(),
+                request.region()
+        );
         List<StudyResponse> content = studies.stream()
                 .map(StudyResponse::from)
                 .toList();
 
-        long totalStudyCount = studyRepository.countByKeyword(titleKeyword, descriptionKeyword);
+        long totalStudyCount = studyRepository.countByKeywords(
+                request.titleKeyword(),
+                request.descriptionKeyword(),
+                request.schoolLevel(),
+                request.subject(),
+                request.region()
+        );
 
         return new PageImpl<>(
                 content, PageRequest.of(pageNum - 1, pageSize), totalStudyCount
