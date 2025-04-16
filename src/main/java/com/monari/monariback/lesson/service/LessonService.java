@@ -14,6 +14,7 @@ import com.monari.monariback.lesson.dto.request.CreateLessonRequest;
 import com.monari.monariback.lesson.dto.request.SearchLessonRequest;
 import com.monari.monariback.lesson.dto.request.UpdateLessonRequest;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
+import com.monari.monariback.lesson.dto.response.LessonWithTeacherResponse;
 import com.monari.monariback.lesson.dto.response.PageInfoResponse;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.repository.LessonRepository;
@@ -133,14 +134,15 @@ public class LessonService {
      * @author Hong
      */
     @Transactional(readOnly = true)
-    public LessonResponse readLesson(final Integer lessonId) {
-        final Lesson lesson = lessonRepository.findById(lessonId)
+    public LessonWithTeacherResponse readLesson(final Integer lessonId) {
+        final Lesson lesson = lessonRepository.findByLessonIdWithTeacher(lessonId)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND));
 
-        return LessonResponse.ofCreate(
+        final Teacher teacher = lesson.getTeacher();
+
+        return LessonWithTeacherResponse.ofCreate(
             lesson.getId(),
             lesson.getLocation().getId(),
-            lesson.getTeacher().getId(),
             lesson.getTitle(),
             enrollmentRepository.countCurrentStudentByLessonId(lessonId),
             lesson.getDescription(),
@@ -153,7 +155,12 @@ public class LessonService {
             lesson.getStatus().name(),
             lesson.getRegion().name(),
             lesson.getSchoolLevel().name(),
-            lesson.getSubject().name()
+            lesson.getSubject().name(),
+            teacher.getName(),
+            teacher.getUniversity(),
+            teacher.getMajor(),
+            teacher.getCareer(),
+            teacher.getProfileImageUrl()
         );
     }
 
