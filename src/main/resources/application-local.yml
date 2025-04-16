@@ -1,5 +1,4 @@
 spring:
-  sql:
   config:
     activate:
       on-profile: local
