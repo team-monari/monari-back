@@ -5,6 +5,7 @@ import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.entity.Lesson;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -24,4 +25,5 @@ public interface LessonCustomRepository {
 
     Long getTotalLessenByTeacherId(final int teacherId);
 
+    Optional<Lesson> findByLessonIdWithTeacher(final int locationId);
 }
