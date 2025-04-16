@@ -24,6 +24,7 @@ jobs:
 
       - name: Build with Gradle
         env:
+          SPRING_PROFILES_ACTIVE: prod
           SEOUL_API_KEY: ${{ secrets.SEOUL_API_KEY }}
           KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
           KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
