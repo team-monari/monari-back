@@ -31,6 +31,13 @@ public class LocationService {
      *
      * @author Hong
      */
+    public boolean isLocationDataExists() {
+        if (locationRepository.count() != 0) {
+            return true;
+        }
+        return false;
+    }
+
     public void setUp() {
         List<Location> allLocations = getAllLocationsFromApi();
         locationRepository.saveAll(allLocations);

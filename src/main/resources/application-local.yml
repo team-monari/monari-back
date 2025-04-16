@@ -1,4 +1,8 @@
 spring:
+  sql:
+  config:
+    activate:
+      on-profile: local
   application:
     name: monari-back
   jpa:
