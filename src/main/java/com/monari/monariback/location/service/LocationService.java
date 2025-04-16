@@ -85,4 +85,8 @@ public class LocationService {
             new IllegalArgumentException("해당 공공장소는 존재하지 않습니다"));
         return LocationResponse.from(location);
     }
+
+    public boolean isLocationDataExists() {
+        return locationRepository.count() != 0;
+    }
 }
