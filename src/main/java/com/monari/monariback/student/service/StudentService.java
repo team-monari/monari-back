@@ -1,10 +1,18 @@
 package com.monari.monariback.student.service;
 
+import static com.monari.monariback.auth.enumerated.UserType.*;
+import static com.monari.monariback.common.error.ErrorCode.*;
+
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.common.exception.NotFoundException;
+import com.monari.monariback.common.service.S3Service;
 import com.monari.monariback.student.dto.StudentDto;
 import com.monari.monariback.student.dto.request.StudentUpdateRequest;
 import com.monari.monariback.student.entity.Student;
@@ -12,13 +20,14 @@ import com.monari.monariback.student.repository.StudentRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.monari.monariback.common.error.ErrorCode.STUDENT_NOT_FOUND;
-
 @Service
 @RequiredArgsConstructor
 public class StudentService {
 
 	private final StudentRepository studentRepository;
+	private final S3Service s3Service;
+
+	private static final String IMAGE_FOLDER = "students";
 
 	@Transactional(readOnly = true)
 	public StudentDto findMyProfile(Accessor accessor) {
@@ -40,5 +49,40 @@ public class StudentService {
 						request.profileImageUrl()
 				)
 		);
+	}
+
+	/**
+	 * 프로필 이미지 업로드 및 키 저장
+	 *
+	 * @return S3에 저장된 이미지의 key
+	 */
+	@Transactional
+	public String updateProfileImage(Accessor accessor, MultipartFile file) {
+		Student student = studentRepository.findByPublicId(accessor.getPublicId())
+				.orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
+
+		String key = s3Service.uploadProfileImage(
+				STUDENT.toString(),
+				accessor.getPublicId(),
+				file
+		);
+		student.changeProfileImage(key);
+		return key;
+	}
+
+	/**
+	 * 프로필 이미지 다운로드 (byte 배열로 반환)
+	 */
+	@Transactional(readOnly = true)
+	public byte[] getProfileImage(Accessor accessor) {
+		Student student = studentRepository.findByPublicId(accessor.getPublicId())
+				.orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
+
+		String key = student.getProfileImageKey();
+		if (key == null) {
+			throw new RuntimeException("Profile image not set");
+		}
+
+		return s3Service.downloadFile(key);
 	}
 }

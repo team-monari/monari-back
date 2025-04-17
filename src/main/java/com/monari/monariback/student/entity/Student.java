@@ -57,8 +57,8 @@ public class Student extends BaseEntity {
 	@Enumerated(value = EnumType.STRING)
 	private Grade grade;
 
-	@Column(length = 255)
-	private String profileImageUrl;
+	@Column
+	private String profileImageKey;
 
 	public static Student signUpWithOauth(
 			String email,
@@ -83,8 +83,12 @@ public class Student extends BaseEntity {
 		this.schoolName = schoolName;
 		this.schoolLevel = schoolLevel;
 		this.grade = grade;
-		this.profileImageUrl = profileImageUrl;
+		this.profileImageKey = profileImageUrl;
 		return this;
+	}
+
+	public void changeProfileImage(String key) {
+		profileImageKey = key;
 	}
 
 	@PrePersist
@@ -93,4 +97,5 @@ public class Student extends BaseEntity {
 			this.publicId = UUID.randomUUID();
 		}
 	}
+
 }

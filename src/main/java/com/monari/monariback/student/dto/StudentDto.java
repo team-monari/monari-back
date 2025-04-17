@@ -13,7 +13,7 @@ public record StudentDto(
 		String schoolName,
 		SchoolLevel schoolLevel,
 		Grade grade,
-		String profileImageUrl
+		String profileImageKey
 ) {
 	public static StudentDto from(Student student) {
 		return new StudentDto(
@@ -23,7 +23,7 @@ public record StudentDto(
 				student.getSchoolName(),
 				student.getSchoolLevel(),
 				student.getGrade(),
-				student.getProfileImageUrl()
+				student.getProfileImageKey()
 		);
 	}
 }
