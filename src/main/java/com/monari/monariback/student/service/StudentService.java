@@ -41,8 +41,7 @@ public class StudentService {
 				student.updateProfile(
 						request.schoolName(),
 						request.schoolLevel(),
-						request.grade(),
-						request.profileImageUrl()
+						request.grade()
 				)
 		);
 	}

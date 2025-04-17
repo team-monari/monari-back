@@ -80,13 +80,11 @@ public class Student extends BaseEntity {
 	public Student updateProfile(
 			String schoolName,
 			SchoolLevel schoolLevel,
-			Grade grade,
-			String profileImageUrl
+			Grade grade
 	) {
 		this.schoolName = schoolName;
 		this.schoolLevel = schoolLevel;
 		this.grade = grade;
-		this.profileImageKey = profileImageUrl;
 		return this;
 	}
 
