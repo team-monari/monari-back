@@ -19,7 +19,7 @@ public enum ErrorCode {
 
     // student
     STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT4041", "존재하지 않는 학생입니다"),
-    STUDENT_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND,  "PROFILE4042",       "프로필 이미지가 설정되지 않았습니다."),
+    STUDENT_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND,  "STUDENT4042",       "프로필 이미지가 설정되지 않았습니다."),
 
 
     // auth
@@ -44,6 +44,7 @@ public enum ErrorCode {
 
     // teacher
     TEACHER_NOT_FOUND(HttpStatus.NOT_FOUND, "TEACHER4041", "존재하지 않는 선생입니다."),
+    TEACHER_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND,  "TEACHER4042",       "프로필 이미지가 설정되지 않았습니다."),
 
     // study
     STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY4041", "존재하지 않는 스터디입니다."),

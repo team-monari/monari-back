@@ -88,15 +88,16 @@ public class Student extends BaseEntity {
 		return this;
 	}
 
-	public void changeProfileImage(String key) {
+	public String changeProfileImage(String key) {
 		profileImageKey = key;
+		return profileImageKey;
 	}
 
 	public String getProfileImageKeyOrThrow() {
-		if (this.profileImageKey == null || this.profileImageKey.isBlank()) {
+		if (profileImageKey == null || profileImageKey.isBlank()) {
 			throw new BusinessException(STUDENT_PROFILE_IMAGE_NOT_SET);
 		}
-		return this.profileImageKey;
+		return profileImageKey;
 	}
 
 	@PrePersist

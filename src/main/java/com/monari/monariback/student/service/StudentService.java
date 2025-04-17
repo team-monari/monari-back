@@ -8,9 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.monari.monariback.auth.entity.Accessor;
+import com.monari.monariback.common.dto.DownloadImageDto;
+import com.monari.monariback.common.dto.ProfileImageDto;
 import com.monari.monariback.common.exception.NotFoundException;
 import com.monari.monariback.common.service.ImageService;
-import com.monari.monariback.common.dto.DownloadImageDto;
 import com.monari.monariback.student.dto.StudentDto;
 import com.monari.monariback.student.dto.request.StudentUpdateRequest;
 import com.monari.monariback.student.entity.Student;
@@ -47,7 +48,7 @@ public class StudentService {
 	}
 
 	@Transactional
-	public String updateProfileImage(Accessor accessor, MultipartFile file) {
+	public ProfileImageDto updateProfileImage(Accessor accessor, MultipartFile file) {
 		Student student = studentRepository.findByPublicId(accessor.getPublicId())
 				.orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
 
@@ -56,8 +57,9 @@ public class StudentService {
 				accessor.getPublicId(),
 				file
 		);
-		student.changeProfileImage(key);
-		return key;
+		return ProfileImageDto.from(
+				student.changeProfileImage(key)
+		);
 	}
 
 	@Transactional(readOnly = true)

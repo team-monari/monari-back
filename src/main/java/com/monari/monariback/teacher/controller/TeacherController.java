@@ -50,7 +50,7 @@ public class TeacherController {
 	}
 
 	@OnlyTeacher
-	@PatchMapping("/me")
+	@PatchMapping("/me/")
 	public ResponseEntity<TeacherResponse> updateProfile(
 			@Auth Accessor accessor,
 			@RequestBody @Valid TeacherUpdateRequest request
@@ -63,8 +63,8 @@ public class TeacherController {
 	}
 
 	@OnlyTeacher
-	@PatchMapping("/me")
-	public ResponseEntity<TeacherProfileImageResponse> updateProfile(
+	@PatchMapping("/me/profile-image")
+	public ResponseEntity<TeacherProfileImageResponse> updateProfileImage(
 			@Auth Accessor accessor,
 			@RequestPart("file") MultipartFile file
 	) {
