@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.common.exception.NotFoundException;
-import com.monari.monariback.common.service.S3Service;
+import com.monari.monariback.common.service.ImageService;
 import com.monari.monariback.student.dto.DownloadImageDto;
 import com.monari.monariback.student.dto.StudentDto;
 import com.monari.monariback.student.dto.request.StudentUpdateRequest;
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class StudentService {
 
 	private final StudentRepository studentRepository;
-	private final S3Service s3Service;
+	private final ImageService imageService;
 
 	@Transactional(readOnly = true)
 	public StudentDto findMyProfile(Accessor accessor) {
@@ -52,7 +52,7 @@ public class StudentService {
 		Student student = studentRepository.findByPublicId(accessor.getPublicId())
 				.orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
 
-		String key = s3Service.uploadProfileImage(
+		String key = imageService.uploadProfileImage(
 				STUDENT.toString(),
 				accessor.getPublicId(),
 				file
@@ -66,6 +66,6 @@ public class StudentService {
 		Student student = studentRepository.findByPublicId(accessor.getPublicId())
 				.orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
 		String key = student.getProfileImageKeyOrThrow();
-		return s3Service.downloadFile(key);
+		return imageService.downloadFile(key);
 	}
 }

@@ -28,7 +28,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class S3Service {
+public class ImageService {
 
 	private final S3Client s3Client;
 
