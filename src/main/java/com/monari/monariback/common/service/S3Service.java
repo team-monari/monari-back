@@ -2,6 +2,7 @@ package com.monari.monariback.common.service;
 
 import static com.monari.monariback.common.constant.MediaTypeConstant.*;
 import static com.monari.monariback.common.constant.S3GenerateKeyConstant.*;
+import static com.monari.monariback.common.error.ErrorCode.*;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.monari.monariback.common.exception.BusinessException;
 import com.monari.monariback.student.dto.DownloadImageDto;
 
 import lombok.RequiredArgsConstructor;
@@ -43,7 +45,7 @@ public class S3Service {
 			s3Client.putObject(putReq, RequestBody.fromBytes(data));
 		} catch (SdkException e) {
 			log.error(e.getMessage());
-			throw new RuntimeException("Failed to upload file to S3");
+			throw new BusinessException(IMAGE_UPLOAD_FAILED);
 		}
 	}
 
@@ -52,21 +54,13 @@ public class S3Service {
 		try {
 			byte[] data = file.getBytes();
 			String contentType = file.getContentType();
-			log.info("contentType: {}", contentType);
 			uploadFile(key, data, contentType);
 			return key;
 		} catch (IOException e) {
-			throw new RuntimeException("Failed to read bytes from uploaded file");
+			throw new BusinessException(IMAGE_FILE_READ_FAILED);
 		}
 	}
 
-	/**
-	 * S3에서 파일을 다운로드하여 byte[]로 반환한다.
-	 *
-	 * @param key S3 객체 key
-	 * @return 파일 내용을 담은 byte[]
-	 * @throws RuntimeException 다운로드 실패 시 발생
-	 */
 	public DownloadImageDto downloadFile(String key) {
 		try {
 			ResponseBytes<GetObjectResponse> respBytes =
@@ -78,7 +72,7 @@ public class S3Service {
 			return DownloadImageDto.from(
 					respBytes.asByteArray(), mediaType);
 		} catch (SdkException e) {
-			throw new RuntimeException("Failed to download file from S3");
+			throw new BusinessException(IMAGE_DOWNLOAD_FAILED);
 		}
 	}
 

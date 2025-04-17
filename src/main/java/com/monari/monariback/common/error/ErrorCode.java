@@ -18,7 +18,9 @@ public enum ErrorCode {
     LESSON_NOT_FOUND(HttpStatus.NOT_FOUND, "LESSON4041", "존재하지 않는 수업입니다."),
 
     // student
-    STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT2001", "존재하지 않는 학생입니다"),
+    STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT4041", "존재하지 않는 학생입니다"),
+    STUDENT_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND,  "PROFILE4042",       "프로필 이미지가 설정되지 않았습니다."),
+
 
     // auth
     AUTH_TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "AUTH4001", "토큰이 만료되었습니다."),
@@ -44,9 +46,12 @@ public enum ErrorCode {
     TEACHER_NOT_FOUND(HttpStatus.NOT_FOUND, "TEACHER4041", "존재하지 않는 선생입니다."),
 
     // study
-    STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY4041", "존재하지 않는 스터디입니다.");
+    STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY4041", "존재하지 않는 스터디입니다."),
 
-    // S3
+    // image
+    IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE5001", "이미지 파일 업로드에 실패했습니다."),
+    IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST,    "FILE4002",          "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
+    IMAGE_DOWNLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE5003", "이미지 파일 다운로드에 실패했습니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;

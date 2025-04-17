@@ -25,8 +25,6 @@ public class StudentService {
 	private final StudentRepository studentRepository;
 	private final S3Service s3Service;
 
-	private static final String IMAGE_FOLDER = "students";
-
 	@Transactional(readOnly = true)
 	public StudentDto findMyProfile(Accessor accessor) {
 		return StudentDto.from(
@@ -49,11 +47,6 @@ public class StudentService {
 		);
 	}
 
-	/**
-	 * 프로필 이미지 업로드 및 키 저장
-	 *
-	 * @return S3에 저장된 이미지의 key
-	 */
 	@Transactional
 	public String updateProfileImage(Accessor accessor, MultipartFile file) {
 		Student student = studentRepository.findByPublicId(accessor.getPublicId())
@@ -68,19 +61,11 @@ public class StudentService {
 		return key;
 	}
 
-	/**
-	 * 프로필 이미지 다운로드 (byte 배열로 반환)
-	 */
 	@Transactional(readOnly = true)
 	public DownloadImageDto getProfileImage(Accessor accessor) {
 		Student student = studentRepository.findByPublicId(accessor.getPublicId())
 				.orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
-
-		String key = student.getProfileImageKey();
-		if (key == null) {
-			throw new RuntimeException("Profile image not set");
-		}
-
+		String key = student.getProfileImageKeyOrThrow();
 		return s3Service.downloadFile(key);
 	}
 }

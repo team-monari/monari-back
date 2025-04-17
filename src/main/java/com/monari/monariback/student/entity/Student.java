@@ -1,11 +1,14 @@
 package com.monari.monariback.student.entity;
 
+import static com.monari.monariback.common.error.ErrorCode.*;
+
 import java.util.UUID;
 
 import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.Grade;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.SocialProvider;
+import com.monari.monariback.common.exception.BusinessException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -89,6 +92,13 @@ public class Student extends BaseEntity {
 
 	public void changeProfileImage(String key) {
 		profileImageKey = key;
+	}
+
+	public String getProfileImageKeyOrThrow() {
+		if (this.profileImageKey == null || this.profileImageKey.isBlank()) {
+			throw new BusinessException(STUDENT_PROFILE_IMAGE_NOT_SET);
+		}
+		return this.profileImageKey;
 	}
 
 	@PrePersist
