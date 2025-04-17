@@ -1,4 +1,4 @@
-package com.monari.monariback.student.dto;
+package com.monari.monariback.common.dto;
 
 import org.springframework.http.MediaType;
 

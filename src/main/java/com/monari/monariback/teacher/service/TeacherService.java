@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.common.exception.NotFoundException;
@@ -49,5 +50,9 @@ public class TeacherService {
 				teacherRepository.findByPublicId(publicId)
 						.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND))
 		);
+	}
+
+	public String updateProfileImage(Accessor accessor, MultipartFile file) {
+		return null;
 	}
 }

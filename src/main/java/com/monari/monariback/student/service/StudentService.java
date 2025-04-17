@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.common.exception.NotFoundException;
 import com.monari.monariback.common.service.ImageService;
-import com.monari.monariback.student.dto.DownloadImageDto;
+import com.monari.monariback.common.dto.DownloadImageDto;
 import com.monari.monariback.student.dto.StudentDto;
 import com.monari.monariback.student.dto.request.StudentUpdateRequest;
 import com.monari.monariback.student.entity.Student;

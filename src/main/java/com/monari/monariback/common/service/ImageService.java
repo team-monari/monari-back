@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.monari.monariback.common.exception.BusinessException;
-import com.monari.monariback.student.dto.DownloadImageDto;
+import com.monari.monariback.common.dto.DownloadImageDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.monari.monariback.auth.aop.Auth;
 import com.monari.monariback.auth.aop.OnlyStudent;
 import com.monari.monariback.auth.entity.Accessor;
-import com.monari.monariback.student.dto.DownloadImageDto;
+import com.monari.monariback.common.dto.DownloadImageDto;
 import com.monari.monariback.student.dto.request.StudentUpdateRequest;
 import com.monari.monariback.student.dto.response.StudentProfileImageResponse;
 import com.monari.monariback.student.dto.response.StudentResponse;
