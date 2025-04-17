@@ -15,6 +15,7 @@ import com.monari.monariback.auth.aop.OnlyStudent;
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.student.dto.DownloadImageDto;
 import com.monari.monariback.student.dto.request.StudentUpdateRequest;
+import com.monari.monariback.student.dto.response.StudentProfileImageResponse;
 import com.monari.monariback.student.dto.response.StudentResponse;
 import com.monari.monariback.student.service.StudentService;
 
@@ -53,12 +54,14 @@ public class StudentController {
 
 	@OnlyStudent
 	@PatchMapping(value = "/me/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<String> updateProfileImage(
+	public ResponseEntity<StudentProfileImageResponse> updateProfileImage(
 			@Auth Accessor accessor,
 			@RequestPart("file") MultipartFile file
 	) {
 		return ResponseEntity.ok().body(
-				studentService.updateProfileImage(accessor, file)
+				StudentProfileImageResponse.from(
+						studentService.updateProfileImage(accessor, file)
+				)
 		);
 	}
 
