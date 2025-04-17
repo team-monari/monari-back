@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.monari.monariback.auth.aop.Auth;
 import com.monari.monariback.auth.aop.OnlyStudent;
 import com.monari.monariback.auth.entity.Accessor;
+import com.monari.monariback.student.dto.DownloadImageDto;
 import com.monari.monariback.student.dto.request.StudentUpdateRequest;
 import com.monari.monariback.student.dto.response.StudentResponse;
 import com.monari.monariback.student.service.StudentService;
@@ -66,8 +67,9 @@ public class StudentController {
 	public ResponseEntity<byte[]> getProfileImage(
 			@Auth Accessor accessor
 	) {
+		DownloadImageDto profileImage = studentService.getProfileImage(accessor);
 		return ResponseEntity.ok()
-				.contentType(MediaType.parseMediaType("image/png"))
-				.body(studentService.getProfileImage(accessor));
+				.contentType(profileImage.contentType())
+				.body(profileImage.data());
 	}
 }

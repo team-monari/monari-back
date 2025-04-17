@@ -3,16 +3,14 @@ package com.monari.monariback.student.service;
 import static com.monari.monariback.auth.enumerated.UserType.*;
 import static com.monari.monariback.common.error.ErrorCode.*;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.monari.monariback.auth.entity.Accessor;
 import com.monari.monariback.common.exception.NotFoundException;
 import com.monari.monariback.common.service.S3Service;
+import com.monari.monariback.student.dto.DownloadImageDto;
 import com.monari.monariback.student.dto.StudentDto;
 import com.monari.monariback.student.dto.request.StudentUpdateRequest;
 import com.monari.monariback.student.entity.Student;
@@ -74,7 +72,7 @@ public class StudentService {
 	 * 프로필 이미지 다운로드 (byte 배열로 반환)
 	 */
 	@Transactional(readOnly = true)
-	public byte[] getProfileImage(Accessor accessor) {
+	public DownloadImageDto getProfileImage(Accessor accessor) {
 		Student student = studentRepository.findByPublicId(accessor.getPublicId())
 				.orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
 

@@ -46,6 +46,7 @@ public enum ErrorCode {
     // study
     STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY4041", "존재하지 않는 스터디입니다.");
 
+    // S3
     private final HttpStatus status;
     private final String code;
     private final String message;
