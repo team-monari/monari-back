@@ -14,9 +14,6 @@ public record TeacherUpdateRequest(
 		@Size(max = MAX_CAREER_LENGTH, message = CAREER_LENGTH_MESSAGE)
 		String career,
 
-		@Size(max = MAX_PROFILE_IMAGE_URL_LENGTH, message = PROFILE_IMAGE_URL_LENGTH_MESSAGE)
-		String profileImageUrl,
-
 		@Size(max = MAX_BANK_NAME_LENGTH, message = BANK_NAME_LENGTH_MESSAGE)
 		String bankName,
 

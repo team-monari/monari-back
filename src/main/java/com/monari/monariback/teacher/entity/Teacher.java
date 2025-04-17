@@ -54,7 +54,7 @@ public class Teacher extends BaseEntity {
 	private String career;
 
 	@Column(length = 500)
-	private String profileImageUrl;
+	private String profileImageKey;
 
 	@Column(length = 100)
 	private String bankName;
@@ -83,7 +83,6 @@ public class Teacher extends BaseEntity {
 			String university,
 			String major,
 			String career,
-			String profileImageUrl,
 			String bankName,
 			String accountNumber,
 			String accountHolder
@@ -91,7 +90,6 @@ public class Teacher extends BaseEntity {
 		this.university = university;
 		this.major = major;
 		this.career = career;
-		this.profileImageUrl = profileImageUrl;
 		this.bankName = bankName;
 		this.accountNumber = accountNumber;
 		this.accountHolder = accountHolder;

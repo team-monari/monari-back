@@ -36,7 +36,6 @@ public class TeacherService {
 						request.university(),
 						request.major(),
 						request.career(),
-						request.profileImageUrl(),
 						request.bankName(),
 						request.accountNumber(),
 						request.accountHolder()

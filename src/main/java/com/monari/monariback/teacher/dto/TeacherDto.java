@@ -11,7 +11,6 @@ public record TeacherDto(
 		String university,
 		String major,
 		String career,
-		String profileImageUrl,
 		String bankName,
 		String accountNumber,
 		String accountHolder
@@ -24,7 +23,6 @@ public record TeacherDto(
 				teacher.getUniversity(),
 				teacher.getMajor(),
 				teacher.getCareer(),
-				teacher.getProfileImageUrl(),
 				teacher.getBankName(),
 				teacher.getAccountNumber(),
 				teacher.getAccountHolder()

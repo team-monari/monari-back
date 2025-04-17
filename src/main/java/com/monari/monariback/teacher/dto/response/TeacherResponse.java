@@ -11,7 +11,6 @@ public record TeacherResponse(
 		String university,
 		String major,
 		String career,
-		String profileImageUrl,
 		String bankName,
 		String accountNumber,
 		String accountHolder
@@ -24,7 +23,6 @@ public record TeacherResponse(
 				teacherDto.university(),
 				teacherDto.major(),
 				teacherDto.career(),
-				teacherDto.profileImageUrl(),
 				teacherDto.bankName(),
 				teacherDto.accountNumber(),
 				teacherDto.accountHolder()
