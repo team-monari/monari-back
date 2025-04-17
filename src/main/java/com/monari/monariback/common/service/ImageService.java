@@ -1,6 +1,5 @@
 package com.monari.monariback.common.service;
 
-import static com.monari.monariback.common.constant.MediaTypeConstant.*;
 import static com.monari.monariback.common.constant.S3GenerateKeyConstant.*;
 import static com.monari.monariback.common.error.ErrorCode.*;
 
@@ -12,8 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.monari.monariback.common.exception.BusinessException;
 import com.monari.monariback.common.dto.DownloadImageDto;
+import com.monari.monariback.common.enumerated.ImageExtension;
+import com.monari.monariback.common.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +50,7 @@ public class ImageService {
 	}
 
 	public String uploadProfileImage(String folder, UUID publicId, MultipartFile file) {
+		validateImageFile(file);
 		String key = generateKey(folder, publicId, file.getOriginalFilename());
 		try {
 			byte[] data = file.getBytes();
@@ -76,20 +77,29 @@ public class ImageService {
 		}
 	}
 
-	private MediaType deriveMediaTypeFromKey(String key) {
-		int idx = key.lastIndexOf('.');
-		if (idx == -1 || idx == key.length() - 1) {
-			return DEFAULT_MEDIA_TYPE;
+	private void validateImageFile(MultipartFile file) {
+		String originalFilename = file.getOriginalFilename();
+		if (originalFilename == null || originalFilename.isBlank()) {
+			throw new BusinessException(IMAGE_FILE_INVALID_NAME);
 		}
-		String ext = key.substring(idx + 1).toLowerCase();
-		return switch (ext) {
-			case EXT_PNG -> MediaType.IMAGE_PNG;
-			case EXT_JPG, EXT_JPEG -> MediaType.IMAGE_JPEG;
-			case EXT_GIF -> MediaType.IMAGE_GIF;
-			case EXT_BMP -> MEDIA_TYPE_BMP;
-			case EXT_WEBP -> MEDIA_TYPE_WEBP;
-			default -> MediaType.APPLICATION_OCTET_STREAM;
-		};
+
+		String ext = extractExtension(originalFilename);
+		if (!ImageExtension.isSupported(ext)) {
+			throw new BusinessException(IMAGE_INVALID_FORMAT);
+		}
+	}
+
+	private MediaType deriveMediaTypeFromKey(String key) {
+		String ext = extractExtension(key);
+		return ImageExtension.mediaTypeFor(ext);
+	}
+
+	private String extractExtension(String filename) {
+		int idx = filename.lastIndexOf('.');
+		if (idx < 0 || idx == filename.length() - 1) {
+			throw new BusinessException(IMAGE_INVALID_FORMAT);
+		}
+		return filename.substring(idx + 1).toLowerCase();
 	}
 
 	private String generateKey(String folder, UUID publicId, String originalFilename) {

@@ -29,8 +29,7 @@ public enum ErrorCode {
     AUTH_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH4004", "존재하지 않는 유저입니다."),
     AUTH_FORBIDDEN(HttpStatus.BAD_REQUEST, "AUTH4005", "해당 리소스에 접근할 권한이 없습니다."),
     OAUTH_TOKEN_REQUEST_FAILED(HttpStatus.BAD_REQUEST, "AUTH4006", "소셜 로그인 중 액세스 토큰 요청에 실패했습니다."),
-    OAUTH_USERINFO_RESPONSE_EMPTY(HttpStatus.BAD_REQUEST, "AUTH4007",
-        "소셜 로그인 중 사용자 정보 응답이 비어 있습니다."),
+    OAUTH_USERINFO_RESPONSE_EMPTY(HttpStatus.BAD_REQUEST, "AUTH4007", "소셜 로그인 중 사용자 정보 응답이 비어 있습니다."),
 
     // location
     LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "LOCATION4041", "존재하지 않는 장소입니다."),
@@ -50,9 +49,11 @@ public enum ErrorCode {
     STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY4041", "존재하지 않는 스터디입니다."),
 
     // image
-    IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE5001", "이미지 파일 업로드에 실패했습니다."),
-    IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST,    "FILE4002",          "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
-    IMAGE_DOWNLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE5003", "이미지 파일 다운로드에 실패했습니다.");
+    IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 업로드에 실패했습니다."),
+    IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST,    "IMAGE4001",          "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
+    IMAGE_DOWNLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5002", "이미지 파일 다운로드에 실패했습니다."),
+    IMAGE_FILE_INVALID_NAME(HttpStatus.BAD_REQUEST, "IMAGE4002", "업로드할 이미지 파일명이 없습니다."),
+    IMAGE_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "IMAGE4003", "지원하지 않는 이미지 형식입니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;
