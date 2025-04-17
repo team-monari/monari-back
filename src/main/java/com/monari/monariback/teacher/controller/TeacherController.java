@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.monari.monariback.auth.aop.Auth;
 import com.monari.monariback.auth.aop.OnlyTeacher;
 import com.monari.monariback.auth.entity.Accessor;
+import com.monari.monariback.common.dto.DownloadImageDto;
 import com.monari.monariback.teacher.dto.request.TeacherUpdateRequest;
 import com.monari.monariback.teacher.dto.response.TeacherProfileImageResponse;
 import com.monari.monariback.teacher.dto.response.TeacherResponse;
@@ -50,7 +51,7 @@ public class TeacherController {
 	}
 
 	@OnlyTeacher
-	@PatchMapping("/me/")
+	@PatchMapping("/me")
 	public ResponseEntity<TeacherResponse> updateProfile(
 			@Auth Accessor accessor,
 			@RequestBody @Valid TeacherUpdateRequest request
@@ -73,5 +74,13 @@ public class TeacherController {
 						teacherService.updateProfileImage(accessor, file)
 				)
 		);
+	}
+
+	@GetMapping("/{publicId}/profile-image")
+	public ResponseEntity<byte[]> getProfileImage(@PathVariable UUID publicId) {
+		DownloadImageDto profileImage = teacherService.getProfileImage(publicId);
+		return ResponseEntity.ok()
+				.contentType(profileImage.contentType())
+				.body(profileImage.data());
 	}
 }

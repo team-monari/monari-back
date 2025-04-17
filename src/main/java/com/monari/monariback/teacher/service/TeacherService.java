@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.monari.monariback.auth.entity.Accessor;
+import com.monari.monariback.common.dto.DownloadImageDto;
 import com.monari.monariback.common.dto.ProfileImageDto;
 import com.monari.monariback.common.exception.NotFoundException;
 import com.monari.monariback.common.service.ImageService;
@@ -69,5 +70,13 @@ public class TeacherService {
 		return ProfileImageDto.from(
 				teacher.changeProfileImage(key)
 		);
+	}
+
+	@Transactional(readOnly = true)
+	public DownloadImageDto getProfileImage(UUID publicId) {
+		Teacher teacher = teacherRepository.findByPublicId(publicId)
+				.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
+		String key = teacher.getProfileImageKeyOrThrow();
+		return imageService.downloadFile(key);
 	}
 }
