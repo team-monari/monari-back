@@ -1,6 +1,5 @@
 package com.monari.monariback.enrollment.controller;
 
-
 import com.monari.monariback.auth.aop.Auth;
 import com.monari.monariback.auth.aop.OnlyStudent;
 import com.monari.monariback.auth.aop.OnlyTeacher;
@@ -64,7 +63,7 @@ public class EnrollmentController {
     }
 
     @PatchMapping("/{lessonId}/price")
-    public ResponseEntity<String> decideFinalPrice(
+    public ResponseEntity<Integer> decideFinalPrice(
         @PathVariable(name = "lessonId") final Integer lessonId
     ) {
         return ResponseEntity.ok(

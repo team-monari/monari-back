@@ -1,7 +1,5 @@
 package com.monari.monariback.enrollment.service;
 
-
-import static com.monari.monariback.enrollment.constant.EnrollmentResponseConstants.ENROLLMENT_FINAL_PRICE_UPDATE;
 import static com.monari.monariback.enrollment.constant.EnrollmentResponseConstants.ENROLLMENT_SUCCESS;
 
 import com.monari.monariback.auth.entity.Accessor;
@@ -176,7 +174,7 @@ public class EnrollmentService {
      * @throws BusinessException 수업이 존재하지 않거나, 수강생이 최소 인원보다 부족한 경우 발생
      * @author Hong
      */
-    public String decideFinalPrice(final Integer lessonId) {
+    public int decideFinalPrice(final Integer lessonId) {
         final Lesson lesson = lessonRepository.findById(lessonId)
             .orElseThrow(() -> new BusinessException(ErrorCode.LESSON_NOT_FOUND));
 
@@ -184,8 +182,7 @@ public class EnrollmentService {
         validateEnrollment(lesson, enrollmentList);
 
         int finalPrice = Math.round((float) lesson.getAmount() / enrollmentList.size());
-        enrollmentList.forEach(enrollment -> enrollment.updateFinalPrice(finalPrice));
 
-        return ENROLLMENT_FINAL_PRICE_UPDATE;
+        return finalPrice;
     }
 }
