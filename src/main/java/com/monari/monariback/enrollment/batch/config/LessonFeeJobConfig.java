@@ -1,8 +1,10 @@
-package com.monari.monariback.enrollment.batch;
+package com.monari.monariback.enrollment.batch.config;
 
+import com.monari.monariback.enrollment.batch.itemwriter.EnrollmentItemWriter;
+import com.monari.monariback.enrollment.dto.LessonFeeDto;
+import com.monari.monariback.enrollment.batch.itemprocessor.LessonItemProcessor;
+import com.monari.monariback.enrollment.batch.itemprocessor.MailItemProcessor;
 import com.monari.monariback.enrollment.entity.Enrollment;
-import com.monari.monariback.enrollment.repository.EnrollmentRepository;
-import com.monari.monariback.enrollment.service.EnrollmentService;
 import com.monari.monariback.lesson.entity.Lesson;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +33,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class LessonFeeJobConfig extends DefaultBatchConfiguration {
 
-    private final EnrollmentRepository enrollmentCustomRepositoryImpl;
-    private final EnrollmentService enrollmentService;
+    private final LessonItemProcessor lessonItemProcessor;
+    private final MailItemProcessor mailItemProcessor;
+    private final EnrollmentItemWriter enrollmentItemWriter;
 
     @Bean
     @StepScope
@@ -54,25 +57,14 @@ public class LessonFeeJobConfig extends DefaultBatchConfiguration {
     }
 
     @Bean
-    LessonItemProcessor lessonItemProcessor() {
-        return new LessonItemProcessor(enrollmentService);
-    }
-
-    @Bean
-    public EnrollmentItemWriter enrollmentItemWriter() {
-        return new EnrollmentItemWriter(enrollmentCustomRepositoryImpl);
-    }
-
-
-    @Bean
     public Step lessonFeeCalculationStep(JobRepository jobRepository,
-                              PlatformTransactionManager transactionManager,
-                              JpaPagingItemReader<Lesson> lessonItemReader) {
+                                         PlatformTransactionManager transactionManager,
+                                         JpaPagingItemReader<Lesson> lessonItemReader) {
         return new StepBuilder("lessonFeeCalculationStep", jobRepository)
                 .<Lesson, LessonFeeDto>chunk(10, transactionManager)
                 .reader(lessonItemReader)
-                .processor(lessonItemProcessor())
-                .writer(enrollmentItemWriter())
+                .processor(lessonItemProcessor)
+                .writer(enrollmentItemWriter)
                 .build();
     }
 
@@ -98,12 +90,6 @@ public class LessonFeeJobConfig extends DefaultBatchConfiguration {
     }
 
     @Bean
-    MailItemProcessor mailItemProcessor(SimpleMailMessage templateMessage) {
-        return new MailItemProcessor(templateMessage);
-    }
-
-
-    @Bean
     public SimpleMailMessageItemWriter simpleMailMessageItemWriter(MailSender mailSender) {
         return new SimpleMailMessageItemWriterBuilder()
                 .mailSender(mailSender)
@@ -112,26 +98,21 @@ public class LessonFeeJobConfig extends DefaultBatchConfiguration {
 
     @Bean
     public Step lessonFeeNotificationStep(JobRepository jobRepository,
-                          PlatformTransactionManager transactionManager,
-                          JpaPagingItemReader<Enrollment> enrollmentItemReader
-                          ) {
+                                          PlatformTransactionManager transactionManager,
+                                          JpaPagingItemReader<Enrollment> enrollmentItemReader,
+                                          SimpleMailMessageItemWriter simpleMailMessageItemWriter) {
         return new StepBuilder("lessonFeeNotificationStep", jobRepository)
                 .<Enrollment, SimpleMailMessage>chunk(10, transactionManager)
                 .reader(enrollmentItemReader)
-                .processor(mailItemProcessor(templateMessage()))
-                .writer(simpleMailMessageItemWriter(null))
+                .processor(mailItemProcessor)
+                .writer(simpleMailMessageItemWriter)
                 .build();
     }
 
     @Bean
-    SimpleMailMessage templateMessage() {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("monari@gmail.com");
-        return message;
-    }
-
-    @Bean
-    public Job lessonFeeJob(JobRepository jobRepository, Step lessonFeeCalculationStep, Step lessonFeeNotificationStep) {
+    public Job lessonFeeJob(JobRepository jobRepository,
+                            Step lessonFeeCalculationStep,
+                            Step lessonFeeNotificationStep) {
         return new JobBuilder("lessonFeeJob", jobRepository)
                 .start(lessonFeeCalculationStep)
                 .next(lessonFeeNotificationStep)

@@ -1,15 +1,17 @@
-package com.monari.monariback.enrollment.batch;
+package com.monari.monariback.enrollment.batch.itemprocessor;
 
 import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Component;
 
+import static com.monari.monariback.enrollment.constant.EnrollmentBatchConstants.SERVICE_EMAIL_ADDRESS;
+
+@Component
 @RequiredArgsConstructor
 public class MailItemProcessor implements ItemProcessor<Enrollment, SimpleMailMessage> {
-
-    private final SimpleMailMessage templateMessage;
 
     /**
      * 수강 신청한 학생들에게 보낼 수강료 안내 메일 메시지 구성
@@ -19,13 +21,14 @@ public class MailItemProcessor implements ItemProcessor<Enrollment, SimpleMailMe
      */
     @Override
     public SimpleMailMessage process(Enrollment enrollment) throws Exception {
-        SimpleMailMessage message = new SimpleMailMessage(this.templateMessage);
+        SimpleMailMessage message = new SimpleMailMessage();
         String lessonTitle = enrollment.getLesson().getTitle();
 
         if (enrollment.getStatus() != EnrollmentStatus.REQUESTED) {
             return null;
         }
 
+        message.setFrom(SERVICE_EMAIL_ADDRESS);
         message.setTo(enrollment.getStudent().getEmail());
         message.setSubject(lessonTitle + " 수강료 안내");
         message.setText(

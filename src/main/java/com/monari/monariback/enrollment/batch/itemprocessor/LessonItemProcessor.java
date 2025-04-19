@@ -1,11 +1,14 @@
-package com.monari.monariback.enrollment.batch;
+package com.monari.monariback.enrollment.batch.itemprocessor;
 
 import com.monari.monariback.common.exception.BusinessException;
+import com.monari.monariback.enrollment.dto.LessonFeeDto;
 import com.monari.monariback.enrollment.service.EnrollmentService;
 import com.monari.monariback.lesson.entity.Lesson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public class LessonItemProcessor implements ItemProcessor<Lesson, LessonFeeDto> {
 
