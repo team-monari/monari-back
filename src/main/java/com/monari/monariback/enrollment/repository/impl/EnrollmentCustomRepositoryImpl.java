@@ -41,11 +41,9 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     ) {
         return queryFactory.selectFrom(enrollment)
             .leftJoin(enrollment.student).fetchJoin()
-            .leftJoin(enrollment.lesson).fetchJoin()
             .where(enrollment.lesson.id.eq(lessonId))
             .fetch();
     }
-
 
     @Override
     public List<Enrollment> findAllByStudentIdWithPagination(

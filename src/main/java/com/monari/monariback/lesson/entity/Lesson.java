@@ -4,25 +4,20 @@ import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
+import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.lesson.entity.enurmerated.LessonStatus;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.teacher.entity.Teacher;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
@@ -82,6 +77,10 @@ public class Lesson extends BaseEntity {
     @Column(name = "subject", nullable = false)
     @Enumerated(EnumType.STRING)
     private Subject subject;
+
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "lesson")
+    private List<Enrollment>  enrollments;
 
     public static Lesson ofCreate(
         final Location location,
