@@ -5,13 +5,12 @@ import java.util.UUID;
 import com.monari.monariback.teacher.entity.Teacher;
 
 public record TeacherDto(
-		UUID publicID,
+		UUID publicId,
 		String email,
 		String name,
 		String university,
 		String major,
 		String career,
-		String profileImageUrl,
 		String bankName,
 		String accountNumber,
 		String accountHolder
@@ -24,7 +23,6 @@ public record TeacherDto(
 				teacher.getUniversity(),
 				teacher.getMajor(),
 				teacher.getCareer(),
-				teacher.getProfileImageUrl(),
 				teacher.getBankName(),
 				teacher.getAccountNumber(),
 				teacher.getAccountHolder()

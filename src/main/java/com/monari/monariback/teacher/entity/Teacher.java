@@ -1,9 +1,12 @@
 package com.monari.monariback.teacher.entity;
 
+import static com.monari.monariback.common.error.ErrorCode.*;
+
 import java.util.UUID;
 
 import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.SocialProvider;
+import com.monari.monariback.common.exception.BusinessException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,7 +57,7 @@ public class Teacher extends BaseEntity {
 	private String career;
 
 	@Column(length = 500)
-	private String profileImageUrl;
+	private String profileImageKey;
 
 	@Column(length = 100)
 	private String bankName;
@@ -83,7 +86,6 @@ public class Teacher extends BaseEntity {
 			String university,
 			String major,
 			String career,
-			String profileImageUrl,
 			String bankName,
 			String accountNumber,
 			String accountHolder
@@ -91,11 +93,22 @@ public class Teacher extends BaseEntity {
 		this.university = university;
 		this.major = major;
 		this.career = career;
-		this.profileImageUrl = profileImageUrl;
 		this.bankName = bankName;
 		this.accountNumber = accountNumber;
 		this.accountHolder = accountHolder;
 		return this;
+	}
+
+	public String changeProfileImage(String key) {
+		profileImageKey = key;
+		return profileImageKey;
+	}
+
+	public String getProfileImageKeyOrThrow() {
+		if (profileImageKey == null || profileImageKey.isBlank()) {
+			throw new BusinessException(TEACHER_PROFILE_IMAGE_NOT_SET);
+		}
+		return profileImageKey;
 	}
 
 	@PrePersist
