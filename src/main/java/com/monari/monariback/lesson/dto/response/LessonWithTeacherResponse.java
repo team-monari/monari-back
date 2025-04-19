@@ -21,8 +21,7 @@ public record LessonWithTeacherResponse(
     String name,
     String university,
     String major,
-    String career,
-    String profileImageUrl
+    String career
 ) {
 
     public static LessonWithTeacherResponse ofCreate(
@@ -44,8 +43,7 @@ public record LessonWithTeacherResponse(
         final String name,
         final String university,
         final String major,
-        final String career,
-        final String profileImageUrl
+        final String career
     ) {
         return new LessonWithTeacherResponse(
             lessonId,
@@ -66,8 +64,7 @@ public record LessonWithTeacherResponse(
             name,
             university,
             major,
-            career,
-            profileImageUrl
+            career
         );
     }
 
