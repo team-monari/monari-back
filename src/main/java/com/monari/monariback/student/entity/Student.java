@@ -1,11 +1,14 @@
 package com.monari.monariback.student.entity;
 
+import static com.monari.monariback.common.error.ErrorCode.*;
+
 import java.util.UUID;
 
 import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.Grade;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.SocialProvider;
+import com.monari.monariback.common.exception.BusinessException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,8 +60,8 @@ public class Student extends BaseEntity {
 	@Enumerated(value = EnumType.STRING)
 	private Grade grade;
 
-	@Column(length = 255)
-	private String profileImageUrl;
+	@Column
+	private String profileImageKey;
 
 	public static Student signUpWithOauth(
 			String email,
@@ -77,14 +80,24 @@ public class Student extends BaseEntity {
 	public Student updateProfile(
 			String schoolName,
 			SchoolLevel schoolLevel,
-			Grade grade,
-			String profileImageUrl
+			Grade grade
 	) {
 		this.schoolName = schoolName;
 		this.schoolLevel = schoolLevel;
 		this.grade = grade;
-		this.profileImageUrl = profileImageUrl;
 		return this;
+	}
+
+	public String changeProfileImage(String key) {
+		profileImageKey = key;
+		return profileImageKey;
+	}
+
+	public String getProfileImageKeyOrThrow() {
+		if (profileImageKey == null || profileImageKey.isBlank()) {
+			throw new BusinessException(STUDENT_PROFILE_IMAGE_NOT_SET);
+		}
+		return profileImageKey;
 	}
 
 	@PrePersist
@@ -93,4 +106,5 @@ public class Student extends BaseEntity {
 			this.publicId = UUID.randomUUID();
 		}
 	}
+
 }

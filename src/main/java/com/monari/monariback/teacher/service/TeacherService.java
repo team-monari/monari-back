@@ -1,14 +1,19 @@
 package com.monari.monariback.teacher.service;
 
+import static com.monari.monariback.auth.enumerated.UserType.*;
 import static com.monari.monariback.common.error.ErrorCode.*;
 
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.monari.monariback.auth.entity.Accessor;
+import com.monari.monariback.common.dto.DownloadImageDto;
+import com.monari.monariback.common.dto.ProfileImageDto;
 import com.monari.monariback.common.exception.NotFoundException;
+import com.monari.monariback.common.service.ImageService;
 import com.monari.monariback.teacher.dto.TeacherDto;
 import com.monari.monariback.teacher.dto.request.TeacherUpdateRequest;
 import com.monari.monariback.teacher.entity.Teacher;
@@ -21,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class TeacherService {
 
 	private final TeacherRepository teacherRepository;
+	private final ImageService imageService;
 
 	@Transactional(readOnly = true)
 	public TeacherDto findMyProfile(Accessor accessor) {
@@ -36,7 +42,6 @@ public class TeacherService {
 						request.university(),
 						request.major(),
 						request.career(),
-						request.profileImageUrl(),
 						request.bankName(),
 						request.accountNumber(),
 						request.accountHolder()
@@ -50,5 +55,28 @@ public class TeacherService {
 				teacherRepository.findByPublicId(publicId)
 						.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND))
 		);
+	}
+
+	@Transactional
+	public ProfileImageDto updateProfileImage(Accessor accessor, MultipartFile file) {
+		Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
+				.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
+
+		String key = imageService.uploadProfileImage(
+				TEACHER.toString(),
+				accessor.getPublicId(),
+				file
+		);
+		return ProfileImageDto.from(
+				teacher.changeProfileImage(key)
+		);
+	}
+
+	@Transactional(readOnly = true)
+	public DownloadImageDto getProfileImage(UUID publicId) {
+		Teacher teacher = teacherRepository.findByPublicId(publicId)
+				.orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
+		String key = teacher.getProfileImageKeyOrThrow();
+		return imageService.downloadFile(key);
 	}
 }
