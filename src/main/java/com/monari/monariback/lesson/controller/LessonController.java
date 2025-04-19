@@ -8,6 +8,7 @@ import com.monari.monariback.lesson.dto.request.CreateLessonRequest;
 import com.monari.monariback.lesson.dto.request.SearchLessonRequest;
 import com.monari.monariback.lesson.dto.request.UpdateLessonRequest;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
+import com.monari.monariback.lesson.dto.response.LessonWithTeacherResponse;
 import com.monari.monariback.lesson.dto.response.PageInfoResponse;
 import com.monari.monariback.lesson.service.LessonService;
 import jakarta.validation.Valid;
@@ -56,7 +57,7 @@ public class LessonController {
     }
 
     @GetMapping("/{lessonId}")
-    public ResponseEntity<LessonResponse> readLesson(
+    public ResponseEntity<LessonWithTeacherResponse> readLesson(
         @PathVariable("lessonId") final Integer lessonId
     ) {
         return ResponseEntity.ok(

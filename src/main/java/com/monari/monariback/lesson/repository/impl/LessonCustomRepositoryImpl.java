@@ -11,6 +11,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -133,6 +134,14 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             .where(lesson.teacher.id.eq(teacherId))
             .fetchOne();
         return count != null ? count : 0L;
+    }
+
+    @Override
+    public Optional<Lesson> findByLessonIdWithTeacher(final int locationId) {
+        return Optional.ofNullable(queryFactory.selectFrom(lesson)
+            .leftJoin(lesson.teacher)
+            .where(lesson.id.eq(locationId))
+            .fetchFirst());
     }
 
     /**
