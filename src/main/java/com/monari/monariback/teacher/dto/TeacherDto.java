@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.monari.monariback.teacher.entity.Teacher;
 
 public record TeacherDto(
-		UUID publicID,
+		UUID publicId,
 		String email,
 		String name,
 		String university,

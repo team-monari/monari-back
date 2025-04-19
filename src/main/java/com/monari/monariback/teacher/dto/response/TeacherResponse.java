@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.monari.monariback.teacher.dto.TeacherDto;
 
 public record TeacherResponse(
-		UUID publicID,
+		UUID publicId,
 		String email,
 		String name,
 		String university,
@@ -17,7 +17,7 @@ public record TeacherResponse(
 ) {
 	public static TeacherResponse from(TeacherDto teacherDto) {
 		return new TeacherResponse(
-				teacherDto.publicID(),
+				teacherDto.publicId(),
 				teacherDto.email(),
 				teacherDto.name(),
 				teacherDto.university(),
