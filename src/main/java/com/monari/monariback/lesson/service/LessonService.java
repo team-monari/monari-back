@@ -159,8 +159,7 @@ public class LessonService {
             teacher.getName(),
             teacher.getUniversity(),
             teacher.getMajor(),
-            teacher.getCareer(),
-            teacher.getProfileImageUrl()
+            teacher.getCareer()
         );
     }
 
