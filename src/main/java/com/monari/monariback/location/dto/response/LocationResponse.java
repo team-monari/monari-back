@@ -15,7 +15,9 @@ public record LocationResponse(
     LocalDateTime cancellationStartDateTime,
     LocalDateTime cancellationEndDateTime,
     String cancellationPolicyInfo,
-    Integer cancellationDeadline
+    Integer cancellationDeadline,
+    String x,
+    String y
 ) {
 
     public static LocationResponse from(final Location location) {
@@ -31,7 +33,9 @@ public record LocationResponse(
             location.getCancellationStartDateTime(),
             location.getCancellationEndDateTime(),
             location.getCancellationPolicyInfo(),
-            location.getCancellationDeadline()
+            location.getCancellationDeadline(),
+            location.getX(),
+            location.getY()
         );
     }
 }

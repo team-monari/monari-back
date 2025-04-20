@@ -58,6 +58,13 @@ public class Location {
     @Column(name = "cancellation_deadline")
     private Integer cancellationDeadline;
 
+    @Column(name = "x")
+    private String x;
+
+    @Column(name = "y")
+    private String y;
+
+
     public static Location ofCreate(
         final String serviceSubcategory,
         final String serviceStatus,
@@ -69,7 +76,9 @@ public class Location {
         final String cancellationStartDateTime,
         final String cancellationEndDateTime,
         final String cancellationPolicyInfo,
-        final String cancellationDeadline
+        final String cancellationDeadline,
+        final String x,
+        final String y
     ) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
@@ -85,7 +94,9 @@ public class Location {
             parseDate(cancellationStartDateTime, formatter),
             parseDate(cancellationEndDateTime, formatter),
             nullIfBlank(cancellationPolicyInfo),
-            parseInteger(cancellationDeadline)
+            parseInteger(cancellationDeadline),
+            nullIfBlank(x),
+            nullIfBlank(y)
         );
     }
 
