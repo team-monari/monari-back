@@ -35,6 +35,8 @@ public class LessonValidationConstants {
     public static final String SUBJECT_REQUIRED = "과목은 필수입니다.";
     public static final String REGION_REQUIRED = "지역은 필수입니다.";
 
+    public static final String TYPE_REQUIRED = "수업 타입은 필수입니다.";
+
     // 수치 상수
     public static final int TITLE_MAX_LENGTH = 100;
     public static final int DESCRIPTION_MAX_LENGTH = 1000;

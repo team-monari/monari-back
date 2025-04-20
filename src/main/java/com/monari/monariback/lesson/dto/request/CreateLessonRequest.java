@@ -26,11 +26,13 @@ import static com.monari.monariback.lesson.constant.LessonValidationConstants.SU
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.TITLE_MAX_LENGTH;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.TITLE_REQUIRED;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.TITLE_SIZE;
+import static com.monari.monariback.lesson.constant.LessonValidationConstants.TYPE_REQUIRED;
 
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.entity.enurmerated.LessonStatus;
+import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
@@ -89,7 +91,10 @@ public record CreateLessonRequest(
     SchoolLevel schoolLevel,
 
     @NotNull(message = SUBJECT_REQUIRED)
-    Subject subject
+    Subject subject,
+
+    @NotNull(message = TYPE_REQUIRED)
+    LessonType lessonType
 
 ) {
 
