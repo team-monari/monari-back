@@ -6,6 +6,7 @@ import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.entity.Lesson;
+import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import com.monari.monariback.lesson.repository.LessonCustomRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -39,7 +40,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final Integer pageNum
     ) {
         // 페이징 처리를 위한 공통 메서드 사용
-        return fetchLessonsWithPaging(null, pageSize, pageNum, null, null, null);
+        return fetchLessonsWithPaging(null, pageSize, pageNum, null, null, null, null);
     }
 
     /**
@@ -58,10 +59,12 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final Integer pageNum,
         final SchoolLevel schoolLevel,
         final Subject subject,
-        final Region region
+        final Region region,
+        final LessonType lessonType
     ) {
         // 페이징 처리를 위한 공통 메서드 사용
-        return fetchLessonsWithPaging(keyword, pageSize, pageNum, schoolLevel, subject, region);
+        return fetchLessonsWithPaging(keyword, pageSize, pageNum, schoolLevel, subject, region,
+            lessonType);
     }
 
     /**
@@ -77,7 +80,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final int pageSize,
         final String keyword
     ) {
-        long totalCount = getTotalLessonCount(keyword, null, null, null);
+        long totalCount = getTotalLessonCount(keyword, null, null, null, null);
         return totalCount == 0 ? 0 : (int) Math.ceil((double) totalCount / pageSize);
     }
 
@@ -117,11 +120,13 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final String keyword,
         final SchoolLevel schoolLevel,
         final Subject subject,
-        final Region region) {
+        final Region region,
+        final LessonType lessonType
+    ) {
         Long count = queryFactory
             .select(lesson.count())
             .from(lesson)
-            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region))
+            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType))
             .fetchOne();
 
         return count != null ? count : 0L;
@@ -161,10 +166,12 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final Integer pageNum,
         final SchoolLevel schoolLevel,
         final Subject subject,
-        final Region region) {
+        final Region region,
+        final LessonType lessonType
+    ) {
         return queryFactory
             .selectFrom(lesson)
-            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region))
+            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType))
             .orderBy(LESSON_DEFAULT_ORDER)
             .limit(pageSize)
             .offset(getOffset(pageSize, pageNum))
@@ -183,6 +190,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
      * @param schoolLevel 검색 필터(null 또는 공백이면 조건 없이 전체 검색)
      * @param subject     검색 필터(null 또는 공백이면 조건 없이 전체 검색)
      * @param region      검색 필터(null 또는 공백이면 조건 없이 전체 검색)
+     * @param lessonType
      * @return QueryDSL의 BooleanExpression 조건
      * @author Hong
      */
@@ -190,15 +198,22 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final String keyword,
         final SchoolLevel schoolLevel,
         final Subject subject,
-        final Region region) {
+        final Region region,
+        final LessonType lessonType
+    ) {
 
         return new BooleanExpression[]{
             keywordCondition(keyword),
             schoolLevelCondition(schoolLevel),
             subjectCondition(subject),
-            regionCondition(region)
+            regionCondition(region),
+            lessonTypeCondition(lessonType)
         };
 
+    }
+
+    private BooleanExpression lessonTypeCondition(final LessonType lessonType) {
+        return lessonType != null ? lesson.lessonType.eq(lessonType) : null;
     }
 
     private BooleanExpression keywordCondition(final String keyword) {
