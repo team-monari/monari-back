@@ -20,11 +20,11 @@ public class LocationDataInitializer {
     @Bean
     public ApplicationRunner loadLocationData() {
         return args -> {
-//            if (!locationService.isLocationDataExists()) {
-            log.info("서버 시작 시 Location 데이터 설정 시작");
-            locationService.setUp();
-            log.info("Location 데이터 설정 완료");
-//            }
+            if (!locationService.isLocationDataExists()) {
+                log.info("서버 시작 시 Location 데이터 설정 시작");
+                locationService.setUp();
+                log.info("Location 데이터 설정 완료");
+            }
         };
     }
 }
