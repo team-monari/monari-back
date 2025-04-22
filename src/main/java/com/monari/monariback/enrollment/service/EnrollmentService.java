@@ -1,6 +1,7 @@
 package com.monari.monariback.enrollment.service;
 
 import static com.monari.monariback.enrollment.constant.EnrollmentResponseConstants.ENROLLMENT_CANCELED;
+import static com.monari.monariback.enrollment.constant.EnrollmentResponseConstants.ENROLLMENT_REFUND;
 import static com.monari.monariback.enrollment.constant.EnrollmentResponseConstants.ENROLLMENT_SUCCESS;
 
 import com.monari.monariback.auth.entity.Accessor;
@@ -211,6 +212,6 @@ public class EnrollmentService {
             )
             .orElseThrow(() -> new BusinessException(ErrorCode.ENROLLMENT_NOT_FOUND));
         enrollment.refundByStudent();
-        return null;
+        return ENROLLMENT_REFUND;
     }
 }
