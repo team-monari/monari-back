@@ -12,9 +12,10 @@ spring:
     password: ${DB_PASSWORD}
     username: ${DB_USERNAME}
     driver-class-name: com.mysql.cj.jdbc.Driver
-  batch:
-    jdbc:
-      table-prefix: batch.BATCH_
+  sql:
+    init:
+      mode: never
+      data-locations: classpath:data-prod.sql
 
 oauth:
   kakao:

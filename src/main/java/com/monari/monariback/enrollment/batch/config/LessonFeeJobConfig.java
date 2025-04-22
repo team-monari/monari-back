@@ -12,8 +12,8 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -30,8 +30,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
+@EnableBatchProcessing(tablePrefix = "batch.BATCH_")
 @RequiredArgsConstructor
-public class LessonFeeJobConfig extends DefaultBatchConfiguration {
+public class LessonFeeJobConfig {
 
     private final LessonItemProcessor lessonItemProcessor;
     private final MailItemProcessor mailItemProcessor;
