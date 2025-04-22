@@ -3,10 +3,12 @@ package com.monari.monariback.enrollment.repository.impl;
 import static com.monari.monariback.enrollment.entity.QEnrollment.enrollment;
 
 import com.monari.monariback.enrollment.entity.Enrollment;
+import com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus;
 import com.monari.monariback.enrollment.repository.EnrollmentCustomRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +23,14 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
     public Integer countCurrentStudentByLessonId(final Integer lessonId) {
         final Long count = queryFactory.select(enrollment.count())
             .from(enrollment)
-            .where(enrollment.lesson.id.eq(lessonId))
+            .where(enrollment.lesson.id.eq(lessonId).
+                and(enrollment.status.notIn(
+                        EnrollmentStatus.REFUND_REQUESTED,
+                        EnrollmentStatus.REFUNDED,
+                        EnrollmentStatus.CANCELLED
+                    )
+                )
+            )
             .fetchOne();
         return (int) (count != null ? count : 0);
     }
@@ -56,6 +65,19 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
             .limit(pageSize)
             .offset(getOffset(pageSize, pageNumber))
             .fetch();
+    }
+
+    @Override
+    public Optional<Enrollment> findByStudentAndLesson(
+        final UUID studentId,
+        final Integer lessonId
+    ) {
+        return Optional.ofNullable(queryFactory.selectFrom(enrollment)
+            .where(enrollment.student.publicId.eq(studentId)
+                .and(enrollment.lesson.id.eq(lessonId))
+            )
+            .leftJoin(enrollment.lesson)
+            .fetchFirst());
     }
 
 
