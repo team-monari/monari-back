@@ -67,7 +67,10 @@ public class LocationService {
                 dto.rcptBgndt(),
                 dto.rcptEnddt(),
                 dto.revStdDayNm(),
-                dto.revStdDay()))
+                dto.revStdDay(),
+                dto.x(),
+                dto.y()
+            ))
             .toList();
     }
 

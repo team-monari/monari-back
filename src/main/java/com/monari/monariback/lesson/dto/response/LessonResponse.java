@@ -19,7 +19,8 @@ public record LessonResponse(
     String status,
     String region,
     String schoolLevel,
-    String subject
+    String subject,
+    String lessonType
 ) {
 
     public static LessonResponse ofCreate(
@@ -38,7 +39,9 @@ public record LessonResponse(
         final String status,
         final String region,
         final String schoolLevel,
-        final String subject
+        final String subject,
+        final String lessonType
+
     ) {
         return new LessonResponse(
             lessonId,
@@ -56,7 +59,8 @@ public record LessonResponse(
             status,
             region,
             schoolLevel,
-            subject
+            subject,
+            lessonType
         );
     }
 
@@ -80,7 +84,8 @@ public record LessonResponse(
             lesson.getStatus().name(),
             lesson.getRegion().name(),
             lesson.getSchoolLevel().name(),
-            lesson.getSubject().name()
+            lesson.getSubject().name(),
+            lesson.getLessonType().name()
         );
     }
 }

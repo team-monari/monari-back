@@ -70,123 +70,101 @@ VALUES (UUID_TO_BIN(UUID()), 'student1@example.com', '김민지', 'KAKAO', 'kaka
 
 
 -- Teacher (선생님) 데이터 (10건)
-INSERT INTO teacher (
-    public_id,
-    email,
-    name,
-    social_provider,
-    social_id,
-    university,
-    major,
-    career,
-    created_at,
-    updated_at,
-    bank_name,
-    account_number,
-    account_holder
-)
-VALUES
-    (UUID_TO_BIN(UUID()), 'teacher1@example.com', '김철수 교수', 'KAKAO', 't_kakao1', '한국대학교', '수학과',
-     '10년 강의 경력, 미적분학 전문', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '국민은행', '1111111111', '김철수 교수'),
 
-    (UUID_TO_BIN(UUID()), 'teacher2@example.com', '이영희 박사', 'NAVER', 't_naver2', '서울대학교', '물리학과',
-     '5년 연구 및 3년 강의, 양자역학', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '신한은행', '2222222222', '이영희 박사'),
+INSERT INTO teacher (public_id,
+                     email,
+                     name,
+                     social_provider,
+                     social_id,
+                     university,
+                     major,
+                     career,
+                     created_at,
+                     updated_at,
+                     bank_name,
+                     account_number,
+                     account_holder)
+VALUES (RANDOM_UUID(), 'teacher1@example.com', '김철수 교수', 'KAKAO', 't_kakao1', '한국대학교', '수학과',
+        '10년 강의 경력, 미적분학 전문', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '국민은행', '1111111111', '김철수 교수'),
 
-    (UUID_TO_BIN(UUID()), 'teacher3@example.com', '박민준 선생님', 'NAVER', 't_naver3', '연세대학교', '화학과',
-     '고등학교 화학 교사 7년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '하나은행', '3333333333', '박민준 선생님'),
+       (RANDOM_UUID(), 'teacher2@example.com', '이영희 박사', 'NAVER', 't_naver2', '서울대학교', '물리학과',
+        '5년 연구 및 3년 강의, 양자역학', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '신한은행', '2222222222',
+        '이영희 박사'),
 
-    (UUID_TO_BIN(UUID()), 'teacher4@example.com', '최지우 교사', 'KAKAO', 't_kakao4', '고려대학교', '생명과학과',
-     '중학교 과학 교사 5년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '우리은행', '4444444444', '최지우 교사'),
+       (RANDOM_UUID(), 'teacher3@example.com', '박민준 선생님', 'NAVER', 't_naver3', '연세대학교', '화학과',
+        '고등학교 화학 교사 7년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '하나은행', '3333333333', '박민준 선생님'),
 
-    (UUID_TO_BIN(UUID()), 'teacher5@example.com', '정다빈 연구원', 'NAVER', 't_naver5', 'KAIST', '수학과',
-     '응용수학 연구 8년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '농협은행', '5555555555', '정다빈 연구원'),
+       (RANDOM_UUID(), 'teacher4@example.com', '최지우 교사', 'KAKAO', 't_kakao4', '고려대학교', '생명과학과',
+        '중학교 과학 교사 5년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '우리은행', '4444444444', '최지우 교사'),
 
-    (UUID_TO_BIN(UUID()), 'teacher6@example.com', '강태현 선생님', 'NAVER', 't_naver6', '성균관대학교', '물리학과',
-     '물리 올림피아드 지도 경험 다수', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '국민은행', '6666666666', '강태현 선생님'),
+       (RANDOM_UUID(), 'teacher5@example.com', '정다빈 연구원', 'NAVER', 't_naver5', 'KAIST', '수학과',
+        '응용수학 연구 8년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '농협은행', '5555555555', '정다빈 연구원'),
 
-    (UUID_TO_BIN(UUID()), 'teacher7@example.com', '윤서아 박사', 'KAKAO', 't_kakao7', '포항공과대학교', '화학과',
-     '유기화학 연구 및 특강 전문', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '신한은행', '7777777777', '윤서아 박사'),
+       (RANDOM_UUID(), 'teacher6@example.com', '강태현 선생님', 'NAVER', 't_naver6', '성균관대학교', '물리학과',
+        '물리 올림피아드 지도 경험 다수', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '국민은행', '6666666666', '강태현 선생님'),
 
-    (UUID_TO_BIN(UUID()), 'teacher8@example.com', '한지민 교사', 'NAVER', 't_naver8', '한양대학교', '생명과학과',
-     '과학 탐구반 지도 6년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '하나은행', '8888888888', '한지민 교사'),
+       (RANDOM_UUID(), 'teacher7@example.com', '윤서아 박사', 'KAKAO', 't_kakao7', '포항공과대학교', '화학과',
+        '유기화학 연구 및 특강 전문', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '신한은행', '7777777777', '윤서아 박사'),
 
-    (UUID_TO_BIN(UUID()), 'teacher9@example.com', '배준호 교수', 'NAVER', 't_naver9', '경희대학교', '수학과',
-     '확률 및 통계 강의 12년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '우리은행', '9999999999', '배준호 교수'),
+       (RANDOM_UUID(), 'teacher8@example.com', '한지민 교사', 'NAVER', 't_naver8', '한양대학교', '생명과학과',
+        '과학 탐구반 지도 6년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '하나은행', '8888888888', '한지민 교사'),
 
-    (UUID_TO_BIN(UUID()), 'teacher10@example.com', '송지효 연구원', 'KAKAO', 't_kakao10', '중앙대학교', '물리학과',
-     '천체물리학 연구 4년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '농협은행', '1010101010', '송지효 연구원');
+       (RANDOM_UUID(), 'teacher9@example.com', '배준호 교수', 'NAVER', 't_naver9', '경희대학교', '수학과',
+        '확률 및 통계 강의 12년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '우리은행', '9999999999', '배준호 교수'),
+
+       (RANDOM_UUID(), 'teacher10@example.com', '송지효 연구원', 'KAKAO', 't_kakao10', '중앙대학교', '물리학과',
+        '천체물리학 연구 4년', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '농협은행', '1010101010', '송지효 연구원');
 
 -- Lesson (수업) 데이터 (10건) - location_id 고유하게 수정됨
 -- Location ID 1-10 및 Teacher ID 1-10 사용 가정
 INSERT INTO lesson (location_id, teacher_id, title, description, amount, min_student, max_student,
                     start_date, end_date, deadline, status, school_level, subject, created_at,
-                    updated_at, region)
+                    updated_at, region, type)
 VALUES (1, 1, '고등수학 미적분 심화 과정', '미적분의 개념부터 심화 문제까지 단계적으로 학습하는 고등학생 대상의 집중 수학 과정입니다.', 120000, 1, 4,
         DATE '2025-09-01', DATE '2025-12-15', DATE '2025-08-25', 'ACTIVE', 'HIGH', 'MATH',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'EUNPYEONG_GU'),
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'EUNPYEONG_GU', 'OFFLINE'),
 
        (2, 2, '고등물리 역학 마스터 클래스', '운동의 법칙과 에너지 보존을 중심으로 역학 전반을 깊이 있게 다루는 고등 물리 심화 수업입니다.', 110000, 2,
         5,
         DATE '2025-09-08', DATE '2025-11-28', DATE '2025-09-01', 'ACTIVE', 'HIGH', 'SCIENCE',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'JONGNO_GU'),
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'JONGNO_GU', 'OFFLINE'),
 
        (3, 3, '중학화학 기초 다지기', '중학생을 위한 화학 기초 개념 수업으로 원소, 분자, 화학반응 등 과학의 기초를 쉽게 학습합니다.', 90000, 1, 4,
         DATE '2025-05-10', DATE '2025-07-10', DATE '2025-05-01', 'ACTIVE', 'MIDDLE', 'SCIENCE',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'JONGNO_GU'),
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'JONGNO_GU', 'ONLINE'),
 
        (4, 4, '중학 생명과학 탐구 실험', '생물의 기본 구조와 기능을 중심으로 다양한 실험 활동을 통해 탐구 능력을 기르는 수업입니다.', 95000, 6, 18,
         DATE '2025-06-01', DATE '2025-08-31', DATE '2025-05-20', 'CANCELED', 'MIDDLE', 'SCIENCE',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'JONGNO_GU'),
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'JONGNO_GU', 'OFFLINE'),
 
        (5, 5, '코딩으로 배우는 수학 원리', '파이썬 코딩을 활용해 수학 원리를 시각화하고 직접 구현하며 수학적 사고력을 기르는 융합 수업입니다.', 150000,
         5, 10,
         DATE '2025-10-01', DATE '2026-01-31', DATE '2025-09-15', 'ACTIVE', 'HIGH', 'MATH',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'JONGNO_GU'),
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'JONGNO_GU', 'ONLINE'),
 
        (6, 6, '물리 올림피아드 대비반', '물리 경시대회 및 올림피아드 참가자를 위한 이론 정리와 문제풀이 중심의 고급 집중 과정입니다.', 130000, 7, 15,
         DATE '2025-09-05', DATE '2025-12-20', DATE '2025-08-30', 'ACTIVE', 'HIGH', 'SCIENCE',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'SONGPA_GU'),
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'SONGPA_GU', 'OFFLINE'),
 
        (7, 7, '유기화학 입문 특강', '유기화학의 기본 개념과 작용기, 반응 메커니즘을 쉽고 명확하게 소개하는 입문자 대상의 특강입니다.', 100000, 10,
         20,
         DATE '2025-09-02', DATE '2025-12-16', DATE '2025-08-26', 'ACTIVE', 'HIGH', 'SCIENCE',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'SEOCHO_GU'),
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'SEOCHO_GU', 'OFFLINE'),
 
        (8, 8, '중학 과학 내신 완성반', '중학교 과학 내신 대비를 위한 개념 정리와 핵심 문제 풀이로 성적 향상을 목표로 한 강의입니다.', 85000, 12,
         30,
         DATE '2025-07-07', DATE '2025-09-07', DATE '2025-07-01', 'CANCELED', 'MIDDLE', 'SCIENCE',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'MAPO_GU'),
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'MAPO_GU', 'OFFLINE'),
 
        (9, 9, '확률과 통계 개념 및 문제풀이', '확률과 통계 전반의 개념을 다지고 수능 및 내신을 대비한 실전 문제풀이 중심으로 구성된 강의입니다.', 115000,
         8, 18,
         DATE '2025-11-01', DATE '2026-02-28', DATE '2025-10-20', 'ACTIVE', 'HIGH', 'MATH',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'MAPO_GU'),
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'MAPO_GU', 'ONLINE'),
 
        (3, 8, '천체물리학 맛보기 강좌', '별, 행성, 우주에 대한 흥미로운 주제를 중심으로 천체물리학의 기초 개념을 배워보는 체험형 수업입니다.', 140000,
         5, 12,
         DATE '2025-09-15', DATE '2025-12-18', DATE '2025-09-01', 'ACTIVE', 'HIGH', 'SCIENCE',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'GEUMCHEON_GU'),
-
-       (2, 1, '고등수학 기하 특강', '기하 단원을 집중적으로 학습하여 공간 감각과 문제해결 능력을 향상시키는 고급 과정입니다.', 105000, 3, 6,
-        DATE '2025-08-01', DATE '2025-10-31', DATE '2025-07-25', 'ACTIVE', 'HIGH', 'MATH',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'GEUMCHEON_GU'),
-
-       (4, 2, '화학 심화 실험', '유기/무기화학을 실험을 통해 체험하며 고등학교 화학 내용을 심화 학습하는 고급 실습 수업입니다.', 130000, 2, 6,
-        DATE '2025-09-20', DATE '2025-12-20', DATE '2025-09-10', 'ACTIVE', 'HIGH', 'SCIENCE',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'GANGBUK_GU'),
-
-       (5, 3, '초등 과학 탐구 교실', '초등학생을 위한 흥미로운 과학 탐구와 실험 활동을 통해 과학적 사고력을 기르는 수업입니다.', 75000, 5, 15,
-        DATE '2025-05-05', DATE '2025-07-31', DATE '2025-05-01', 'ACTIVE', 'HIGH', 'SCIENCE',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'GANGBUK_GU'),
-
-       (2, 4, '수학적 사고력 훈련', '문제해결력을 키우고 사고력을 확장하는 수학 심화 학습 프로그램입니다.', 98000, 4, 8,
-        DATE '2025-06-15', DATE '2025-09-30', DATE '2025-06-05', 'ACTIVE', 'HIGH', 'MATH',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'GANGBUK_GU'),
-
-       (1, 5, '중등 과학 융합 탐구반', '물리, 화학, 생물을 융합하여 실제 과학적 문제를 해결하는 프로젝트 기반의 수업입니다.', 95000, 8, 16,
-        DATE '2025-07-01', DATE '2025-10-30', DATE '2025-06-25', 'ACTIVE', 'MIDDLE', 'SCIENCE',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'GANGBUK_GU');
-
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'GEUMCHEON_GU', 'ONLINE');
 
 
 -- Study (스터디) 데이터 (10건) - status 'INACTIVE' -> 'CLOSED' 수정됨
@@ -239,6 +217,7 @@ VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1),
        (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 9, 2),
        (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 10, 4),
        (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 10, 5);
+
 
 DROP TABLE IF EXISTS batch.BATCH_JOB_SEQ;
 DROP TABLE IF EXISTS batch.BATCH_JOB_EXECUTION_SEQ;
@@ -352,3 +331,4 @@ CREATE TABLE batch.BATCH_JOB_SEQ (
 INSERT INTO batch.BATCH_JOB_SEQ (ID, UNIQUE_KEY)
 SELECT * FROM (SELECT 0 AS ID, '0' AS UNIQUE_KEY) AS tmp
 WHERE NOT EXISTS (SELECT * FROM batch.BATCH_JOB_SEQ);
+

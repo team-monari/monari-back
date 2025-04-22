@@ -6,13 +6,23 @@ import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.lesson.entity.enurmerated.LessonStatus;
+import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.teacher.entity.Teacher;
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -70,6 +80,10 @@ public class Lesson extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LessonStatus status = LessonStatus.ACTIVE;
 
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private LessonType lessonType;
+
     @Column(name = "school_level", nullable = false)
     @Enumerated(EnumType.STRING)
     private SchoolLevel schoolLevel;
@@ -80,7 +94,7 @@ public class Lesson extends BaseEntity {
 
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "lesson")
-    private List<Enrollment>  enrollments;
+    private List<Enrollment> enrollments;
 
     public static Lesson ofCreate(
         final Location location,
@@ -95,7 +109,8 @@ public class Lesson extends BaseEntity {
         final LocalDate deadline,
         final Region region,
         final SchoolLevel schoolLevel,
-        final Subject subject
+        final Subject subject,
+        final LessonType lessonType
     ) {
         Lesson lesson = new Lesson();
         lesson.location = location;
@@ -111,6 +126,7 @@ public class Lesson extends BaseEntity {
         lesson.region = region;
         lesson.schoolLevel = schoolLevel;
         lesson.subject = subject;
+        lesson.lessonType = lessonType;
         return lesson;
     }
 

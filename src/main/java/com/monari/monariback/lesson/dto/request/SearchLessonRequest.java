@@ -6,6 +6,7 @@ import static com.monari.monariback.lesson.constant.LessonValidationConstants.PA
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
+import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import jakarta.validation.constraints.Min;
 
 public record SearchLessonRequest(
@@ -21,7 +22,8 @@ public record SearchLessonRequest(
     SchoolLevel schoolLevel,
     Subject subject,
 
-    Region region
+    Region region,
+    LessonType lessonType
 
 ) {
 

@@ -78,7 +78,8 @@ public class LessonService {
             lessonDto.deadline(),
             lessonDto.region(),
             lessonDto.schoolLevel(),
-            lessonDto.subject()
+            lessonDto.subject(),
+            lessonDto.lessonType()
         );
 
         lessonRepository.save(lesson);
@@ -156,6 +157,7 @@ public class LessonService {
             lesson.getRegion().name(),
             lesson.getSchoolLevel().name(),
             lesson.getSubject().name(),
+            lesson.getLessonType().name(),
             teacher.getName(),
             teacher.getUniversity(),
             teacher.getMajor(),
@@ -204,7 +206,8 @@ public class LessonService {
             searchLessonRequest.keyword(),
             searchLessonRequest.schoolLevel(),
             searchLessonRequest.subject(),
-            searchLessonRequest.region()
+            searchLessonRequest.region(),
+            searchLessonRequest.lessonType()
         );
 
         return new PageImpl<>(
@@ -215,8 +218,8 @@ public class LessonService {
                     searchLessonRequest.pageNumber(),
                     searchLessonRequest.schoolLevel(),
                     searchLessonRequest.subject(),
-                    searchLessonRequest.region()
-
+                    searchLessonRequest.region(),
+                    searchLessonRequest.lessonType()
                 )
                 .stream()
                 .map(lesson -> {
