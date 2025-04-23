@@ -6,6 +6,7 @@ services:
     ports:
       - "8080:8080"
     environment:
+      TZ: Asia/Seoul
       SPRING_PROFILES_ACTIVE: prod
       SEOUL_API_KEY: ${SEOUL_API_KEY}
       KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID}
