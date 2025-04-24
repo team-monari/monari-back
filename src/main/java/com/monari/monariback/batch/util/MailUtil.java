@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import static com.monari.monariback.batch.constant.EnrollmentMailConstants.LESSON_FEE_NOTICE_MAIL_TEMPLATE;
+
 @Component
 @RequiredArgsConstructor
 public class MailUtil {
@@ -19,7 +21,7 @@ public class MailUtil {
 
     public MimeMessage buildLessonFeeNoticeMessage(String email, Context context) throws MessagingException {
         MimeMessageHelper helper = prepareServiceMail();
-        String htmlContent = templateEngine.process("lesson-fee-notice-mail.html", context);
+        String htmlContent = templateEngine.process(LESSON_FEE_NOTICE_MAIL_TEMPLATE, context);
         helper.setText(htmlContent, true);
         helper.setSubject(EnrollmentMailConstants.LESSON_FEE_NOTICE_MAIL_SUBJECT);
         helper.setTo(email);
