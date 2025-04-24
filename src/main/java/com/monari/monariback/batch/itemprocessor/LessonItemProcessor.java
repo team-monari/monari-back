@@ -1,7 +1,7 @@
-package com.monari.monariback.enrollment.batch.itemprocessor;
+package com.monari.monariback.batch.itemprocessor;
 
 import com.monari.monariback.common.exception.BusinessException;
-import com.monari.monariback.enrollment.dto.LessonFeeDto;
+import com.monari.monariback.batch.dto.LessonFeeDto;
 import com.monari.monariback.enrollment.service.EnrollmentService;
 import com.monari.monariback.lesson.entity.Lesson;
 import lombok.RequiredArgsConstructor;

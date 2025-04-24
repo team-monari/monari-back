@@ -1,6 +1,6 @@
-package com.monari.monariback.enrollment.batch.itemwriter;
+package com.monari.monariback.batch.itemwriter;
 
-import com.monari.monariback.enrollment.dto.LessonFeeDto;
+import com.monari.monariback.batch.dto.LessonFeeDto;
 import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.enrollment.repository.EnrollmentRepository;
 import lombok.RequiredArgsConstructor;

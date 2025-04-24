@@ -132,16 +132,16 @@ INSERT INTO lesson (location_id, teacher_id, title, description, amount, min_stu
                     start_date, end_date, deadline, status, school_level, subject, created_at,
                     updated_at, region, type)
 VALUES (1, 1, '고등수학 미적분 심화 과정', '미적분의 개념부터 심화 문제까지 단계적으로 학습하는 고등학생 대상의 집중 수학 과정입니다.', 120000, 1, 4,
-        DATE '2025-09-01', DATE '2025-12-15', DATE '2025-08-25', 'ACTIVE', 'HIGH', 'MATH',
+        CURRENT_DATE, DATE '2025-12-15', DATE '2025-08-25', 'ACTIVE', 'HIGH', 'MATH',
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'EUNPYEONG_GU', 'OFFLINE'),
 
        (2, 2, '고등물리 역학 마스터 클래스', '운동의 법칙과 에너지 보존을 중심으로 역학 전반을 깊이 있게 다루는 고등 물리 심화 수업입니다.', 110000, 2,
         5,
-        DATE '2025-09-08', DATE '2025-11-28', DATE '2025-09-01', 'ACTIVE', 'HIGH', 'SCIENCE',
+        CURRENT_DATE, DATE '2025-11-28', DATE '2025-09-01', 'ACTIVE', 'HIGH', 'SCIENCE',
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'JONGNO_GU', 'OFFLINE'),
 
        (3, 3, '중학화학 기초 다지기', '중학생을 위한 화학 기초 개념 수업으로 원소, 분자, 화학반응 등 과학의 기초를 쉽게 학습합니다.', 90000, 1, 4,
-        DATE '2025-05-10', DATE '2025-07-10', DATE '2025-05-01', 'ACTIVE', 'MIDDLE', 'SCIENCE',
+        CURRENT_DATE, DATE '2025-07-10', DATE '2025-05-01', 'ACTIVE', 'MIDDLE', 'SCIENCE',
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'JONGNO_GU', 'ONLINE'),
 
        (4, 4, '중학 생명과학 탐구 실험', '생물의 기본 구조와 기능을 중심으로 다양한 실험 활동을 통해 탐구 능력을 기르는 수업입니다.', 95000, 6, 18,

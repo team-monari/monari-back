@@ -1,11 +1,12 @@
-package com.monari.monariback.enrollment.batch.config;
+package com.monari.monariback.batch.config;
 
-import com.monari.monariback.enrollment.batch.itemprocessor.LessonItemProcessor;
-import com.monari.monariback.enrollment.batch.itemprocessor.MailItemProcessor;
-import com.monari.monariback.enrollment.batch.itemwriter.EnrollmentItemWriter;
-import com.monari.monariback.enrollment.dto.LessonFeeDto;
+import com.monari.monariback.batch.itemprocessor.MailItemProcessor;
+import com.monari.monariback.batch.itemprocessor.LessonItemProcessor;
+import com.monari.monariback.batch.itemwriter.EnrollmentItemWriter;
+import com.monari.monariback.batch.dto.LessonFeeDto;
 import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.lesson.entity.Lesson;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityManagerFactory;
 import java.time.LocalDate;
 import java.util.Map;
@@ -19,14 +20,12 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
-import org.springframework.batch.item.mail.SimpleMailMessageItemWriter;
-import org.springframework.batch.item.mail.builder.SimpleMailMessageItemWriterBuilder;
+import org.springframework.batch.item.mail.javamail.MimeMessageItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
@@ -93,23 +92,23 @@ public class LessonFeeJobConfig {
     }
 
     @Bean
-    public SimpleMailMessageItemWriter simpleMailMessageItemWriter(MailSender mailSender) {
-        return new SimpleMailMessageItemWriterBuilder()
-            .mailSender(mailSender)
-            .build();
+    public MimeMessageItemWriter mimeMessageItemWriter(JavaMailSender mailSender) {
+        MimeMessageItemWriter mimeMessageItemWriter = new MimeMessageItemWriter();
+        mimeMessageItemWriter.setJavaMailSender(mailSender);
+        return mimeMessageItemWriter;
     }
 
     @Bean
     public Step lessonFeeNotificationStep(JobRepository jobRepository,
-        PlatformTransactionManager transactionManager,
-        JpaPagingItemReader<Enrollment> enrollmentItemReader,
-        SimpleMailMessageItemWriter simpleMailMessageItemWriter) {
+                                          PlatformTransactionManager transactionManager,
+                                          JpaPagingItemReader<Enrollment> enrollmentItemReader,
+                                          MimeMessageItemWriter mimeMessageItemWriter) {
         return new StepBuilder("lessonFeeNotificationStep", jobRepository)
-            .<Enrollment, SimpleMailMessage>chunk(10, transactionManager)
-            .reader(enrollmentItemReader)
-            .processor(mailItemProcessor)
-            .writer(simpleMailMessageItemWriter)
-            .build();
+                .<Enrollment, MimeMessage>chunk(10, transactionManager)
+                .reader(enrollmentItemReader)
+                .processor(mailItemProcessor)
+                .writer(mimeMessageItemWriter)
+                .build();
     }
 
     @Bean
