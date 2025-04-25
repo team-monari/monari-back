@@ -1,5 +1,7 @@
 package com.monari.monariback.enrollment.service;
 
+import static com.monari.monariback.enrollment.constant.EnrollmentResponseConstants.ENROLLMENT_CANCELED;
+import static com.monari.monariback.enrollment.constant.EnrollmentResponseConstants.ENROLLMENT_REFUND;
 import static com.monari.monariback.enrollment.constant.EnrollmentResponseConstants.ENROLLMENT_SUCCESS;
 
 import com.monari.monariback.auth.entity.Accessor;
@@ -184,5 +186,32 @@ public class EnrollmentService {
         int finalPrice = Math.round((float) lesson.getAmount() / enrollmentList.size());
 
         return finalPrice;
+    }
+
+    public String cancelEnrollmentByStudent(
+        final Integer lessonId,
+        final Accessor accessor
+    ) {
+        final Enrollment enrollment = enrollmentRepository.findByStudentAndLesson(
+                accessor.getPublicId(),
+                lessonId
+            )
+            .orElseThrow(() -> new NotFoundException(ErrorCode.ENROLLMENT_NOT_FOUND));
+
+        enrollment.cancelByStudent();
+        return ENROLLMENT_CANCELED;
+    }
+
+    public String refundEnrollmentByStudent(
+        final Integer lessonId,
+        final Accessor accessor
+    ) {
+        final Enrollment enrollment = enrollmentRepository.findByStudentAndLesson(
+                accessor.getPublicId(),
+                lessonId
+            )
+            .orElseThrow(() -> new BusinessException(ErrorCode.ENROLLMENT_NOT_FOUND));
+        enrollment.refundByStudent();
+        return ENROLLMENT_REFUND;
     }
 }

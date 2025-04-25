@@ -1,6 +1,8 @@
 package com.monari.monariback.enrollment.entity;
 
 import com.monari.monariback.common.entity.BaseEntity;
+import com.monari.monariback.common.error.ErrorCode;
+import com.monari.monariback.common.exception.BusinessException;
 import com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.student.entity.Student;
@@ -16,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -63,6 +66,34 @@ public class Enrollment extends BaseEntity {
 
     public void updateStatus(final EnrollmentStatus enrollmentStatus) {
         this.status = enrollmentStatus;
+    }
+
+    public void cancelByStudent() {
+        if (checkCancelValidation()) {
+            throw new BusinessException(ErrorCode.ENROLLMENT_ALREADY_CANCELED);
+        }
+        if (LocalDate.now().isBefore(this.lesson.getDeadline())) {
+            this.status = EnrollmentStatus.CANCELLED;
+        } else {
+            throw new BusinessException(ErrorCode.ENROLLMENT_IS_AFTER_DEADLINE);
+        }
+    }
+
+    public void refundByStudent() {
+        if (checkCancelValidation()) {
+            throw new BusinessException(ErrorCode.ENROLLMENT_ALREADY_CANCELED);
+        }
+        if (LocalDate.now().isBefore(this.lesson.getStartDate())) {
+            this.status = EnrollmentStatus.REFUND_REQUESTED;
+        } else {
+            throw new BusinessException(ErrorCode.ENROLLMENT_IS_AFTER_START_DATE);
+        }
+    }
+
+    private boolean checkCancelValidation() {
+        return this.status == EnrollmentStatus.REFUND_REQUESTED
+            || this.status == EnrollmentStatus.REFUNDED
+            || this.status == EnrollmentStatus.CANCELLED;
     }
 
     public void updateFinalPrice(final int finalPrice) {

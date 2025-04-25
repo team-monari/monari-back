@@ -19,7 +19,7 @@ public enum ErrorCode {
 
     // student
     STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT4041", "존재하지 않는 학생입니다"),
-    STUDENT_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND,  "STUDENT4042",       "프로필 이미지가 설정되지 않았습니다."),
+    STUDENT_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND, "STUDENT4042", "프로필 이미지가 설정되지 않았습니다."),
 
 
     // auth
@@ -29,7 +29,8 @@ public enum ErrorCode {
     AUTH_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH4004", "존재하지 않는 유저입니다."),
     AUTH_FORBIDDEN(HttpStatus.BAD_REQUEST, "AUTH4005", "해당 리소스에 접근할 권한이 없습니다."),
     OAUTH_TOKEN_REQUEST_FAILED(HttpStatus.BAD_REQUEST, "AUTH4006", "소셜 로그인 중 액세스 토큰 요청에 실패했습니다."),
-    OAUTH_USERINFO_RESPONSE_EMPTY(HttpStatus.BAD_REQUEST, "AUTH4007", "소셜 로그인 중 사용자 정보 응답이 비어 있습니다."),
+    OAUTH_USERINFO_RESPONSE_EMPTY(HttpStatus.BAD_REQUEST, "AUTH4007",
+        "소셜 로그인 중 사용자 정보 응답이 비어 있습니다."),
 
     // location
     LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "LOCATION4041", "존재하지 않는 장소입니다."),
@@ -39,18 +40,21 @@ public enum ErrorCode {
     ENROLLMENT_DUPLICATED(HttpStatus.BAD_REQUEST, "ENROLLMENT4001", "중복 참여는 불가능합니다."),
     ENROLLMENT_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "ENROLLMENT4002", "최소 인원이 미달입니다."),
     ENROLLMENT_IS_EMPTY(HttpStatus.BAD_REQUEST, "ENROLLMENT4003", "수업에 참가한 인원이 0명 입니다."),
+    ENROLLMENT_IS_AFTER_DEADLINE(HttpStatus.BAD_REQUEST, "ENROLLMENT4004", "취소 기간이 지났습니다."),
+    ENROLLMENT_IS_AFTER_START_DATE(HttpStatus.BAD_REQUEST, "ENROLLMENT4005", "환불 기간이 지났습니다."),
+    ENROLLMENT_ALREADY_CANCELED(HttpStatus.BAD_REQUEST, "ENROLLMENT4006", "이미 취소 혹은 환불 되었습니다."),
 
 
     // teacher
     TEACHER_NOT_FOUND(HttpStatus.NOT_FOUND, "TEACHER4041", "존재하지 않는 선생입니다."),
-    TEACHER_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND,  "TEACHER4042",       "프로필 이미지가 설정되지 않았습니다."),
+    TEACHER_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND, "TEACHER4042", "프로필 이미지가 설정되지 않았습니다."),
 
     // study
     STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY4041", "존재하지 않는 스터디입니다."),
 
     // image
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 업로드에 실패했습니다."),
-    IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST,    "IMAGE4001",          "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
+    IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "IMAGE4001", "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
     IMAGE_DOWNLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5002", "이미지 파일 다운로드에 실패했습니다."),
     IMAGE_FILE_INVALID_NAME(HttpStatus.BAD_REQUEST, "IMAGE4002", "업로드할 이미지 파일명이 없습니다."),
     IMAGE_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "IMAGE4003", "지원하지 않는 이미지 형식입니다.");

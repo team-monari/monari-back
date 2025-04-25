@@ -62,6 +62,28 @@ public class EnrollmentController {
         );
     }
 
+    @OnlyStudent
+    @PatchMapping("/{lessonId}/cancel")
+    public ResponseEntity<String> cancelEnrollment(
+        @PathVariable(name = "lessonId") final Integer lessonId,
+        @Auth final Accessor accessor
+    ) {
+        return ResponseEntity.ok(
+            enrollmentService.cancelEnrollmentByStudent(lessonId, accessor)
+        );
+    }
+
+    @OnlyStudent
+    @PatchMapping("/{lessonId}/refund")
+    public ResponseEntity<String> refundEnrollment(
+        @PathVariable(name = "lessonId") final Integer lessonId,
+        @Auth final Accessor accessor
+    ) {
+        return ResponseEntity.ok(
+            enrollmentService.refundEnrollmentByStudent(lessonId, accessor)
+        );
+    }
+
     @PatchMapping("/{lessonId}/price")
     public ResponseEntity<Integer> decideFinalPrice(
         @PathVariable(name = "lessonId") final Integer lessonId
