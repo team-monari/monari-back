@@ -1,4 +1,4 @@
-package com.monari.monariback.enrollment.dto;
+package com.monari.monariback.batch.dto;
 
 public record LessonFeeDto(
         Integer lessonId,

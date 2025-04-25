@@ -1,4 +1,4 @@
-package com.monari.monariback.enrollment.batch.scheduler;
+package com.monari.monariback.batch.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
