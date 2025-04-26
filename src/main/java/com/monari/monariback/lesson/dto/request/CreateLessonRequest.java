@@ -10,14 +10,12 @@ import static com.monari.monariback.lesson.constant.LessonValidationConstants.DE
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.END_DATE_FUTURE;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.END_DATE_REQUIRED;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.LOCATION_ID_POSITIVE;
-import static com.monari.monariback.lesson.constant.LessonValidationConstants.LOCATION_ID_REQUIRED;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.MAX_STUDENT_MIN;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.MAX_STUDENT_MIN_VALUE;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.MAX_STUDENT_REQUIRED;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.MIN_STUDENT_MIN;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.MIN_STUDENT_MIN_VALUE;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.MIN_STUDENT_REQUIRED;
-import static com.monari.monariback.lesson.constant.LessonValidationConstants.REGION_REQUIRED;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.SCHOOL_LEVEL_REQUIRED;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.START_DATE_FUTURE_OR_PRESENT;
 import static com.monari.monariback.lesson.constant.LessonValidationConstants.START_DATE_REQUIRED;
@@ -45,7 +43,6 @@ import java.time.LocalDate;
 
 public record CreateLessonRequest(
 
-    @NotNull(message = LOCATION_ID_REQUIRED)
     @Positive(message = LOCATION_ID_POSITIVE)
     Integer locationId,
 
@@ -84,7 +81,6 @@ public record CreateLessonRequest(
     @NotNull(message = STATUS_REQUIRED)
     LessonStatus status,
 
-    @NotNull(message = REGION_REQUIRED)
     Region region,
 
     @NotNull(message = SCHOOL_LEVEL_REQUIRED)

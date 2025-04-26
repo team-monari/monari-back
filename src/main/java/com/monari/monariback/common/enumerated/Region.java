@@ -25,5 +25,6 @@ public enum Region {
     EUNPYEONG_GU,
     JONGNO_GU,
     JUNG_GU,
-    JUNGRANG_GU
+    JUNGRANG_GU,
+    ONLINE
 }
