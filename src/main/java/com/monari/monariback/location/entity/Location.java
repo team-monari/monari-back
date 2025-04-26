@@ -25,6 +25,9 @@ public class Location {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "service_id", unique = true)
+    private String serviceId;
+
     @Column(name = "service_subcategory")
     private String serviceSubcategory;
 
@@ -66,6 +69,7 @@ public class Location {
 
 
     public static Location ofCreate(
+        final String serviceId,
         final String serviceSubcategory,
         final String serviceStatus,
         final String paymentMethod,
@@ -84,6 +88,7 @@ public class Location {
 
         return new Location(
             null,
+            nullIfBlank(serviceId),
             nullIfBlank(serviceSubcategory),
             nullIfBlank(serviceStatus),
             nullIfBlank(paymentMethod),

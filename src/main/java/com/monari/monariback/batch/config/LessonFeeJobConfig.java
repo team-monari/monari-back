@@ -1,9 +1,9 @@
 package com.monari.monariback.batch.config;
 
-import com.monari.monariback.batch.itemprocessor.MailItemProcessor;
-import com.monari.monariback.batch.itemprocessor.LessonItemProcessor;
-import com.monari.monariback.batch.itemwriter.EnrollmentItemWriter;
 import com.monari.monariback.batch.dto.LessonFeeDto;
+import com.monari.monariback.batch.itemprocessor.LessonItemProcessor;
+import com.monari.monariback.batch.itemprocessor.MailItemProcessor;
+import com.monari.monariback.batch.itemwriter.EnrollmentItemWriter;
 import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.lesson.entity.Lesson;
 import jakarta.mail.internet.MimeMessage;
@@ -100,18 +100,18 @@ public class LessonFeeJobConfig {
 
     @Bean
     public Step lessonFeeNotificationStep(JobRepository jobRepository,
-                                          PlatformTransactionManager transactionManager,
-                                          JpaPagingItemReader<Enrollment> enrollmentItemReader,
-                                          MimeMessageItemWriter mimeMessageItemWriter) {
+        PlatformTransactionManager transactionManager,
+        JpaPagingItemReader<Enrollment> enrollmentItemReader,
+        MimeMessageItemWriter mimeMessageItemWriter) {
         return new StepBuilder("lessonFeeNotificationStep", jobRepository)
-                .<Enrollment, MimeMessage>chunk(10, transactionManager)
-                .reader(enrollmentItemReader)
-                .processor(mailItemProcessor)
-                .writer(mimeMessageItemWriter)
-                .build();
+            .<Enrollment, MimeMessage>chunk(10, transactionManager)
+            .reader(enrollmentItemReader)
+            .processor(mailItemProcessor)
+            .writer(mimeMessageItemWriter)
+            .build();
     }
 
-    @Bean
+    @Bean(name = "lessonFeeJob")
     public Job lessonFeeJob(JobRepository jobRepository,
         @Qualifier("lessonFeeCalculationStep") Step lessonFeeCalculationStep,
         @Qualifier("lessonFeeNotificationStep") Step lessonFeeNotificationStep) {
