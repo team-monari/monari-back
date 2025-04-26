@@ -28,16 +28,16 @@ public class PublicApiJobConfig {
 
     @Bean(name = "publicDataSyncJob")
     public Job publicDataSyncJob(JobRepository jobRepository,
-        @Qualifier("getApiData") Step getApiData) {
+        @Qualifier("publicDataStep") Step getApiData) {
         return new JobBuilder("publicDataSyncJob", jobRepository)
             .start(getApiData)
             .build();
     }
 
     @Bean
-    public Step getApiData(JobRepository jobRepository,
+    public Step publicDataStep(JobRepository jobRepository,
         PlatformTransactionManager transactionManager) {
-        return new StepBuilder("syncStep", jobRepository)
+        return new StepBuilder("publicDataStep", jobRepository)
             .<OpenApiLocationDto, OpenApiLocationDto>chunk(10, transactionManager)
             .reader(publicApiDataReader)
             .processor(publicApiDataProcessor)

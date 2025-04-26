@@ -23,6 +23,12 @@ public class PublicApiDataReader implements ItemReader<OpenApiLocationDto> {
     private final WebClientUtil webClientUtil;
     private Iterator<OpenApiLocationDto> iterator;
 
+    /**
+     * 외부 공공 API에서 데이터를 조회하고, DTO 리스트로 반환하는 내부 메서드
+     *
+     * @return OpenApiLocationDto 리스트
+     * @author Hong
+     */
     private List<OpenApiLocationDto> fetchDataFromApi() {
         OpenApiLocationResponse responseDto = webClientUtil.get(
             webClientUtil.buildRequestUri(
@@ -38,6 +44,12 @@ public class PublicApiDataReader implements ItemReader<OpenApiLocationDto> {
         return responseDto.listPublicReservationInstitution().row().stream().toList();
     }
 
+    /**
+     * Spring Batch가 데이터를 읽을 때 호출되는 메서드. 처음 한 번 API로부터 전체 데이터를 가져오고, 이후 한 개씩 반환.
+     *
+     * @return 다음 OpenApiLocationDto 객체 또는 더 이상 없으면 null
+     * @author Hong
+     */
     @Override
     public OpenApiLocationDto read() {
         if (iterator == null) {
