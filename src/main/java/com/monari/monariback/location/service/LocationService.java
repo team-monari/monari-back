@@ -57,6 +57,7 @@ public class LocationService {
 
         return responseDto.listPublicReservationInstitution().row().stream()
             .map(dto -> Location.ofCreate(
+                dto.svcId(),
                 dto.minClassNm(),
                 dto.svcStatNm(),
                 dto.payAtNm(),
