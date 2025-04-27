@@ -6,6 +6,7 @@ import static com.monari.monariback.lesson.constant.LessonResponseConstants.LESS
 import static com.monari.monariback.lesson.constant.LessonResponseConstants.LESSON_UPDATE_SUCCESS;
 
 import com.monari.monariback.auth.entity.Accessor;
+import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.error.ErrorCode;
 import com.monari.monariback.common.exception.BusinessException;
 import com.monari.monariback.common.exception.NotFoundException;
@@ -40,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class LessonService {
 
     private static final Integer PAGE_SIZE = 6;
+    private static final Integer ONLINE_LOCATION = 1;
 
     private final LessonRepository lessonRepository;
     private final LocationRepository locationRepository;
@@ -60,6 +62,17 @@ public class LessonService {
         final CreateLessonRequest lessonDto,
         final Accessor accessor
     ) {
+
+        switch (lessonDto.lessonType()) {
+            case ONLINE -> createOnlineLesson(lessonDto, accessor);
+            case OFFLINE -> createOfflineLesson(lessonDto, accessor);
+        }
+        return LESSON_CREATE_SUCCESS;
+    }
+
+    public void createOfflineLesson(
+        final CreateLessonRequest lessonDto,
+        final Accessor accessor) {
         final Location location = locationRepository.findById(lessonDto.locationId())
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
         final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
@@ -83,7 +96,35 @@ public class LessonService {
         );
 
         lessonRepository.save(lesson);
-        return LESSON_CREATE_SUCCESS;
+
+    }
+
+    public void createOnlineLesson(
+        final CreateLessonRequest lessonDto,
+        final Accessor accessor) {
+        final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
+            .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
+
+        final Location location = locationRepository.findById(ONLINE_LOCATION)
+            .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
+
+        final Lesson lesson = Lesson.ofCreate(
+            location,
+            teacher,
+            lessonDto.title(),
+            lessonDto.description(),
+            lessonDto.amount(),
+            lessonDto.minStudent(),
+            lessonDto.maxStudent(),
+            lessonDto.startDate(),
+            lessonDto.endDate(),
+            lessonDto.deadline(),
+            Region.ONLINE,
+            lessonDto.schoolLevel(),
+            lessonDto.subject(),
+            lessonDto.lessonType()
+        );
+        lessonRepository.save(lesson);
     }
 
     /**
