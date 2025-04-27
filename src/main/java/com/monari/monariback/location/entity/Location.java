@@ -118,4 +118,128 @@ public class Location {
         String v = nullIfBlank(value);
         return v == null ? null : Integer.parseInt(v);
     }
+
+    public boolean updateIfChanged(
+        String serviceSubcategory,
+        String serviceStatus,
+        String paymentMethod,
+        String locationName,
+        String serviceUrl,
+        String registrationStartDateTime,
+        String registrationEndDateTime,
+        String cancellationStartDateTime,
+        String cancellationEndDateTime,
+        String cancellationPolicyInfo,
+        String cancellationDeadline,
+        String x,
+        String y
+    ) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+        boolean isChanged = false;
+
+        // String 필드 비교
+        String newServiceSubcategory = nullIfBlank(serviceSubcategory);
+        if (this.serviceSubcategory == null && newServiceSubcategory != null ||
+            this.serviceSubcategory != null && !this.serviceSubcategory.equals(
+                newServiceSubcategory)) {
+            this.serviceSubcategory = newServiceSubcategory;
+            isChanged = true;
+        }
+
+        String newServiceStatus = nullIfBlank(serviceStatus);
+        if (this.serviceStatus == null && newServiceStatus != null ||
+            this.serviceStatus != null && !this.serviceStatus.equals(newServiceStatus)) {
+            this.serviceStatus = newServiceStatus;
+            isChanged = true;
+        }
+
+        String newPaymentMethod = nullIfBlank(paymentMethod);
+        if (this.paymentMethod == null && newPaymentMethod != null ||
+            this.paymentMethod != null && !this.paymentMethod.equals(newPaymentMethod)) {
+            this.paymentMethod = newPaymentMethod;
+            isChanged = true;
+        }
+
+        String newLocationName = nullIfBlank(locationName);
+        if (this.locationName == null && newLocationName != null ||
+            this.locationName != null && !this.locationName.equals(newLocationName)) {
+            this.locationName = newLocationName;
+            isChanged = true;
+        }
+
+        String newServiceUrl = nullIfBlank(serviceUrl);
+        if (this.serviceUrl == null && newServiceUrl != null ||
+            this.serviceUrl != null && !this.serviceUrl.equals(newServiceUrl)) {
+            this.serviceUrl = newServiceUrl;
+            isChanged = true;
+        }
+
+        // LocalDateTime 필드 비교
+        LocalDateTime newRegistrationStart = parseDate(registrationStartDateTime, formatter);
+        if (this.registrationStartDateTime == null && newRegistrationStart != null ||
+            this.registrationStartDateTime != null && !this.registrationStartDateTime.equals(
+                newRegistrationStart)) {
+            this.registrationStartDateTime = newRegistrationStart;
+            isChanged = true;
+        }
+
+        LocalDateTime newRegistrationEnd = parseDate(registrationEndDateTime, formatter);
+        if (this.registrationEndDateTime == null && newRegistrationEnd != null ||
+            this.registrationEndDateTime != null && !this.registrationEndDateTime.equals(
+                newRegistrationEnd)) {
+            this.registrationEndDateTime = newRegistrationEnd;
+            isChanged = true;
+        }
+
+        LocalDateTime newCancellationStart = parseDate(cancellationStartDateTime, formatter);
+        if (this.cancellationStartDateTime == null && newCancellationStart != null ||
+            this.cancellationStartDateTime != null && !this.cancellationStartDateTime.equals(
+                newCancellationStart)) {
+            this.cancellationStartDateTime = newCancellationStart;
+            isChanged = true;
+        }
+
+        LocalDateTime newCancellationEnd = parseDate(cancellationEndDateTime, formatter);
+        if (this.cancellationEndDateTime == null && newCancellationEnd != null ||
+            this.cancellationEndDateTime != null && !this.cancellationEndDateTime.equals(
+                newCancellationEnd)) {
+            this.cancellationEndDateTime = newCancellationEnd;
+            isChanged = true;
+        }
+
+        // cancellationPolicyInfo 비교
+        String newCancellationPolicyInfo = nullIfBlank(cancellationPolicyInfo);
+        if (this.cancellationPolicyInfo == null && newCancellationPolicyInfo != null ||
+            this.cancellationPolicyInfo != null && !this.cancellationPolicyInfo.equals(
+                newCancellationPolicyInfo)) {
+            this.cancellationPolicyInfo = newCancellationPolicyInfo;
+            isChanged = true;
+        }
+
+        // Integer 필드 비교
+        Integer newCancellationDeadline = parseInteger(cancellationDeadline);
+        if (this.cancellationDeadline == null && newCancellationDeadline != null ||
+            this.cancellationDeadline != null && !this.cancellationDeadline.equals(
+                newCancellationDeadline)) {
+            this.cancellationDeadline = newCancellationDeadline;
+            isChanged = true;
+        }
+
+        // x, y 비교
+        String newX = nullIfBlank(x);
+        if (this.x == null && newX != null ||
+            this.x != null && !this.x.equals(newX)) {
+            this.x = newX;
+            isChanged = true;
+        }
+
+        String newY = nullIfBlank(y);
+        if (this.y == null && newY != null ||
+            this.y != null && !this.y.equals(newY)) {
+            this.y = newY;
+            isChanged = true;
+        }
+
+        return isChanged;
+    }
 }

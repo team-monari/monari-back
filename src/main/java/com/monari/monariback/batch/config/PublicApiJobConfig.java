@@ -4,6 +4,7 @@ import com.monari.monariback.batch.itemReader.PublicApiDataReader;
 import com.monari.monariback.batch.itemprocessor.PublicApiDataProcessor;
 import com.monari.monariback.batch.itemwriter.PublicApiDataWriter;
 import com.monari.monariback.location.dto.OpenApiLocationDto;
+import com.monari.monariback.location.entity.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -38,7 +39,7 @@ public class PublicApiJobConfig {
     public Step publicDataStep(JobRepository jobRepository,
         PlatformTransactionManager transactionManager) {
         return new StepBuilder("publicDataStep", jobRepository)
-            .<OpenApiLocationDto, OpenApiLocationDto>chunk(10, transactionManager)
+            .<OpenApiLocationDto, Location>chunk(10, transactionManager)
             .reader(publicApiDataReader)
             .processor(publicApiDataProcessor)
             .writer(publicApiDataWriter)
