@@ -23,7 +23,7 @@ public class OpenApiJonScheduler {
         this.publicDataSyncJob = publicDataSyncJob;
     }
 
-    @Scheduled(cron = "0 21 8,20 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 25 8,20 * * *", zone = "Asia/Seoul")
     public void runPublicDataJob() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
             .addString("openApiStartDate", UUID.randomUUID().toString())
