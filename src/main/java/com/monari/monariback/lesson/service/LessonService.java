@@ -248,7 +248,8 @@ public class LessonService {
             searchLessonRequest.schoolLevel(),
             searchLessonRequest.subject(),
             searchLessonRequest.region(),
-            searchLessonRequest.lessonType()
+            searchLessonRequest.lessonType(),
+            searchLessonRequest.searchType()
         );
 
         return new PageImpl<>(
@@ -260,7 +261,8 @@ public class LessonService {
                     searchLessonRequest.schoolLevel(),
                     searchLessonRequest.subject(),
                     searchLessonRequest.region(),
-                    searchLessonRequest.lessonType()
+                    searchLessonRequest.lessonType(),
+                    searchLessonRequest.searchType()
                 )
                 .stream()
                 .map(lesson -> {
