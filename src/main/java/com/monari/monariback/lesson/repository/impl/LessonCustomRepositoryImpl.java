@@ -4,6 +4,7 @@ import static com.monari.monariback.lesson.entity.QLesson.lesson;
 
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
+import com.monari.monariback.common.enumerated.SearchType;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
@@ -40,7 +41,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final Integer pageNum
     ) {
         // 페이징 처리를 위한 공통 메서드 사용
-        return fetchLessonsWithPaging(null, pageSize, pageNum, null, null, null, null);
+        return fetchLessonsWithPaging(null, pageSize, pageNum, null, null, null, null, null);
     }
 
     /**
@@ -60,11 +61,12 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final SchoolLevel schoolLevel,
         final Subject subject,
         final Region region,
-        final LessonType lessonType
+        final LessonType lessonType,
+        final SearchType searchType
     ) {
         // 페이징 처리를 위한 공통 메서드 사용
         return fetchLessonsWithPaging(keyword, pageSize, pageNum, schoolLevel, subject, region,
-            lessonType);
+            lessonType, searchType);
     }
 
     /**
@@ -80,7 +82,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final int pageSize,
         final String keyword
     ) {
-        long totalCount = getTotalLessonCount(keyword, null, null, null, null);
+        long totalCount = getTotalLessonCount(keyword, null, null, null, null, null);
         return totalCount == 0 ? 0 : (int) Math.ceil((double) totalCount / pageSize);
     }
 
@@ -121,12 +123,14 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final SchoolLevel schoolLevel,
         final Subject subject,
         final Region region,
-        final LessonType lessonType
+        final LessonType lessonType,
+        final SearchType searchType
     ) {
         Long count = queryFactory
             .select(lesson.count())
             .from(lesson)
-            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType))
+            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType,
+                searchType))
             .fetchOne();
 
         return count != null ? count : 0L;
@@ -167,11 +171,13 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final SchoolLevel schoolLevel,
         final Subject subject,
         final Region region,
-        final LessonType lessonType
+        final LessonType lessonType,
+        final SearchType searchType
     ) {
         return queryFactory
             .selectFrom(lesson)
-            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType))
+            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType,
+                searchType))
             .orderBy(LESSON_DEFAULT_ORDER)
             .limit(pageSize)
             .offset(getOffset(pageSize, pageNum))
@@ -199,11 +205,12 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final SchoolLevel schoolLevel,
         final Subject subject,
         final Region region,
-        final LessonType lessonType
+        final LessonType lessonType,
+        final SearchType searchType
     ) {
 
         return new BooleanExpression[]{
-            keywordCondition(keyword),
+            keywordCondition(keyword, searchType),
             schoolLevelCondition(schoolLevel),
             subjectCondition(subject),
             regionCondition(region),
@@ -216,12 +223,16 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return lessonType != null ? lesson.lessonType.eq(lessonType) : null;
     }
 
-    private BooleanExpression keywordCondition(final String keyword) {
+    private BooleanExpression keywordCondition(final String keyword, final SearchType searchType) {
         if (keyword == null || keyword.trim().isEmpty()) {
             return null;
         }
-        return lesson.title.containsIgnoreCase(keyword)
-            .or(lesson.description.containsIgnoreCase(keyword));
+        return switch (searchType) {
+            case TITLE -> lesson.title.containsIgnoreCase(keyword);
+            case DESCRIPTION -> lesson.description.containsIgnoreCase(keyword);
+            case ALL -> lesson.title.containsIgnoreCase(keyword)
+                .or(lesson.description.containsIgnoreCase(keyword));
+        };
     }
 
     private BooleanExpression schoolLevelCondition(final SchoolLevel schoolLevel) {

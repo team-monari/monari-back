@@ -2,6 +2,7 @@ package com.monari.monariback.lesson.repository;
 
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
+import com.monari.monariback.common.enumerated.SearchType;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
@@ -16,14 +17,15 @@ public interface LessonCustomRepository {
 
     List<Lesson> searchLessons(final String keyword, final Integer pageSize, final Integer pageNum,
         final SchoolLevel schoolLevel, final Subject subject, final Region region,
-        final LessonType lessonType);
+        final LessonType lessonType, final SearchType searchType);
 
     int getTotalLessonPages(final int pageSize, final String keyword);
 
     List<Lesson> findAllByTeacherId(final int teacherId, final int pageSize, final int pageNum);
 
     long getTotalLessonCount(final String keyword, final SchoolLevel schoolLevel,
-        final Subject subject, final Region region, final LessonType lessonType);
+        final Subject subject, final Region region, final LessonType lessonType,
+        final SearchType searchType);
 
     Long getTotalLessenByTeacherId(final int teacherId);
 
