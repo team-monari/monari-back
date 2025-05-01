@@ -92,7 +92,7 @@ public class Lesson extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Subject subject;
 
-    @BatchSize(size = 100)
+    @BatchSize(size = 10)
     @OneToMany(mappedBy = "lesson")
     private List<Enrollment> enrollments;
 
@@ -158,5 +158,19 @@ public class Lesson extends BaseEntity {
         region = newRegion;
         schoolLevel = newSchoolLevel;
         subject = newSubject;
+    }
+
+    public void updateStatusIfMinEnrollmentNotMet() {
+        if (this.getMinStudent() > this.getEnrollments().size()) {
+            updateStatus(LessonStatus.CANCELED);
+        }
+    }
+
+    public void updateStatus(final LessonStatus lessonStatus) {
+        this.status = lessonStatus;
+    }
+
+    public int calculateFinalPrice() {
+        return Math.round((float) this.getAmount() / this.getEnrollments().size());
     }
 }

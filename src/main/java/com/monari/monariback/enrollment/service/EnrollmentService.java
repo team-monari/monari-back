@@ -33,27 +33,6 @@ public class EnrollmentService {
     private final LessonRepository lessonRepository;
 
     /**
-     * 수강생이 최소 인원 조건을 충족하는지 검증하는 메서드
-     *
-     * @param lesson         수업 엔티티
-     * @param enrollmentList 수업을 신청한 학생 리스트
-     * @throws BusinessException 최소 인원 미달 또는 수강생이 없는 경우 발생
-     * @author Hong
-     */
-    private static void validateEnrollment(
-        final Lesson lesson,
-        final List<Enrollment> enrollmentList
-    ) {
-        if (lesson.getMinStudent() > enrollmentList.size()) {
-            throw new BusinessException(ErrorCode.ENROLLMENT_NOT_ENOUGH);
-        }
-
-        if (enrollmentList.isEmpty()) {
-            throw new BusinessException(ErrorCode.ENROLLMENT_IS_EMPTY);
-        }
-    }
-
-    /**
      * 학생이 수업을 신청하는 메서드
      *
      * @param enrollmentCreateRequest 수업 신청 요청 정보 (수업 ID 포함)
@@ -166,26 +145,6 @@ public class EnrollmentService {
             enrollment.getFinalPrice(),
             enrollment.getCreatedAt()
         );
-    }
-
-    /**
-     * 수업의 수강생 수를 기준으로 수강료를 계산하여 각 학생의 최종 금액을 결정하는 메서드
-     *
-     * @param lessonId 수업 ID
-     * @return 최종 금액 설정 성공 메시지
-     * @throws BusinessException 수업이 존재하지 않거나, 수강생이 최소 인원보다 부족한 경우 발생
-     * @author Hong
-     */
-    public int decideFinalPrice(final Integer lessonId) {
-        final Lesson lesson = lessonRepository.findById(lessonId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.LESSON_NOT_FOUND));
-
-        List<Enrollment> enrollmentList = enrollmentRepository.findAllByLessonId(lessonId);
-        validateEnrollment(lesson, enrollmentList);
-
-        int finalPrice = Math.round((float) lesson.getAmount() / enrollmentList.size());
-
-        return finalPrice;
     }
 
     public String cancelEnrollmentByStudent(
