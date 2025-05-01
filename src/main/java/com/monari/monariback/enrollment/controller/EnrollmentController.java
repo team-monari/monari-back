@@ -83,13 +83,4 @@ public class EnrollmentController {
             enrollmentService.refundEnrollmentByStudent(lessonId, accessor)
         );
     }
-
-    @PatchMapping("/{lessonId}/price")
-    public ResponseEntity<Integer> decideFinalPrice(
-        @PathVariable(name = "lessonId") final Integer lessonId
-    ) {
-        return ResponseEntity.ok(
-            enrollmentService.decideFinalPrice(lessonId)
-        );
-    }
 }
