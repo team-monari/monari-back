@@ -162,7 +162,8 @@ public class LessonService {
             lessonDto.deadline(),
             lessonDto.region(),
             lessonDto.schoolLevel(),
-            lessonDto.subject()
+            lessonDto.subject(),
+            lessonDto.status()
         );
 
         return LESSON_UPDATE_SUCCESS;

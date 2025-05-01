@@ -143,7 +143,8 @@ public class Lesson extends BaseEntity {
         final LocalDate newDeadline,
         final Region newRegion,
         final SchoolLevel newSchoolLevel,
-        final Subject newSubject
+        final Subject newSubject,
+        final LessonStatus lessonStatus
     ) {
         generalLocation = newLocation;
         teacher = newTeacher;
@@ -158,5 +159,6 @@ public class Lesson extends BaseEntity {
         region = newRegion;
         schoolLevel = newSchoolLevel;
         subject = newSubject;
+        status = lessonStatus;
     }
 }
