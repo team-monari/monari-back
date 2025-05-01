@@ -42,7 +42,7 @@ public class Lesson extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private GeneralLocation location;
+    private GeneralLocation generalLocation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
@@ -113,7 +113,7 @@ public class Lesson extends BaseEntity {
         final LessonType lessonType
     ) {
         Lesson lesson = new Lesson();
-        lesson.location = location;
+        lesson.generalLocation = location;
         lesson.teacher = teacher;
         lesson.title = title;
         lesson.description = description;
@@ -145,7 +145,7 @@ public class Lesson extends BaseEntity {
         final SchoolLevel newSchoolLevel,
         final Subject newSubject
     ) {
-        location = newLocation;
+        generalLocation = newLocation;
         teacher = newTeacher;
         title = newTitle;
         description = newDescription;

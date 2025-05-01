@@ -70,7 +70,7 @@ public record LessonResponse(
     ) {
         return new LessonResponse(
             lesson.getId(),
-            lesson.getLocation().getId(),
+            lesson.getGeneralLocation().getId(),
             lesson.getTeacher().getId(),
             lesson.getTitle(),
             currentStudent,

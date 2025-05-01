@@ -184,7 +184,7 @@ public class LessonService {
 
         return LessonWithTeacherResponse.ofCreate(
             lesson.getId(),
-            lesson.getLocation().getId(),
+            lesson.getGeneralLocation().getId(),
             lesson.getTitle(),
             enrollmentRepository.countCurrentStudentByLessonId(lessonId),
             lesson.getDescription(),
