@@ -7,7 +7,7 @@ import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.lesson.entity.enurmerated.LessonStatus;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
-import com.monari.monariback.location.entity.Location;
+import com.monari.monariback.location.entity.GeneralLocation;
 import com.monari.monariback.teacher.entity.Teacher;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,7 +42,7 @@ public class Lesson extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private Location location;
+    private GeneralLocation location;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
@@ -97,7 +97,7 @@ public class Lesson extends BaseEntity {
     private List<Enrollment> enrollments;
 
     public static Lesson ofCreate(
-        final Location location,
+        final GeneralLocation location,
         final Teacher teacher,
         final String title,
         final String description,
@@ -131,7 +131,7 @@ public class Lesson extends BaseEntity {
     }
 
     public void update(
-        final Location newLocation,
+        final GeneralLocation newLocation,
         final Teacher newTeacher,
         final String newTitle,
         final String newDescription,

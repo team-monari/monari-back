@@ -28,4 +28,6 @@ public class LocationController {
         @PathVariable(name = "locationId") final Integer locationId) {
         return ResponseEntity.ok(locationService.getLocation(locationId));
     }
+
+
 }
