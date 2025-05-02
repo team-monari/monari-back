@@ -50,6 +50,22 @@ public class LessonService {
     private final EnrollmentRepository enrollmentRepository;
 
     /**
+     * 선생님 은행 정보 확인
+     *
+     * @param teacher - 선생님 Entity
+     * @author Hong
+     */
+    // TODO : 선생님 내부 메서드로 변경
+    private static void checkTeacherBankProfile(final Teacher teacher) {
+        if (teacher.getBankName() == null || teacher.getBankName().isEmpty() &&
+            teacher.getAccountNumber() == null || teacher.getAccountNumber().isEmpty()) {
+            throw new BusinessException(
+                ErrorCode.TEACHER_PROFILE_REQUIRED_BANK_PROFILE
+            );
+        }
+    }
+
+    /**
      * 수업 생성
      *
      * @param lessonDto 수업 생성 요청 데이터
@@ -62,21 +78,24 @@ public class LessonService {
         final CreateLessonRequest lessonDto,
         final Accessor accessor
     ) {
+        final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
+            .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
+
+        checkTeacherBankProfile(teacher);
 
         switch (lessonDto.lessonType()) {
-            case ONLINE -> createOnlineLesson(lessonDto, accessor);
-            case OFFLINE -> createOfflineLesson(lessonDto, accessor);
+            case ONLINE -> createOnlineLesson(lessonDto, teacher);
+            case OFFLINE -> createOfflineLesson(lessonDto, teacher);
         }
         return LESSON_CREATE_SUCCESS;
     }
 
     public void createOfflineLesson(
         final CreateLessonRequest lessonDto,
-        final Accessor accessor) {
+        final Teacher teacher) {
+
         final GeneralLocation location = generalLocationRepository.findById(ONLINE_LOCATION)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
-        final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
-            .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
 
         final Lesson lesson = Lesson.ofCreate(
             location,
@@ -101,9 +120,7 @@ public class LessonService {
 
     public void createOnlineLesson(
         final CreateLessonRequest lessonDto,
-        final Accessor accessor) {
-        final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
-            .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
+        final Teacher teacher) {
 
         final GeneralLocation location = generalLocationRepository.findById(ONLINE_LOCATION)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
@@ -390,4 +407,6 @@ public class LessonService {
             TotalLessons
         );
     }
+
 }
+
