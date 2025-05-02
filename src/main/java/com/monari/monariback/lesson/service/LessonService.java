@@ -41,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class LessonService {
 
     private static final Integer PAGE_SIZE = 6;
-    private static final Integer ONLINE_LOCATION = 1;
+    private static final Integer ONLINE_LOCATION = 0;
 
     private final LessonRepository lessonRepository;
     private final GeneralLocationRepository generalLocationRepository;

@@ -46,6 +46,22 @@ VALUES
    '2025-03-01 07:00:00', '2025-11-30 18:00:00', null, null,
    '계절별 이용', null, '37.5720', '126.9900');
 
+
+INSERT INTO general_location(id,location_name,region,service_url, x, y)
+VALUES
+    (0,'토즈 강남역토즈타워점', 'GANGNAM_GU', 'https://map.naver.com/p/search/%ED%86%A0%EC%A6%88%20%EA%B0%95%EB%82%A8%EC%97%AD%ED%86%A0%EC%A6%88%ED%83%80%EC%9B%8C%EC%A0%90', 1270306659, 374967416),
+                                                        (1,'토즈 강남역토즈타워점', 'GANGNAM_GU', 'https://map.naver.com/p/search/%ED%86%A0%EC%A6%88%20%EA%B0%95%EB%82%A8%EC%97%AD%ED%86%A0%EC%A6%88%ED%83%80%EC%9B%8C%EC%A0%90', 1270306659, 374967416),
+                                                        (2,'랭스터디카페 대치점', 'GANGNAM_GU', 'https://map.naver.com/p/search/%EB%9E%AD%EC%8A%A4%ED%84%B0%EB%94%94%EC%B9%B4%ED%8E%98%20%EB%8C%80%EC%B9%98%EC%A0%90', 1270593120, 374980923),
+                                                        (3,'토즈 압구정센터', 'GANGNAM_GU', 'https://map.naver.com/p/search/%ED%86%A0%EC%A6%88%20%EC%95%95%EA%B5%AC%EC%A0%95%EC%84%BC%ED%84%B0', 1270305097, 375260243),
+                                                        (4,'토즈 역삼점', 'GANGNAM_GU', 'https://map.naver.com/p/search/%ED%86%A0%EC%A6%88%20%EC%97%AD%EC%82%BC%EC%A0%90', 1270362717, 375034622),
+                                                        (5,'에스랩 스터디카페 강남 3호점', 'GANGNAM_GU', 'https://map.naver.com/p/search/%EC%97%90%EC%8A%A4%EB%9E%A9%20%EC%8A%A4%ED%84%B0%EB%94%94%EC%B9%B4%ED%8E%98%20%EA%B0%95%EB%82%A8%203%ED%98%B8%EC%A0%90', 1270305469, 374949438),
+                                                        (6,'랭스터디카페 천호점', 'GANGDONG_GU', 'https://map.naver.com/p/search/%EB%9E%AD%EC%8A%A4%ED%84%B0%EB%94%94%EC%B9%B4%ED%8E%98%20%EC%B2%9C%ED%98%B8%EC%A0%90', 1271270415, 375387946),
+                                                        (7,'토즈스터디센터 천호역독서실', 'GANGDONG_GU', 'https://map.naver.com/p/search/%ED%86%A0%EC%A6%88%EC%8A%A4%ED%84%B0%EB%94%94%EC%84%BC%ED%84%B0%20%EC%B2%9C%ED%98%B8%EC%97%AD%EB%8F%85%EC%84%9C%EC%8B%A4', 1271232767, 375372307),
+                                                        (8,'내공관리형스터디카페 둔촌본점', 'GANGDONG_GU', 'https://map.naver.com/p/search/%EB%82%B4%EA%B3%B5%EA%B4%80%EB%A6%AC%ED%98%95%EC%8A%A4%ED%84%B0%EB%94%94%EC%B9%B4%ED%8E%98%20%EB%91%94%EC%B4%8C%EB%B3%B8%EC%A0%90', 1271343733, 375239971),
+                                                        (9,'토즈멤버십라운지 천호역센터', 'GANGDONG_GU', 'https://map.naver.com/p/search/%ED%86%A0%EC%A6%88%EB%A9%A4%EB%B2%84%EC%8B%AD%EB%9D%BC%EC%9A%B4%EC%A7%80%20%EC%B2%9C%ED%98%B8%EC%97%AD%EC%84%BC%ED%84%B0', 1271232715, 375372338),
+                                                        (10,'카공족 암사역점', 'GANGDONG_GU', 'https://map.naver.com/p/search/%EC%B9%B4%EA%B3%B5%EC%A1%B1%20%EC%95%94%EC%82%AC%EC%97%AD%EC%A0%90', 1271271483, 375504840),
+                                                        (11,'타임유스터디카페  솔샘점', 'GANGBUK_GU', 'https://map.naver.com/p/search/%ED%83%80%EC%9E%84%EC%9C%A0%EC%8A%A4%ED%84%B0%EB%94%94%EC%B9%B4%ED%8E%98%20%20%EC%86%94%EC%83%98%EC%A0%90', 1270177805, 376201707);
+
 -- Student (학생) 데이터 (10건)
 INSERT INTO student (public_id, email, name, social_provider, social_id, school_level, grade,
                      created_at, updated_at)
@@ -128,7 +144,7 @@ VALUES (RANDOM_UUID(), 'teacher1@example.com', '김철수 교수', 'KAKAO', 't_k
 
 -- Lesson (수업) 데이터 (10건) - location_id 고유하게 수정됨
 -- Location ID 1-10 및 Teacher ID 1-10 사용 가정
-INSERT INTO lesson (location_id, teacher_id, title, description, amount, min_student, max_student,
+INSERT INTO lesson (general_location_id, teacher_id, title, description, amount, min_student, max_student,
                     start_date, end_date, deadline, status, school_level, subject, created_at,
                     updated_at, region, type)
 VALUES (1, 1, '고등수학 미적분 심화 과정', '미적분의 개념부터 심화 문제까지 단계적으로 학습하는 고등학생 대상의 집중 수학 과정입니다.', 120000, 1, 4,
