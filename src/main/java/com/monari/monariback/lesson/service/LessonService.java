@@ -19,8 +19,8 @@ import com.monari.monariback.lesson.dto.response.LessonWithTeacherResponse;
 import com.monari.monariback.lesson.dto.response.PageInfoResponse;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.repository.LessonRepository;
-import com.monari.monariback.location.entity.Location;
-import com.monari.monariback.location.repository.LocationRepository;
+import com.monari.monariback.location.entity.GeneralLocation;
+import com.monari.monariback.location.repository.GeneralLocationRepository;
 import com.monari.monariback.student.entity.Student;
 import com.monari.monariback.student.repository.StudentRepository;
 import com.monari.monariback.teacher.entity.Teacher;
@@ -41,10 +41,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class LessonService {
 
     private static final Integer PAGE_SIZE = 6;
-    private static final Integer ONLINE_LOCATION = 1;
+    private static final Integer ONLINE_LOCATION = 0;
 
     private final LessonRepository lessonRepository;
-    private final LocationRepository locationRepository;
+    private final GeneralLocationRepository generalLocationRepository;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
     private final EnrollmentRepository enrollmentRepository;
@@ -73,7 +73,7 @@ public class LessonService {
     public void createOfflineLesson(
         final CreateLessonRequest lessonDto,
         final Accessor accessor) {
-        final Location location = locationRepository.findById(lessonDto.locationId())
+        final GeneralLocation location = generalLocationRepository.findById(ONLINE_LOCATION)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
         final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
             .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
@@ -105,7 +105,7 @@ public class LessonService {
         final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
             .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
 
-        final Location location = locationRepository.findById(ONLINE_LOCATION)
+        final GeneralLocation location = generalLocationRepository.findById(ONLINE_LOCATION)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
 
         final Lesson lesson = Lesson.ofCreate(
@@ -144,7 +144,7 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonId)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND));
 
-        final Location location = locationRepository.findById(lessonDto.locationId())
+        final GeneralLocation location = generalLocationRepository.findById(ONLINE_LOCATION)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
         final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
             .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
@@ -162,7 +162,8 @@ public class LessonService {
             lessonDto.deadline(),
             lessonDto.region(),
             lessonDto.schoolLevel(),
-            lessonDto.subject()
+            lessonDto.subject(),
+            lessonDto.status()
         );
 
         return LESSON_UPDATE_SUCCESS;
@@ -184,7 +185,7 @@ public class LessonService {
 
         return LessonWithTeacherResponse.ofCreate(
             lesson.getId(),
-            lesson.getLocation().getId(),
+            lesson.getGeneralLocation().getId(),
             lesson.getTitle(),
             enrollmentRepository.countCurrentStudentByLessonId(lessonId),
             lesson.getDescription(),

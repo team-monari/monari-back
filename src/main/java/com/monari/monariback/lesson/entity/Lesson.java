@@ -7,7 +7,7 @@ import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.lesson.entity.enurmerated.LessonStatus;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
-import com.monari.monariback.location.entity.Location;
+import com.monari.monariback.location.entity.GeneralLocation;
 import com.monari.monariback.teacher.entity.Teacher;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,7 +42,7 @@ public class Lesson extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private Location location;
+    private GeneralLocation generalLocation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
@@ -97,7 +97,7 @@ public class Lesson extends BaseEntity {
     private List<Enrollment> enrollments;
 
     public static Lesson ofCreate(
-        final Location location,
+        final GeneralLocation location,
         final Teacher teacher,
         final String title,
         final String description,
@@ -113,7 +113,7 @@ public class Lesson extends BaseEntity {
         final LessonType lessonType
     ) {
         Lesson lesson = new Lesson();
-        lesson.location = location;
+        lesson.generalLocation = location;
         lesson.teacher = teacher;
         lesson.title = title;
         lesson.description = description;
@@ -131,7 +131,7 @@ public class Lesson extends BaseEntity {
     }
 
     public void update(
-        final Location newLocation,
+        final GeneralLocation newLocation,
         final Teacher newTeacher,
         final String newTitle,
         final String newDescription,
@@ -143,9 +143,10 @@ public class Lesson extends BaseEntity {
         final LocalDate newDeadline,
         final Region newRegion,
         final SchoolLevel newSchoolLevel,
-        final Subject newSubject
+        final Subject newSubject,
+        final LessonStatus lessonStatus
     ) {
-        location = newLocation;
+        generalLocation = newLocation;
         teacher = newTeacher;
         title = newTitle;
         description = newDescription;
@@ -158,6 +159,7 @@ public class Lesson extends BaseEntity {
         region = newRegion;
         schoolLevel = newSchoolLevel;
         subject = newSubject;
+        status = lessonStatus;
     }
 
     public void updateStatusIfMinEnrollmentNotMet() {
