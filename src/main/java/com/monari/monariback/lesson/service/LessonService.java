@@ -6,6 +6,7 @@ import static com.monari.monariback.lesson.constant.LessonResponseConstants.LESS
 import static com.monari.monariback.lesson.constant.LessonResponseConstants.LESSON_UPDATE_SUCCESS;
 
 import com.monari.monariback.auth.entity.Accessor;
+import com.monari.monariback.common.aop.ExecutionTime;
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.error.ErrorCode;
 import com.monari.monariback.common.exception.BusinessException;
@@ -38,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
+
 public class LessonService {
 
     private static final Integer PAGE_SIZE = 6;
@@ -233,6 +235,7 @@ public class LessonService {
      * @author Hong
      */
     @Transactional(readOnly = true)
+    @ExecutionTime
     public Page<LessonResponse> readLessons(
         final Integer pageNumber,
         final Integer pageSize
@@ -258,6 +261,7 @@ public class LessonService {
      * @author Hong
      */
     @Transactional(readOnly = true)
+    @ExecutionTime
     public Page<LessonResponse> searchLessons(
         final SearchLessonRequest searchLessonRequest
     ) {
@@ -304,6 +308,7 @@ public class LessonService {
      * @author Hong
      */
     @Transactional(readOnly = true)
+    @ExecutionTime
     public PageInfoResponse getTotalPages() {
         return new PageInfoResponse(lessonRepository.getTotalLessonPages(PAGE_SIZE, null));
     }
@@ -318,6 +323,7 @@ public class LessonService {
      * @author Hong
      */
     @Transactional(readOnly = true)
+    @ExecutionTime
     public Page<LessonResponse> getMyEnrolledLessons(
         final Integer pageNumber,
         final Integer pageSize,
