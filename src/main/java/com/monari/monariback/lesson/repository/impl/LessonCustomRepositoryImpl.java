@@ -1,19 +1,28 @@
 package com.monari.monariback.lesson.repository.impl;
 
+import static com.monari.monariback.enrollment.entity.QEnrollment.enrollment;
+import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus.CANCELLED;
+import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus.REFUNDED;
+import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus.REFUND_REQUESTED;
 import static com.monari.monariback.lesson.entity.QLesson.lesson;
 
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.SearchType;
 import com.monari.monariback.common.enumerated.Subject;
+import com.monari.monariback.lesson.dto.response.LessonResponse;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import com.monari.monariback.lesson.repository.LessonCustomRepository;
+import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -26,48 +35,6 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         lesson.id.desc()
     };
     private final JPAQueryFactory queryFactory;
-
-    /**
-     * 전체 강의 목록에서 일부만 조회하여 페이징을 적용한 결과를 반환합니다.
-     *
-     * @param pageSize 페이지당 강의 수
-     * @param pageNum  조회할 페이지 번호 (1부터 시작)
-     * @return 요청한 페이지에 해당하는 강의 목록
-     * @author Hong
-     */
-    @Override
-    public List<Lesson> findLessonsByPageSize(
-        final Integer pageSize,
-        final Integer pageNum
-    ) {
-        // 페이징 처리를 위한 공통 메서드 사용
-        return fetchLessonsWithPaging(null, pageSize, pageNum, null, null, null, null, null);
-    }
-
-    /**
-     * 검색 키워드를 기반으로 한 강의 목록을 페이징 처리하여 반환합니다.
-     *
-     * @param keyword  검색 키워드 (제목 또는 설명에 포함되는 값)
-     * @param pageSize 페이지당 강의 수
-     * @param pageNum  조회할 페이지 번호 (1부터 시작)
-     * @return 검색 조건에 맞는 강의 목록 (페이징 적용)
-     * @author Hong
-     */
-    @Override
-    public List<Lesson> searchLessons(
-        final String keyword,
-        final Integer pageSize,
-        final Integer pageNum,
-        final SchoolLevel schoolLevel,
-        final Subject subject,
-        final Region region,
-        final LessonType lessonType,
-        final SearchType searchType
-    ) {
-        // 페이징 처리를 위한 공통 메서드 사용
-        return fetchLessonsWithPaging(keyword, pageSize, pageNum, schoolLevel, subject, region,
-            lessonType, searchType);
-    }
 
     /**
      * 전체 강의 수 또는 키워드에 해당하는 강의 수를 기준으로 총 페이지 수를 계산합니다.
@@ -86,29 +53,6 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return totalCount == 0 ? 0 : (int) Math.ceil((double) totalCount / pageSize);
     }
 
-    /**
-     * 특정 강사의 ID에 해당하는 강의 목록을 페이징하여 조회합니다.
-     *
-     * @param teacherId 강사의 내부 DB ID
-     * @param pageSize  페이지당 강의 수
-     * @param pageNum   조회할 페이지 번호
-     * @return 해당 강사가 생성한 강의 목록 (페이징 적용)
-     * @author Hong
-     */
-    @Override
-    public List<Lesson> findAllByTeacherId(
-        final int teacherId,
-        final int pageSize,
-        final int pageNum
-    ) {
-        return queryFactory
-            .selectFrom(lesson)
-            .where(lesson.teacher.id.eq(teacherId))
-            .orderBy(LESSON_DEFAULT_ORDER)
-            .limit(pageSize)
-            .offset(getOffset(pageSize, pageNum))
-            .fetch();
-    }
 
     /**
      * 전체 또는 검색 키워드에 해당하는 강의 수를 반환합니다.
@@ -153,35 +97,82 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             .fetchFirst());
     }
 
-    /**
-     * 내부적으로 페이징을 처리하며 강의 목록을 조회합니다.
-     *
-     * @param keyword     검색 키워드 (null 가능)
-     * @param pageSize    페이지당 강의 수
-     * @param pageNum     조회할 페이지 번호
-     * @param schoolLevel 검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @param subject     검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @return 페이징 적용된 강의 목록
-     * @author Hong
-     */
-    private List<Lesson> fetchLessonsWithPaging(
-        final String keyword,
+    @Override
+    public Integer countTotalLessons() {
+        Long count = queryFactory
+            .select(lesson.count())
+            .from(lesson)
+            .fetchOne();
+        return (int) (count != null ? count : 0);
+    }
+
+    public List<LessonResponse> findLessonsWithStudentCountByTeacherId(
         final Integer pageSize,
-        final Integer pageNum,
-        final SchoolLevel schoolLevel,
-        final Subject subject,
-        final Region region,
-        final LessonType lessonType,
-        final SearchType searchType
+        final Integer pageNumber,
+        final UUID teacherId) {
+        return queryFactory.select(createLessonResponse())
+            .from(lesson)
+            .leftJoin(lesson.enrollments, enrollment)
+            .where(lesson.teacher.publicId.eq(teacherId))
+            .groupBy(lesson.id)
+            .orderBy(LESSON_DEFAULT_ORDER)
+            .offset(getOffset(pageSize, pageNumber))
+            .limit(pageSize)
+            .fetch();
+    }
+
+    public List<LessonResponse> findLessonsWithStudentCountByStudentId(
+        final Integer pageSize,
+        final Integer pageNumber,
+        final UUID studentId) {
+        return queryFactory.select(createLessonResponse())
+            .from(lesson)
+            .leftJoin(lesson.enrollments, enrollment)
+            .where(enrollment.student.publicId.eq(studentId))
+            .groupBy(lesson.id)
+            .orderBy(LESSON_DEFAULT_ORDER)
+            .offset(getOffset(pageSize, pageNumber))
+            .limit(pageSize)
+            .fetch();
+    }
+
+    @Override
+    public List<LessonResponse> findLessonsWithStudentCount(final Integer pageSize,
+        final Integer pageNumber) {
+        return queryFactory
+            .select(createLessonResponse())
+            .from(lesson)
+            .leftJoin(lesson.enrollments, enrollment)
+            .groupBy(lesson.id)
+            .orderBy(LESSON_DEFAULT_ORDER)
+            .offset(getOffset(pageSize, pageNumber))
+            .limit(pageSize)
+            .fetch();
+    }
+
+    @Override
+    public List<LessonResponse> searchLessonsWithStudentCount(
+        String keyword,
+        Integer pageSize,
+        Integer pageNum,
+        SchoolLevel schoolLevel,
+        Subject subject,
+        Region region,
+        LessonType lessonType,
+        SearchType searchType
     ) {
         return queryFactory
-            .selectFrom(lesson)
+            .select(createLessonResponse())
+            .from(lesson)
+            .leftJoin(lesson.enrollments, enrollment)
             .where(buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType,
                 searchType))
+            .groupBy(lesson.id)
             .orderBy(LESSON_DEFAULT_ORDER)
-            .limit(pageSize)
             .offset(getOffset(pageSize, pageNum))
+            .limit(pageSize)
             .fetch();
+
     }
 
     private long getOffset(
@@ -246,4 +237,32 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
     private BooleanExpression regionCondition(final Region region) {
         return region != null ? lesson.region.eq(region) : null;
     }
+
+    private ConstructorExpression<LessonResponse> createLessonResponse() {
+        return Projections.constructor(
+            LessonResponse.class,
+            lesson.id,
+            lesson.generalLocation.id,
+            lesson.teacher.id,
+            lesson.title,
+            Expressions.cases()
+                .when(enrollment.status.notIn(REFUND_REQUESTED, REFUNDED, CANCELLED))
+                .then(1)
+                .otherwise(0)
+                .sum().as("currentStudent"),
+            lesson.description,
+            lesson.amount,
+            lesson.minStudent,
+            lesson.maxStudent,
+            lesson.startDate,
+            lesson.endDate,
+            lesson.deadline,
+            lesson.status.stringValue(),
+            lesson.region.stringValue(),
+            lesson.schoolLevel.stringValue(),
+            lesson.subject.stringValue(),
+            lesson.lessonType.stringValue()
+        );
+    }
+
 }

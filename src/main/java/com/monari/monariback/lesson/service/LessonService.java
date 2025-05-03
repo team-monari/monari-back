@@ -26,7 +26,6 @@ import com.monari.monariback.student.entity.Student;
 import com.monari.monariback.student.repository.StudentRepository;
 import com.monari.monariback.teacher.entity.Teacher;
 import com.monari.monariback.teacher.repository.TeacherRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -241,15 +240,9 @@ public class LessonService {
         final Integer pageSize
     ) {
         return new PageImpl<>(
-            lessonRepository
-                .findLessonsByPageSize(pageSize, pageNumber)
-                .stream()
-                .map(lesson -> {
-                    int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
-                        lesson.getId());
-                    return LessonResponse.ofCreatePage(lesson, currStudent);
-                })
-                .toList()
+            lessonRepository.findLessonsWithStudentCount(pageSize, pageNumber),
+            PageRequest.of(pageNumber, pageSize),
+            lessonRepository.countTotalLessons()
         );
     }
 
@@ -275,26 +268,17 @@ public class LessonService {
         );
 
         return new PageImpl<>(
-            lessonRepository
-                .searchLessons(
-                    searchLessonRequest.keyword(),
-                    searchLessonRequest.pageSize(),
-                    searchLessonRequest.pageNumber(),
-                    searchLessonRequest.schoolLevel(),
-                    searchLessonRequest.subject(),
-                    searchLessonRequest.region(),
-                    searchLessonRequest.lessonType(),
-                    searchLessonRequest.searchType()
-                )
-                .stream()
-                .map(lesson -> {
-                    int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
-                        lesson.getId());
-                    return LessonResponse.ofCreatePage(lesson, currStudent);
-                })
-                .toList(),
-            PageRequest.of(
-                searchLessonRequest.pageNumber() - 1,
+            lessonRepository.searchLessonsWithStudentCount(
+                searchLessonRequest.keyword(),
+                searchLessonRequest.pageSize(),
+                searchLessonRequest.pageNumber(),
+                searchLessonRequest.schoolLevel(),
+                searchLessonRequest.subject(),
+                searchLessonRequest.region(),
+                searchLessonRequest.lessonType(),
+                searchLessonRequest.searchType()
+            ),
+            PageRequest.of(searchLessonRequest.pageNumber() - 1,
                 searchLessonRequest.pageSize()
             ),
             totalLessonCount
@@ -355,23 +339,12 @@ public class LessonService {
 
         final Long totalStudent = enrollmentRepository.countByStudentId(student.getId());
 
-        final List<LessonResponse> enrolledList = enrollmentRepository.
-            findAllByStudentIdWithPagination(
-                student.getId()
-                , pageSize
-                , pageNumber)
-            .stream()
-            .map(enrollment -> {
-                Lesson lesson = enrollment.getLesson();
-                log.info(lesson.toString());
-                int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
-                    lesson.getId());
-                return LessonResponse.ofCreatePage(lesson, currStudent);
-            })
-            .toList();
-
         return new PageImpl<>(
-            enrolledList,
+            lessonRepository.findLessonsWithStudentCountByStudentId(
+                pageSize,
+                pageNumber,
+                accessor.getPublicId()
+            ),
             PageRequest.of(pageNumber - 1, pageSize),
             totalStudent
         );
@@ -396,19 +369,13 @@ public class LessonService {
 
         final Long TotalLessons = lessonRepository.getTotalLessenByTeacherId(teacher.getId());
 
-        final List<LessonResponse> teachingLessons = lessonRepository.findAllByTeacherId(
-                teacher.getId(), pageSize, pageNumber
-            )
-            .stream()
-            .map(lesson -> {
-                int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
-                    lesson.getId());
-                return LessonResponse.ofCreatePage(lesson, currStudent);
-            })
-            .toList();
-
         return new PageImpl<>(
-            teachingLessons,
+            lessonRepository.
+                findLessonsWithStudentCountByTeacherId(
+                    pageSize,
+                    pageNumber,
+                    accessor.getPublicId()
+                ),
             PageRequest.of(pageNumber - 1, pageSize),
             TotalLessons
         );
