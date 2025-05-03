@@ -61,6 +61,7 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
         final Integer pageNumber
     ) {
         return queryFactory.selectFrom(enrollment)
+            .leftJoin(enrollment.lesson).fetchJoin()
             .where(enrollment.student.id.eq(studentId))
             .limit(pageSize)
             .offset(getOffset(pageSize, pageNumber))
