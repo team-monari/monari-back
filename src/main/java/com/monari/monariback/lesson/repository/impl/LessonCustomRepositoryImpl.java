@@ -22,6 +22,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
@@ -99,6 +100,76 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
     }
 
     /**
+     * 전체 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
+     *
+     * @param pageSize   페이지당 강의 수
+     * @param pageNumber 페이지 번호
+     * @return LessonResponse 리스트
+     */
+
+    @Override
+    public List<LessonResponse> findLessonsWithStudentCount(
+        final Integer pageSize,
+        final Integer pageNumber
+    ) {
+        return fetchLessonsWithStudentCount(null, pageSize, pageNumber);
+    }
+
+    /**
+     * 특정 강사의 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
+     *
+     * @param pageSize   페이지당 강의 수
+     * @param pageNumber 페이지 번호 (1부터 시작)
+     * @param teacherId  강사의 UUID
+     * @param studentId  학생의 UUID
+     * @return LessonResponse 리스트
+     * @author Hong
+     */
+
+    @Override
+    public List<LessonResponse> findLessonsWithStudentCountByAuth(
+        final Integer pageSize,
+        final Integer pageNumber,
+        final UUID teacherId,
+        final UUID studentId
+    ) {
+        BooleanExpression whereCondition = teacherId != null
+            ? lesson.teacher.publicId.eq(teacherId)
+            : enrollment.student.publicId.eq(studentId);
+        return fetchLessonsWithStudentCount(whereCondition, pageSize, pageNumber);
+    }
+
+    /**
+     * 키워드를 기반으로 검색 조건을 생성합니다. 제목 또는 설명에 키워드가 포함되어 있는지를 검사합니다.
+     *
+     * @param keyword     검색 키워드 (null 또는 공백이면 조건 없이 전체 검색)
+     * @param schoolLevel 검색 필터 (null이면 조건 없이 전체 검색)
+     * @param subject     검색 필터 (null이면 조건 없이 전체 검색)
+     * @param region      검색 필터 (null이면 조건 없이 전체 검색)
+     * @param lessonType  검색 필터 (null이면 조건 없이 전체 검색)
+     * @param searchType  검색 범위 설정
+     * @return QueryDSL의 BooleanExpression 조건
+     * @author Hong
+     */
+    @Override
+    public List<LessonResponse> searchLessonsWithStudentCount(
+        final String keyword,
+        final Integer pageSize,
+        final Integer pageNum,
+        final SchoolLevel schoolLevel,
+        final Subject subject,
+        final Region region,
+        final LessonType lessonType,
+        final SearchType searchType
+    ) {
+        return fetchLessonsWithStudentCount(
+            buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType, searchType),
+            pageSize,
+            pageNum
+        );
+    }
+
+    /**
      * 강의 ID를 기반으로 강의 정보와 강사 정보를 함께 조회합니다. enrollment 상태를 기준으로 수강 중인 학생 수를 계산하여 포함합니다.
      *
      * @param locationId 강의 ID
@@ -131,129 +202,8 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return (int) (count != null ? count : 0);
     }
 
-    /**
-     * 특정 강사의 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
-     *
-     * @param pageSize   페이지당 강의 수
-     * @param pageNumber 페이지 번호 (1부터 시작)
-     * @param teacherId  강사의 UUID
-     * @return LessonResponse 리스트
-     */
-    public List<LessonResponse> findLessonsWithStudentCountByTeacherId(
-        final Integer pageSize,
-        final Integer pageNumber,
-        final UUID teacherId) {
-        return queryFactory.select(createLessonResponse())
-            .from(lesson)
-            .leftJoin(lesson.enrollments, enrollment)
-            .where(lesson.teacher.publicId.eq(teacherId))
-            .groupBy(lesson.id)
-            .orderBy(LESSON_DEFAULT_ORDER)
-            .offset(getOffset(pageSize, pageNumber))
-            .limit(pageSize)
-            .fetch();
-    }
 
-    /**
-     * 특정 학생이 등록한 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
-     *
-     * @param pageSize   페이지당 강의 수
-     * @param pageNumber 페이지 번호
-     * @param studentId  학생의 UUID
-     * @return LessonResponse 리스트
-     */
-    public List<LessonResponse> findLessonsWithStudentCountByStudentId(
-        final Integer pageSize,
-        final Integer pageNumber,
-        final UUID studentId) {
-        return queryFactory.select(createLessonResponse())
-            .from(lesson)
-            .leftJoin(lesson.enrollments, enrollment)
-            .where(enrollment.student.publicId.eq(studentId))
-            .groupBy(lesson.id)
-            .orderBy(LESSON_DEFAULT_ORDER)
-            .offset(getOffset(pageSize, pageNumber))
-            .limit(pageSize)
-            .fetch();
-    }
-
-    /**
-     * 전체 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
-     *
-     * @param pageSize   페이지당 강의 수
-     * @param pageNumber 페이지 번호
-     * @return LessonResponse 리스트
-     */
-
-    @Override
-    public List<LessonResponse> findLessonsWithStudentCount(final Integer pageSize,
-        final Integer pageNumber) {
-        return queryFactory
-            .select(createLessonResponse())
-            .from(lesson)
-            .leftJoin(lesson.enrollments, enrollment)
-            .groupBy(lesson.id)
-            .orderBy(LESSON_DEFAULT_ORDER)
-            .offset(getOffset(pageSize, pageNumber))
-            .limit(pageSize)
-            .fetch();
-    }
-
-    /**
-     * 검색 조건에 맞는 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
-     *
-     * @param keyword     검색 키워드
-     * @param pageSize    페이지당 강의 수
-     * @param pageNum     페이지 번호
-     * @param schoolLevel 학교 수준 필터
-     * @param subject     과목 필터
-     * @param region      지역 필터
-     * @param lessonType  강의 유형 필터
-     * @param searchType  검색 범위 설정
-     * @return LessonResponse 리스트
-     */
-    @Override
-    public List<LessonResponse> searchLessonsWithStudentCount(
-        String keyword,
-        Integer pageSize,
-        Integer pageNum,
-        SchoolLevel schoolLevel,
-        Subject subject,
-        Region region,
-        LessonType lessonType,
-        SearchType searchType
-    ) {
-        return queryFactory
-            .select(createLessonResponse())
-            .from(lesson)
-            .leftJoin(lesson.enrollments, enrollment)
-            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType,
-                searchType))
-            .groupBy(lesson.id)
-            .orderBy(LESSON_DEFAULT_ORDER)
-            .offset(getOffset(pageSize, pageNum))
-            .limit(pageSize)
-            .fetch();
-
-    }
-
-    private long getOffset(
-        final Integer pageSize, final Integer pageNum) {
-        return (long) (pageNum - 1) * pageSize;
-    }
-
-    /**
-     * 키워드를 기반으로 검색 조건을 생성합니다. 제목 또는 설명에 키워드가 포함되어 있는지를 검사합니다.
-     *
-     * @param keyword     검색 키워드 (null 또는 공백이면 조건 없이 전체 검색)
-     * @param schoolLevel 검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @param subject     검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @param region      검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @param lessonType
-     * @return QueryDSL의 BooleanExpression 조건
-     * @author Hong
-     */
-    private BooleanExpression[] buildKeywordPredicate(
+    private BooleanExpression buildKeywordPredicate(
         final String keyword,
         final SchoolLevel schoolLevel,
         final Subject subject,
@@ -261,15 +211,57 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final LessonType lessonType,
         final SearchType searchType
     ) {
+        BooleanExpression condition = null;
 
-        return new BooleanExpression[]{
-            keywordCondition(keyword, searchType),
-            schoolLevelCondition(schoolLevel),
-            subjectCondition(subject),
-            regionCondition(region),
-            lessonTypeCondition(lessonType)
-        };
+        condition = combineConditions(condition, keywordCondition(keyword, searchType));
+        condition = combineConditions(condition, schoolLevelCondition(schoolLevel));
+        condition = combineConditions(condition, subjectCondition(subject));
+        condition = combineConditions(condition, regionCondition(region));
+        condition = combineConditions(condition, lessonTypeCondition(lessonType));
 
+        return condition;
+    }
+
+    /**
+     * 두 BooleanExpression을 and()로 결합합니다.
+     *
+     * @param base       기존 조건 (null 가능)
+     * @param additional 추가 조건 (null 가능)
+     * @return 결합된 BooleanExpression 또는 null
+     */
+    private BooleanExpression combineConditions(BooleanExpression base,
+        BooleanExpression additional) {
+        if (additional == null) {
+            return base;
+        }
+        return base == null ? additional : base.and(additional);
+    }
+
+    /**
+     * 주어진 조건과 페이지네이션 정보를 바탕으로 강의 목록을 학생 수와 함께 조회합니다. 공통 쿼리 로직을 캡슐화하여 중복 코드를 줄이고 재사용성을 높입니다.
+     *
+     * @param whereCondition 검색 및 필터링 조건 (null일 경우 조건 없이 전체 조회)
+     * @param pageSize       페이지당 강의 수 (양수여야 함)
+     * @param pageNumber     페이지 번호 (1부터 시작)
+     * @return LessonResponse 객체의 리스트
+     * @author Hong
+     */
+    private List<LessonResponse> fetchLessonsWithStudentCount(
+        final BooleanExpression whereCondition,
+        final Integer pageSize,
+        final Integer pageNumber
+    ) {
+        return pagination(
+            queryFactory
+                .select(createLessonResponse())
+                .from(lesson)
+                .leftJoin(lesson.enrollments, enrollment)
+                .where(whereCondition)
+                .groupBy(lesson.id)
+                .orderBy(LESSON_DEFAULT_ORDER),
+            pageSize,
+            pageNumber
+        ).fetch();
     }
 
     private BooleanExpression lessonTypeCondition(final LessonType lessonType) {
@@ -359,5 +351,15 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             .then(1)
             .otherwise(0)
             .sum().as("currentStudent");
+    }
+
+    private <T> JPAQuery<T> pagination(
+        final JPAQuery<T> query,
+        final Integer pageSize,
+        final Integer pageNumber
+    ) {
+        return query
+            .offset((long) (pageNumber - 1) * pageSize)
+            .limit(pageSize);
     }
 }

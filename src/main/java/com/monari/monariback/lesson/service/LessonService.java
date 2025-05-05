@@ -315,9 +315,10 @@ public class LessonService {
         final Long totalStudent = enrollmentRepository.countByStudentId(student.getId());
 
         return new PageImpl<>(
-            lessonRepository.findLessonsWithStudentCountByStudentId(
+            lessonRepository.findLessonsWithStudentCountByAuth(
                 pageSize,
                 pageNumber,
+                null,
                 accessor.getPublicId()
             ),
             PageRequest.of(pageNumber - 1, pageSize),
@@ -346,10 +347,11 @@ public class LessonService {
 
         return new PageImpl<>(
             lessonRepository.
-                findLessonsWithStudentCountByTeacherId(
+                findLessonsWithStudentCountByAuth(
                     pageSize,
                     pageNumber,
-                    accessor.getPublicId()
+                    accessor.getPublicId(),
+                    null
                 ),
             PageRequest.of(pageNumber - 1, pageSize),
             TotalLessons

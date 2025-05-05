@@ -15,16 +15,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LessonCustomRepository {
 
-    List<LessonResponse> findLessonsWithStudentCountByStudentId(
+    List<LessonResponse> findLessonsWithStudentCountByAuth(
         final Integer pageSize,
         final Integer pageNumber,
+        final UUID teacherId,
         final UUID studentId
-    );
-
-    List<LessonResponse> findLessonsWithStudentCountByTeacherId(
-        final Integer pageSize,
-        final Integer pageNumber,
-        final UUID teacherId
     );
 
     int getTotalLessonPages(final int pageSize, final String keyword);
@@ -42,7 +37,8 @@ public interface LessonCustomRepository {
 
     List<LessonResponse> findLessonsWithStudentCount(
         final Integer pageSize,
-        final Integer pageNumber);
+        final Integer pageNumber
+    );
 
     List<LessonResponse> searchLessonsWithStudentCount(
         final String keyword,
