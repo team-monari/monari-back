@@ -123,7 +123,8 @@ public class StudyService {
                 request.descriptionKeyword(),
                 request.schoolLevel(),
                 request.subject(),
-                request.region()
+                request.region(),
+                request.studyType()
         );
         List<StudyResponse> content = studies.stream()
                 .map(StudyResponse::from)
@@ -134,7 +135,8 @@ public class StudyService {
                 request.descriptionKeyword(),
                 request.schoolLevel(),
                 request.subject(),
-                request.region()
+                request.region(),
+                request.studyType()
         );
 
         return new PageImpl<>(
