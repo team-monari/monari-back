@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.monari.monariback.location.entity.QGeneralLocation.generalLocation;
 import static com.monari.monariback.location.entity.QLocation.location;
 import static com.monari.monariback.student.entity.QStudent.student;
 import static com.monari.monariback.study.entity.QStudy.study;
@@ -30,7 +31,8 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
         return queryFactory
                 .select(createStudyDto())
                 .from(study)
-                .innerJoin(study.location, location)
+                .leftJoin(study.location, location)
+                .leftJoin(study.generalLocation, generalLocation)
                 .innerJoin(study.student, student)
                 .orderBy(study.createdAt.desc(), study.id.desc())
                 .limit(pageSize)
@@ -43,7 +45,8 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
         return queryFactory
                 .select(createStudyDto())
                 .from(study)
-                .innerJoin(study.location, location)
+                .leftJoin(study.location, location)
+                .leftJoin(study.generalLocation, generalLocation)
                 .innerJoin(study.student, student)
                 .where(createFilterConditions(titleKeyword, descriptionKeyword, schoolLevel, subject, region))
                 .orderBy(study.createdAt.desc(), study.id.desc())
@@ -57,7 +60,8 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
         return queryFactory
                 .select(createStudyDto())
                 .from(study)
-                .innerJoin(study.location, location)
+                .leftJoin(study.location, location)
+                .leftJoin(study.generalLocation, generalLocation)
                 .innerJoin(study.student, student)
                 .where(study.student.id.eq(studentId))
                 .orderBy(study.createdAt.desc(), study.id.desc())
@@ -95,9 +99,10 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                 study.schoolLevel,
                 study.region,
                 study.status,
+                study.studyType,
                 study.createdAt,
-                study.location.locationName,
-                study.location.serviceUrl,
+                study.location.id,
+                study.generalLocation.id,
                 study.student.publicId,
                 study.student.name
         );

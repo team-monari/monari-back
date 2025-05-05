@@ -43,7 +43,8 @@ public class PublicApiDataProcessor implements
                 item.revStdDayNm(),
                 item.revStdDay(),
                 item.x(),
-                item.y())
+                item.y(),
+                item.areaNm())
             ) {
                 return location;
             }
@@ -62,7 +63,8 @@ public class PublicApiDataProcessor implements
                 item.revStdDayNm(),
                 item.revStdDay(),
                 item.x(),
-                item.y()
+                item.y(),
+                item.areaNm()
             );
         }
 

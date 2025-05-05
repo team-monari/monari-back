@@ -67,6 +67,9 @@ public class Location {
     @Column(name = "y")
     private String y;
 
+    @Column(name = "areaNm")
+    private String areaNm;
+
 
     public static Location ofCreate(
         final String serviceId,
@@ -82,7 +85,8 @@ public class Location {
         final String cancellationPolicyInfo,
         final String cancellationDeadline,
         final String x,
-        final String y
+        final String y,
+        final String areaNm
     ) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
@@ -101,7 +105,8 @@ public class Location {
             nullIfBlank(cancellationPolicyInfo),
             parseInteger(cancellationDeadline),
             nullIfBlank(x),
-            nullIfBlank(y)
+            nullIfBlank(y),
+                nullIfBlank(areaNm)
         );
     }
 
@@ -132,7 +137,8 @@ public class Location {
         String cancellationPolicyInfo,
         String cancellationDeadline,
         String x,
-        String y
+        String y,
+        String areaNm
     ) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
         boolean isChanged = false;
@@ -237,6 +243,13 @@ public class Location {
         if (this.y == null && newY != null ||
             this.y != null && !this.y.equals(newY)) {
             this.y = newY;
+            isChanged = true;
+        }
+
+        String newAreaNm = nullIfBlank(areaNm);
+        if (this.areaNm == null && newAreaNm != null ||
+            this.areaNm != null && !this.areaNm.equals(newAreaNm)) {
+            this.areaNm = newAreaNm;
             isChanged = true;
         }
 

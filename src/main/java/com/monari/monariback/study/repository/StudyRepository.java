@@ -23,7 +23,8 @@ public interface StudyRepository extends JpaRepository<Study, Integer>, StudyCus
         SELECT s
         FROM Study s
         JOIN FETCH s.student
-        JOIN FETCH s.location
+        LEFT JOIN FETCH s.location
+        LEFT JOIN FETCH s.generalLocation
         WHERE s.id = :id
     """)
     Optional<Study> findByIdWithStudentAndLocation(@Param("id") Integer id) ;
