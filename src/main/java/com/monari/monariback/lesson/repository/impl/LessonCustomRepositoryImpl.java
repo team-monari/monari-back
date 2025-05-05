@@ -5,6 +5,7 @@ import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatu
 import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus.REFUNDED;
 import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus.REFUND_REQUESTED;
 import static com.monari.monariback.lesson.entity.QLesson.lesson;
+import static com.monari.monariback.location.entity.QGeneralLocation.generalLocation;
 import static com.monari.monariback.teacher.entity.QTeacher.teacher;
 
 import com.monari.monariback.common.enumerated.Region;
@@ -16,6 +17,7 @@ import com.monari.monariback.lesson.dto.response.LessonWithTeacherResponse;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import com.monari.monariback.lesson.repository.LessonCustomRepository;
 import com.querydsl.core.types.ConstructorExpression;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -81,6 +83,12 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return count != null ? count : 0L;
     }
 
+    /**
+     * 특정 강사의 전체 강의 개수를 반환합니다.
+     *
+     * @param teacherId 강사의 고유 ID
+     * @return 해당 강사의 강의 수 (long 타입 반환)
+     */
     @Override
     public Long getTotalLessenByTeacherId(final int teacherId) {
         Long count = queryFactory.select(lesson.count())
@@ -90,18 +98,30 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return count != null ? count : 0L;
     }
 
+    /**
+     * 강의 ID를 기반으로 강의 정보와 강사 정보를 함께 조회합니다. enrollment 상태를 기준으로 수강 중인 학생 수를 계산하여 포함합니다.
+     *
+     * @param locationId 강의 ID
+     * @return LessonWithTeacherResponse DTO를 Optional로 감싸 반환합니다.
+     */
     @Override
     public Optional<LessonWithTeacherResponse> findByLessonIdWithTeacher(final int locationId) {
         return Optional.ofNullable(queryFactory.select(createLessonWithTeacherResponse())
             .from(lesson)
             .leftJoin(lesson.enrollments, enrollment)
             .leftJoin(lesson.teacher, teacher)
+            .leftJoin(lesson.generalLocation, generalLocation)
             .where(lesson.id.eq(locationId))
             .groupBy(lesson.id)
             .fetchFirst()
         );
     }
 
+    /**
+     * 전체 강의 개수를 정수(Integer)로 반환합니다.
+     *
+     * @return 전체 강의 수
+     */
     @Override
     public Integer countTotalLessons() {
         Long count = queryFactory
@@ -111,6 +131,14 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return (int) (count != null ? count : 0);
     }
 
+    /**
+     * 특정 강사의 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
+     *
+     * @param pageSize   페이지당 강의 수
+     * @param pageNumber 페이지 번호 (1부터 시작)
+     * @param teacherId  강사의 UUID
+     * @return LessonResponse 리스트
+     */
     public List<LessonResponse> findLessonsWithStudentCountByTeacherId(
         final Integer pageSize,
         final Integer pageNumber,
@@ -126,6 +154,14 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             .fetch();
     }
 
+    /**
+     * 특정 학생이 등록한 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
+     *
+     * @param pageSize   페이지당 강의 수
+     * @param pageNumber 페이지 번호
+     * @param studentId  학생의 UUID
+     * @return LessonResponse 리스트
+     */
     public List<LessonResponse> findLessonsWithStudentCountByStudentId(
         final Integer pageSize,
         final Integer pageNumber,
@@ -141,6 +177,14 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             .fetch();
     }
 
+    /**
+     * 전체 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
+     *
+     * @param pageSize   페이지당 강의 수
+     * @param pageNumber 페이지 번호
+     * @return LessonResponse 리스트
+     */
+
     @Override
     public List<LessonResponse> findLessonsWithStudentCount(final Integer pageSize,
         final Integer pageNumber) {
@@ -155,6 +199,19 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             .fetch();
     }
 
+    /**
+     * 검색 조건에 맞는 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
+     *
+     * @param keyword     검색 키워드
+     * @param pageSize    페이지당 강의 수
+     * @param pageNum     페이지 번호
+     * @param schoolLevel 학교 수준 필터
+     * @param subject     과목 필터
+     * @param region      지역 필터
+     * @param lessonType  강의 유형 필터
+     * @param searchType  검색 범위 설정
+     * @return LessonResponse 리스트
+     */
     @Override
     public List<LessonResponse> searchLessonsWithStudentCount(
         String keyword,
@@ -250,11 +307,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             lesson.generalLocation.id,
             lesson.teacher.id,
             lesson.title,
-            Expressions.cases()
-                .when(enrollment.status.notIn(REFUND_REQUESTED, REFUNDED, CANCELLED))
-                .then(1)
-                .otherwise(0)
-                .sum().as("currentStudent"),
+            createCurrentStudentExpression(),
             lesson.description,
             lesson.amount,
             lesson.minStudent,
@@ -276,11 +329,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             lesson.id,
             lesson.generalLocation.id,
             lesson.title,
-            Expressions.cases()
-                .when(enrollment.status.notIn(REFUND_REQUESTED, REFUNDED, CANCELLED))
-                .then(1)
-                .otherwise(0)
-                .sum().as("currentStudent"),
+            createCurrentStudentExpression(),
             lesson.description,
             lesson.amount,
             lesson.minStudent,
@@ -296,7 +345,19 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             teacher.name,
             teacher.university,
             teacher.major,
-            teacher.career
+            teacher.career,
+            generalLocation.locationName,
+            generalLocation.x,
+            generalLocation.y,
+            generalLocation.serviceUrl
         );
+    }
+
+    private Expression<Integer> createCurrentStudentExpression() {
+        return Expressions.cases()
+            .when(enrollment.status.notIn(REFUND_REQUESTED, REFUNDED, CANCELLED))
+            .then(1)
+            .otherwise(0)
+            .sum().as("currentStudent");
     }
 }
