@@ -70,7 +70,8 @@ public class LocationService {
                 dto.revStdDayNm(),
                 dto.revStdDay(),
                 dto.x(),
-                dto.y()
+                dto.y(),
+                dto.areaNm()
             ))
             .toList();
     }

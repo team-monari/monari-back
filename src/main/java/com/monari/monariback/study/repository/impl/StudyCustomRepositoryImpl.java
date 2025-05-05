@@ -4,6 +4,7 @@ import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.study.dto.StudyDto;
+import com.monari.monariback.study.enumerated.StudyType;
 import com.monari.monariback.study.repository.StudyCustomRepository;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.monari.monariback.location.entity.QGeneralLocation.generalLocation;
 import static com.monari.monariback.location.entity.QLocation.location;
 import static com.monari.monariback.student.entity.QStudent.student;
 import static com.monari.monariback.study.entity.QStudy.study;
@@ -30,7 +32,8 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
         return queryFactory
                 .select(createStudyDto())
                 .from(study)
-                .innerJoin(study.location, location)
+                .leftJoin(study.location, location)
+                .leftJoin(study.generalLocation, generalLocation)
                 .innerJoin(study.student, student)
                 .orderBy(study.createdAt.desc(), study.id.desc())
                 .limit(pageSize)
@@ -39,13 +42,16 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     }
 
     @Override
-    public List<StudyDto> findByKeywordsOrderByCreatedAtDesc(int pageNum, int pageSize, String titleKeyword, String descriptionKeyword, SchoolLevel schoolLevel, Subject subject, Region region) {
+    public List<StudyDto> findByKeywordsOrderByCreatedAtDesc(int pageNum, int pageSize, String titleKeyword,
+                                                             String descriptionKeyword, SchoolLevel schoolLevel, Subject subject,
+                                                             Region region, StudyType studyType) {
         return queryFactory
                 .select(createStudyDto())
                 .from(study)
-                .innerJoin(study.location, location)
+                .leftJoin(study.location, location)
+                .leftJoin(study.generalLocation, generalLocation)
                 .innerJoin(study.student, student)
-                .where(createFilterConditions(titleKeyword, descriptionKeyword, schoolLevel, subject, region))
+                .where(createFilterConditions(titleKeyword, descriptionKeyword, schoolLevel, subject, region, studyType))
                 .orderBy(study.createdAt.desc(), study.id.desc())
                 .limit(pageSize)
                 .offset((long) pageSize * (pageNum - 1))
@@ -57,7 +63,8 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
         return queryFactory
                 .select(createStudyDto())
                 .from(study)
-                .innerJoin(study.location, location)
+                .leftJoin(study.location, location)
+                .leftJoin(study.generalLocation, generalLocation)
                 .innerJoin(study.student, student)
                 .where(study.student.id.eq(studentId))
                 .orderBy(study.createdAt.desc(), study.id.desc())
@@ -67,10 +74,11 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     }
 
     @Override
-    public long countByKeywords(String titleKeyword, String descriptionKeyword, SchoolLevel schoolLevel, Subject subject, Region region) {
+    public long countByKeywords(String titleKeyword, String descriptionKeyword, SchoolLevel schoolLevel,
+                                Subject subject, Region region, StudyType studyType) {
         Long count = queryFactory.select(study.count())
                 .from(study)
-                .where(createFilterConditions(titleKeyword, descriptionKeyword, schoolLevel, subject, region))
+                .where(createFilterConditions(titleKeyword, descriptionKeyword, schoolLevel, subject, region, studyType))
                 .fetchOne();
 
         return count != null ? count : 0L;
@@ -95,22 +103,24 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                 study.schoolLevel,
                 study.region,
                 study.status,
+                study.studyType,
                 study.createdAt,
-                study.location.locationName,
-                study.location.serviceUrl,
+                study.location.id,
+                study.generalLocation.id,
                 study.student.publicId,
                 study.student.name
         );
     }
 
     private BooleanExpression[] createFilterConditions(String titleKeyword, String descriptionKeyword,
-                                                       SchoolLevel schoolLevel, Subject subject, Region region) {
+                                                       SchoolLevel schoolLevel, Subject subject, Region region, StudyType studyType) {
         return new BooleanExpression[] {
                 containsTitleKeyword(titleKeyword),
                 containsDescriptionKeyword(descriptionKeyword),
                 eqSchoolLevel(schoolLevel),
                 eqSubject(subject),
-                eqRegion(region)
+                eqRegion(region),
+                eqStudyType(studyType)
         };
     }
 
@@ -139,5 +149,9 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
 
     private BooleanExpression eqRegion(Region region) {
         return region == null ? null : study.region.eq(region);
+    }
+
+    private BooleanExpression eqStudyType(StudyType studyType) {
+        return studyType == null ? null : study.studyType.eq(studyType);
     }
 }

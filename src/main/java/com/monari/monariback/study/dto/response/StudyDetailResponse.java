@@ -5,6 +5,7 @@ import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.study.entity.Study;
 import com.monari.monariback.study.enumerated.StudyStatus;
+import com.monari.monariback.study.enumerated.StudyType;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,9 +18,10 @@ public record StudyDetailResponse(
         SchoolLevel schoolLevel,
         Region region,
         StudyStatus status,
+        StudyType studyType,
         LocalDateTime createdAt,
-        String locationName,
-        String locationServiceUrl,
+        Integer locationId,
+        Integer generalLocationId,
         UUID studentPublicId,
         String studentName
 ) {
@@ -33,9 +35,10 @@ public record StudyDetailResponse(
                 study.getSchoolLevel(),
                 study.getRegion(),
                 study.getStatus(),
+                study.getStudyType(),
                 study.getCreatedAt(),
-                study.getLocation().getLocationName(),
-                study.getLocation().getServiceUrl(),
+                study.getLocation() != null ? study.getLocation().getId() : null,
+                study.getGeneralLocation() != null ? study.getGeneralLocation().getId() : null,
                 study.getStudent().getPublicId(),
                 study.getStudent().getName()
         );

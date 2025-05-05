@@ -4,9 +4,11 @@ import com.monari.monariback.common.entity.BaseEntity;
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
+import com.monari.monariback.location.entity.GeneralLocation;
 import com.monari.monariback.location.entity.Location;
 import com.monari.monariback.student.entity.Student;
 import com.monari.monariback.study.enumerated.StudyStatus;
+import com.monari.monariback.study.enumerated.StudyType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,9 +41,17 @@ public class Study extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private StudyStatus status;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StudyType studyType;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", nullable = false)
+    @JoinColumn(name = "location_id")
     private Location location;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "general_location_id")
+    private GeneralLocation generalLocation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
@@ -53,7 +63,9 @@ public class Study extends BaseEntity {
             Subject subject,
             SchoolLevel schoolLevel,
             Region region,
+            StudyType studyType,
             Location location,
+            GeneralLocation generalLocation,
             Student student
     ) {
         Study study = new Study();
@@ -63,7 +75,9 @@ public class Study extends BaseEntity {
         study.schoolLevel = schoolLevel;
         study.status = StudyStatus.ACTIVE;
         study.region = region;
+        study.studyType = studyType;
         study.location = location;
+        study.generalLocation = generalLocation;
         study.student = student;
         return study;
     }
@@ -77,13 +91,17 @@ public class Study extends BaseEntity {
             String description,
             Subject subject,
             SchoolLevel schoolLevel,
-            Location location
+            StudyType studyType,
+            Location location,
+            GeneralLocation generalLocation
     ) {
         this.title = title;
         this.description = description;
         this.subject = subject;
         this.schoolLevel = schoolLevel;
+        this.studyType = studyType;
         this.location = location;
+        this.generalLocation = generalLocation;
     }
 
 }

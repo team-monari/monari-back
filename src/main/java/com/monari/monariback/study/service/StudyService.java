@@ -1,9 +1,12 @@
 package com.monari.monariback.study.service;
 
 import com.monari.monariback.auth.entity.Accessor;
+import com.monari.monariback.common.error.ErrorCode;
 import com.monari.monariback.common.exception.AuthException;
 import com.monari.monariback.common.exception.NotFoundException;
+import com.monari.monariback.location.entity.GeneralLocation;
 import com.monari.monariback.location.entity.Location;
+import com.monari.monariback.location.repository.GeneralLocationRepository;
 import com.monari.monariback.location.repository.LocationRepository;
 import com.monari.monariback.student.entity.Student;
 import com.monari.monariback.student.repository.StudentRepository;
@@ -15,6 +18,7 @@ import com.monari.monariback.study.dto.request.StudySearchRequest;
 import com.monari.monariback.study.dto.response.StudyDetailResponse;
 import com.monari.monariback.study.dto.response.StudyResponse;
 import com.monari.monariback.study.entity.Study;
+import com.monari.monariback.study.enumerated.StudyType;
 import com.monari.monariback.study.repository.StudyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,11 +39,23 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final LocationRepository locationRepository;
     private final StudentRepository studentRepository;
+    private final GeneralLocationRepository generalLocationRepository;
 
     @Transactional
     public void createStudy(final Accessor accessor, final StudyCreateRequest request) {
-        Location location = locationRepository.findById(request.locationId())
-                .orElseThrow(() -> new NotFoundException(LOCATION_NOT_FOUND));
+        StudyType studyType = getStudyType(request.locationId(), request.generalLocationId());
+        Location location = null;
+        GeneralLocation generalLocation = null;
+
+        if (studyType.equals(StudyType.OFFLINE)) {
+            if (request.locationId() != null) {
+                location = locationRepository.findById(request.locationId())
+                                .orElseThrow(() -> new NotFoundException(LOCATION_NOT_FOUND));
+            } else if (request.generalLocationId() != null) {
+                generalLocation = generalLocationRepository.findById(request.generalLocationId())
+                                    .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
+            }
+        }
 
         Student student = studentRepository.findByPublicId(accessor.getPublicId())
                 .orElseThrow(() -> new NotFoundException(STUDENT_NOT_FOUND));
@@ -50,11 +66,20 @@ public class StudyService {
                 request.subject(),
                 request.schoolLevel(),
                 request.region(),
+                studyType,
                 location,
+                generalLocation,
                 student
         );
 
         studyRepository.save(study);
+    }
+
+    private static StudyType getStudyType(Integer locationId, Integer generalLocationId) {
+        if (locationId == null && generalLocationId == null) {
+            return StudyType.ONLINE;
+        }
+        return StudyType.OFFLINE;
     }
 
     /**
@@ -98,7 +123,8 @@ public class StudyService {
                 request.descriptionKeyword(),
                 request.schoolLevel(),
                 request.subject(),
-                request.region()
+                request.region(),
+                request.studyType()
         );
         List<StudyResponse> content = studies.stream()
                 .map(StudyResponse::from)
@@ -109,7 +135,8 @@ public class StudyService {
                 request.descriptionKeyword(),
                 request.schoolLevel(),
                 request.subject(),
-                request.region()
+                request.region(),
+                request.studyType()
         );
 
         return new PageImpl<>(
@@ -177,15 +204,28 @@ public class StudyService {
 
         validateStudyCreator(accessor, study);
 
-        Location location = locationRepository.findById(request.locationId())
-                .orElseThrow(() -> new NotFoundException(LOCATION_NOT_FOUND));
+        StudyType studyType = getStudyType(request.locationId(), request.generalLocationId());
+        Location location = null;
+        GeneralLocation generalLocation = null;
+
+        if (studyType.equals(StudyType.OFFLINE)) {
+            if (request.locationId() != null) {
+                location = locationRepository.findById(request.locationId())
+                                .orElseThrow(() -> new NotFoundException(LOCATION_NOT_FOUND));
+            } else if (request.generalLocationId() != null) {
+                generalLocation = generalLocationRepository.findById(request.generalLocationId())
+                                    .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
+            }
+        }
 
         study.updateStudy(
                 request.title(),
                 request.description(),
                 request.subject(),
                 request.schoolLevel(),
-                location
+                studyType,
+                location,
+                generalLocation
         );
     }
 
