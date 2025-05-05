@@ -5,13 +5,14 @@ import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatu
 import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus.REFUNDED;
 import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus.REFUND_REQUESTED;
 import static com.monari.monariback.lesson.entity.QLesson.lesson;
+import static com.monari.monariback.teacher.entity.QTeacher.teacher;
 
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.SearchType;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
-import com.monari.monariback.lesson.entity.Lesson;
+import com.monari.monariback.lesson.dto.response.LessonWithTeacherResponse;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import com.monari.monariback.lesson.repository.LessonCustomRepository;
 import com.querydsl.core.types.ConstructorExpression;
@@ -90,11 +91,15 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
     }
 
     @Override
-    public Optional<Lesson> findByLessonIdWithTeacher(final int locationId) {
-        return Optional.ofNullable(queryFactory.selectFrom(lesson)
-            .leftJoin(lesson.teacher)
+    public Optional<LessonWithTeacherResponse> findByLessonIdWithTeacher(final int locationId) {
+        return Optional.ofNullable(queryFactory.select(createLessonWithTeacherResponse())
+            .from(lesson)
+            .leftJoin(lesson.enrollments, enrollment)
+            .leftJoin(lesson.teacher, teacher)
             .where(lesson.id.eq(locationId))
-            .fetchFirst());
+            .groupBy(lesson.id)
+            .fetchFirst()
+        );
     }
 
     @Override
@@ -265,4 +270,33 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         );
     }
 
+    private ConstructorExpression<LessonWithTeacherResponse> createLessonWithTeacherResponse() {
+        return Projections.constructor(
+            LessonWithTeacherResponse.class,
+            lesson.id,
+            lesson.generalLocation.id,
+            lesson.title,
+            Expressions.cases()
+                .when(enrollment.status.notIn(REFUND_REQUESTED, REFUNDED, CANCELLED))
+                .then(1)
+                .otherwise(0)
+                .sum().as("currentStudent"),
+            lesson.description,
+            lesson.amount,
+            lesson.minStudent,
+            lesson.maxStudent,
+            lesson.startDate,
+            lesson.endDate,
+            lesson.deadline,
+            lesson.status.stringValue(),
+            lesson.region.stringValue(),
+            lesson.schoolLevel.stringValue(),
+            lesson.subject.stringValue(),
+            lesson.lessonType.stringValue(),
+            teacher.name,
+            teacher.university,
+            teacher.major,
+            teacher.career
+        );
+    }
 }

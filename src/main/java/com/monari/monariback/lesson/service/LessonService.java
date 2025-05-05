@@ -196,33 +196,8 @@ public class LessonService {
      */
     @Transactional(readOnly = true)
     public LessonWithTeacherResponse readLesson(final Integer lessonId) {
-        final Lesson lesson = lessonRepository.findByLessonIdWithTeacher(lessonId)
+        return lessonRepository.findByLessonIdWithTeacher(lessonId)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND));
-
-        final Teacher teacher = lesson.getTeacher();
-
-        return LessonWithTeacherResponse.ofCreate(
-            lesson.getId(),
-            lesson.getGeneralLocation().getId(),
-            lesson.getTitle(),
-            enrollmentRepository.countCurrentStudentByLessonId(lessonId),
-            lesson.getDescription(),
-            lesson.getAmount(),
-            lesson.getMinStudent(),
-            lesson.getMaxStudent(),
-            lesson.getStartDate(),
-            lesson.getEndDate(),
-            lesson.getDeadline(),
-            lesson.getStatus().name(),
-            lesson.getRegion().name(),
-            lesson.getSchoolLevel().name(),
-            lesson.getSubject().name(),
-            lesson.getLessonType().name(),
-            teacher.getName(),
-            teacher.getUniversity(),
-            teacher.getMajor(),
-            teacher.getCareer()
-        );
     }
 
     /**

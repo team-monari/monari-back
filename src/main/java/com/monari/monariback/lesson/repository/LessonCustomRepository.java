@@ -5,7 +5,7 @@ import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.SearchType;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
-import com.monari.monariback.lesson.entity.Lesson;
+import com.monari.monariback.lesson.dto.response.LessonWithTeacherResponse;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +36,7 @@ public interface LessonCustomRepository {
 
     Long getTotalLessenByTeacherId(final int teacherId);
 
-    Optional<Lesson> findByLessonIdWithTeacher(final int locationId);
+    Optional<LessonWithTeacherResponse> findByLessonIdWithTeacher(final int locationId);
 
     Integer countTotalLessons();
 
