@@ -1,5 +1,6 @@
 package com.monari.monariback.location.dto.response;
 
+import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.location.entity.Location;
 import java.time.LocalDateTime;
 
@@ -17,7 +18,8 @@ public record LocationResponse(
     String cancellationPolicyInfo,
     Integer cancellationDeadline,
     String x,
-    String y
+    String y,
+    Region region
 ) {
 
     public static LocationResponse from(final Location location) {
@@ -35,7 +37,8 @@ public record LocationResponse(
             location.getCancellationPolicyInfo(),
             location.getCancellationDeadline(),
             location.getX(),
-            location.getY()
+            location.getY(),
+            location.getRegion()
         );
     }
 }

@@ -1,11 +1,8 @@
 package com.monari.monariback.location.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.monari.monariback.common.enumerated.Region;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
@@ -67,8 +64,9 @@ public class Location {
     @Column(name = "y")
     private String y;
 
-    @Column(name = "areaNm")
-    private String areaNm;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Region region;
 
 
     public static Location ofCreate(
@@ -106,7 +104,7 @@ public class Location {
             parseInteger(cancellationDeadline),
             nullIfBlank(x),
             nullIfBlank(y),
-                nullIfBlank(areaNm)
+            parseRegion(areaNm)
         );
     }
 
@@ -122,6 +120,11 @@ public class Location {
     private static Integer parseInteger(String value) {
         String v = nullIfBlank(value);
         return v == null ? null : Integer.parseInt(v);
+    }
+
+    private static Region parseRegion(String areaNm) {
+        String v = nullIfBlank(areaNm);
+        return v == null ? null : Region.from(areaNm);
     }
 
     public boolean updateIfChanged(
@@ -246,10 +249,10 @@ public class Location {
             isChanged = true;
         }
 
-        String newAreaNm = nullIfBlank(areaNm);
-        if (this.areaNm == null && newAreaNm != null ||
-            this.areaNm != null && !this.areaNm.equals(newAreaNm)) {
-            this.areaNm = newAreaNm;
+        Region newRegion = parseRegion(areaNm);
+        if (this.region == null && newRegion != null ||
+            this.region != null && !this.region.equals(newRegion)) {
+            this.region = newRegion;
             isChanged = true;
         }
 

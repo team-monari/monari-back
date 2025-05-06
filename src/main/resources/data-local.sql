@@ -49,7 +49,6 @@ VALUES
 
 INSERT INTO general_location(id,location_name,region,service_url, x, y)
 VALUES
-    (0,'토즈 강남역토즈타워점', 'GANGNAM_GU', 'https://map.naver.com/p/search/%ED%86%A0%EC%A6%88%20%EA%B0%95%EB%82%A8%EC%97%AD%ED%86%A0%EC%A6%88%ED%83%80%EC%9B%8C%EC%A0%90', 1270306659, 374967416),
                                                         (1,'토즈 강남역토즈타워점', 'GANGNAM_GU', 'https://map.naver.com/p/search/%ED%86%A0%EC%A6%88%20%EA%B0%95%EB%82%A8%EC%97%AD%ED%86%A0%EC%A6%88%ED%83%80%EC%9B%8C%EC%A0%90', 1270306659, 374967416),
                                                         (2,'랭스터디카페 대치점', 'GANGNAM_GU', 'https://map.naver.com/p/search/%EB%9E%AD%EC%8A%A4%ED%84%B0%EB%94%94%EC%B9%B4%ED%8E%98%20%EB%8C%80%EC%B9%98%EC%A0%90', 1270593120, 374980923),
                                                         (3,'토즈 압구정센터', 'GANGNAM_GU', 'https://map.naver.com/p/search/%ED%86%A0%EC%A6%88%20%EC%95%95%EA%B5%AC%EC%A0%95%EC%84%BC%ED%84%B0', 1270305097, 375260243),
