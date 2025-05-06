@@ -35,6 +35,9 @@ public enum ErrorCode {
     // location
     LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND, "LOCATION4041", "존재하지 않는 장소입니다."),
 
+    // region
+    REGION_NOT_FOUND(HttpStatus.NOT_FOUND, "REGION4041", "존재하지 않는 지역구입니다."),
+
     // enrollment
     ENROLLMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "ENROLLMENT4041", "참여 이력을 찾을 수 없습니다."),
     ENROLLMENT_DUPLICATED(HttpStatus.BAD_REQUEST, "ENROLLMENT4001", "중복 참여는 불가능합니다."),
