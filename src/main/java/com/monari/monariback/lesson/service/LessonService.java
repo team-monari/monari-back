@@ -95,7 +95,7 @@ public class LessonService {
         final CreateLessonRequest lessonDto,
         final Teacher teacher) {
 
-        final GeneralLocation location = generalLocationRepository.findById(ONLINE_LOCATION)
+        final GeneralLocation location = generalLocationRepository.findById(lessonDto.locationId())
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
 
         final Lesson lesson = Lesson.ofCreate(
@@ -159,11 +159,13 @@ public class LessonService {
         final UpdateLessonRequest lessonDto,
         final Accessor accessor
     ) {
-        Lesson lesson = lessonRepository.findById(lessonId)
+        final Lesson lesson = lessonRepository.findById(lessonId)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND));
 
-        final GeneralLocation location = generalLocationRepository.findById(ONLINE_LOCATION)
+        final GeneralLocation location = generalLocationRepository.findById(
+                lesson.getGeneralLocation().getId())
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
+
         final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
             .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
 

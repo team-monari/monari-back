@@ -318,6 +318,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
     private ConstructorExpression<LessonWithTeacherResponse> createLessonWithTeacherResponse() {
         return Projections.constructor(
             LessonWithTeacherResponse.class,
+            teacher.publicId,
             lesson.id,
             lesson.generalLocation.id,
             lesson.title,

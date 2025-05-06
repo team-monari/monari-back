@@ -1,8 +1,10 @@
 package com.monari.monariback.lesson.dto.response;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record LessonWithTeacherResponse(
+    UUID publicTeacherId,
     Integer lessonId,
     Integer locationId,
     String title,
