@@ -1,19 +1,32 @@
 package com.monari.monariback.lesson.repository.impl;
 
+import static com.monari.monariback.enrollment.entity.QEnrollment.enrollment;
+import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus.CANCELLED;
+import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus.REFUNDED;
+import static com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus.REFUND_REQUESTED;
 import static com.monari.monariback.lesson.entity.QLesson.lesson;
+import static com.monari.monariback.location.entity.QGeneralLocation.generalLocation;
+import static com.monari.monariback.teacher.entity.QTeacher.teacher;
 
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.SearchType;
 import com.monari.monariback.common.enumerated.Subject;
-import com.monari.monariback.lesson.entity.Lesson;
+import com.monari.monariback.lesson.dto.response.LessonResponse;
+import com.monari.monariback.lesson.dto.response.LessonWithTeacherResponse;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import com.monari.monariback.lesson.repository.LessonCustomRepository;
+import com.querydsl.core.types.ConstructorExpression;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -26,48 +39,6 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         lesson.id.desc()
     };
     private final JPAQueryFactory queryFactory;
-
-    /**
-     * 전체 강의 목록에서 일부만 조회하여 페이징을 적용한 결과를 반환합니다.
-     *
-     * @param pageSize 페이지당 강의 수
-     * @param pageNum  조회할 페이지 번호 (1부터 시작)
-     * @return 요청한 페이지에 해당하는 강의 목록
-     * @author Hong
-     */
-    @Override
-    public List<Lesson> findLessonsByPageSize(
-        final Integer pageSize,
-        final Integer pageNum
-    ) {
-        // 페이징 처리를 위한 공통 메서드 사용
-        return fetchLessonsWithPaging(null, pageSize, pageNum, null, null, null, null, null);
-    }
-
-    /**
-     * 검색 키워드를 기반으로 한 강의 목록을 페이징 처리하여 반환합니다.
-     *
-     * @param keyword  검색 키워드 (제목 또는 설명에 포함되는 값)
-     * @param pageSize 페이지당 강의 수
-     * @param pageNum  조회할 페이지 번호 (1부터 시작)
-     * @return 검색 조건에 맞는 강의 목록 (페이징 적용)
-     * @author Hong
-     */
-    @Override
-    public List<Lesson> searchLessons(
-        final String keyword,
-        final Integer pageSize,
-        final Integer pageNum,
-        final SchoolLevel schoolLevel,
-        final Subject subject,
-        final Region region,
-        final LessonType lessonType,
-        final SearchType searchType
-    ) {
-        // 페이징 처리를 위한 공통 메서드 사용
-        return fetchLessonsWithPaging(keyword, pageSize, pageNum, schoolLevel, subject, region,
-            lessonType, searchType);
-    }
 
     /**
      * 전체 강의 수 또는 키워드에 해당하는 강의 수를 기준으로 총 페이지 수를 계산합니다.
@@ -86,29 +57,6 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return totalCount == 0 ? 0 : (int) Math.ceil((double) totalCount / pageSize);
     }
 
-    /**
-     * 특정 강사의 ID에 해당하는 강의 목록을 페이징하여 조회합니다.
-     *
-     * @param teacherId 강사의 내부 DB ID
-     * @param pageSize  페이지당 강의 수
-     * @param pageNum   조회할 페이지 번호
-     * @return 해당 강사가 생성한 강의 목록 (페이징 적용)
-     * @author Hong
-     */
-    @Override
-    public List<Lesson> findAllByTeacherId(
-        final int teacherId,
-        final int pageSize,
-        final int pageNum
-    ) {
-        return queryFactory
-            .selectFrom(lesson)
-            .where(lesson.teacher.id.eq(teacherId))
-            .orderBy(LESSON_DEFAULT_ORDER)
-            .limit(pageSize)
-            .offset(getOffset(pageSize, pageNum))
-            .fetch();
-    }
 
     /**
      * 전체 또는 검색 키워드에 해당하는 강의 수를 반환합니다.
@@ -136,6 +84,12 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return count != null ? count : 0L;
     }
 
+    /**
+     * 특정 강사의 전체 강의 개수를 반환합니다.
+     *
+     * @param teacherId 강사의 고유 ID
+     * @return 해당 강사의 강의 수 (long 타입 반환)
+     */
     @Override
     public Long getTotalLessenByTeacherId(final int teacherId) {
         Long count = queryFactory.select(lesson.count())
@@ -145,26 +99,60 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         return count != null ? count : 0L;
     }
 
+    /**
+     * 전체 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
+     *
+     * @param pageSize   페이지당 강의 수
+     * @param pageNumber 페이지 번호
+     * @return LessonResponse 리스트
+     */
+
     @Override
-    public Optional<Lesson> findByLessonIdWithTeacher(final int locationId) {
-        return Optional.ofNullable(queryFactory.selectFrom(lesson)
-            .leftJoin(lesson.teacher)
-            .where(lesson.id.eq(locationId))
-            .fetchFirst());
+    public List<LessonResponse> findLessonsWithStudentCount(
+        final Integer pageSize,
+        final Integer pageNumber
+    ) {
+        return fetchLessonsWithStudentCount(null, pageSize, pageNumber);
     }
 
     /**
-     * 내부적으로 페이징을 처리하며 강의 목록을 조회합니다.
+     * 특정 강사의 강의 목록을 학생 수와 함께 페이지 단위로 조회합니다.
      *
-     * @param keyword     검색 키워드 (null 가능)
-     * @param pageSize    페이지당 강의 수
-     * @param pageNum     조회할 페이지 번호
-     * @param schoolLevel 검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @param subject     검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @return 페이징 적용된 강의 목록
+     * @param pageSize   페이지당 강의 수
+     * @param pageNumber 페이지 번호 (1부터 시작)
+     * @param teacherId  강사의 UUID
+     * @param studentId  학생의 UUID
+     * @return LessonResponse 리스트
      * @author Hong
      */
-    private List<Lesson> fetchLessonsWithPaging(
+
+    @Override
+    public List<LessonResponse> findLessonsWithStudentCountByAuth(
+        final Integer pageSize,
+        final Integer pageNumber,
+        final UUID teacherId,
+        final UUID studentId
+    ) {
+        BooleanExpression whereCondition = teacherId != null
+            ? lesson.teacher.publicId.eq(teacherId)
+            : enrollment.student.publicId.eq(studentId);
+        return fetchLessonsWithStudentCount(whereCondition, pageSize, pageNumber);
+    }
+
+    /**
+     * 키워드를 기반으로 검색 조건을 생성합니다. 제목 또는 설명에 키워드가 포함되어 있는지를 검사합니다.
+     *
+     * @param keyword     검색 키워드 (null 또는 공백이면 조건 없이 전체 검색)
+     * @param schoolLevel 검색 필터 (null이면 조건 없이 전체 검색)
+     * @param subject     검색 필터 (null이면 조건 없이 전체 검색)
+     * @param region      검색 필터 (null이면 조건 없이 전체 검색)
+     * @param lessonType  검색 필터 (null이면 조건 없이 전체 검색)
+     * @param searchType  검색 범위 설정
+     * @return QueryDSL의 BooleanExpression 조건
+     * @author Hong
+     */
+    @Override
+    public List<LessonResponse> searchLessonsWithStudentCount(
         final String keyword,
         final Integer pageSize,
         final Integer pageNum,
@@ -174,33 +162,48 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final LessonType lessonType,
         final SearchType searchType
     ) {
-        return queryFactory
-            .selectFrom(lesson)
-            .where(buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType,
-                searchType))
-            .orderBy(LESSON_DEFAULT_ORDER)
-            .limit(pageSize)
-            .offset(getOffset(pageSize, pageNum))
-            .fetch();
-    }
-
-    private long getOffset(
-        final Integer pageSize, final Integer pageNum) {
-        return (long) (pageNum - 1) * pageSize;
+        return fetchLessonsWithStudentCount(
+            buildKeywordPredicate(keyword, schoolLevel, subject, region, lessonType, searchType),
+            pageSize,
+            pageNum
+        );
     }
 
     /**
-     * 키워드를 기반으로 검색 조건을 생성합니다. 제목 또는 설명에 키워드가 포함되어 있는지를 검사합니다.
+     * 강의 ID를 기반으로 강의 정보와 강사 정보를 함께 조회합니다. enrollment 상태를 기준으로 수강 중인 학생 수를 계산하여 포함합니다.
      *
-     * @param keyword     검색 키워드 (null 또는 공백이면 조건 없이 전체 검색)
-     * @param schoolLevel 검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @param subject     검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @param region      검색 필터(null 또는 공백이면 조건 없이 전체 검색)
-     * @param lessonType
-     * @return QueryDSL의 BooleanExpression 조건
-     * @author Hong
+     * @param locationId 강의 ID
+     * @return LessonWithTeacherResponse DTO를 Optional로 감싸 반환합니다.
      */
-    private BooleanExpression[] buildKeywordPredicate(
+    @Override
+    public Optional<LessonWithTeacherResponse> findByLessonIdWithTeacher(final int locationId) {
+        return Optional.ofNullable(queryFactory.select(createLessonWithTeacherResponse())
+            .from(lesson)
+            .leftJoin(lesson.enrollments, enrollment)
+            .leftJoin(lesson.teacher, teacher)
+            .leftJoin(lesson.generalLocation, generalLocation)
+            .where(lesson.id.eq(locationId))
+            .groupBy(lesson.id)
+            .fetchFirst()
+        );
+    }
+
+    /**
+     * 전체 강의 개수를 정수(Integer)로 반환합니다.
+     *
+     * @return 전체 강의 수
+     */
+    @Override
+    public Integer countTotalLessons() {
+        Long count = queryFactory
+            .select(lesson.count())
+            .from(lesson)
+            .fetchOne();
+        return (int) (count != null ? count : 0);
+    }
+
+
+    private BooleanExpression buildKeywordPredicate(
         final String keyword,
         final SchoolLevel schoolLevel,
         final Subject subject,
@@ -208,15 +211,57 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         final LessonType lessonType,
         final SearchType searchType
     ) {
+        BooleanExpression condition = null;
 
-        return new BooleanExpression[]{
-            keywordCondition(keyword, searchType),
-            schoolLevelCondition(schoolLevel),
-            subjectCondition(subject),
-            regionCondition(region),
-            lessonTypeCondition(lessonType)
-        };
+        condition = combineConditions(condition, keywordCondition(keyword, searchType));
+        condition = combineConditions(condition, schoolLevelCondition(schoolLevel));
+        condition = combineConditions(condition, subjectCondition(subject));
+        condition = combineConditions(condition, regionCondition(region));
+        condition = combineConditions(condition, lessonTypeCondition(lessonType));
 
+        return condition;
+    }
+
+    /**
+     * 두 BooleanExpression을 and()로 결합합니다.
+     *
+     * @param base       기존 조건 (null 가능)
+     * @param additional 추가 조건 (null 가능)
+     * @return 결합된 BooleanExpression 또는 null
+     */
+    private BooleanExpression combineConditions(BooleanExpression base,
+        BooleanExpression additional) {
+        if (additional == null) {
+            return base;
+        }
+        return base == null ? additional : base.and(additional);
+    }
+
+    /**
+     * 주어진 조건과 페이지네이션 정보를 바탕으로 강의 목록을 학생 수와 함께 조회합니다. 공통 쿼리 로직을 캡슐화하여 중복 코드를 줄이고 재사용성을 높입니다.
+     *
+     * @param whereCondition 검색 및 필터링 조건 (null일 경우 조건 없이 전체 조회)
+     * @param pageSize       페이지당 강의 수 (양수여야 함)
+     * @param pageNumber     페이지 번호 (1부터 시작)
+     * @return LessonResponse 객체의 리스트
+     * @author Hong
+     */
+    private List<LessonResponse> fetchLessonsWithStudentCount(
+        final BooleanExpression whereCondition,
+        final Integer pageSize,
+        final Integer pageNumber
+    ) {
+        return pagination(
+            queryFactory
+                .select(createLessonResponse())
+                .from(lesson)
+                .leftJoin(lesson.enrollments, enrollment)
+                .where(whereCondition)
+                .groupBy(lesson.id)
+                .orderBy(LESSON_DEFAULT_ORDER),
+            pageSize,
+            pageNumber
+        ).fetch();
     }
 
     private BooleanExpression lessonTypeCondition(final LessonType lessonType) {
@@ -245,5 +290,77 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
 
     private BooleanExpression regionCondition(final Region region) {
         return region != null ? lesson.region.eq(region) : null;
+    }
+
+    private ConstructorExpression<LessonResponse> createLessonResponse() {
+        return Projections.constructor(
+            LessonResponse.class,
+            lesson.id,
+            lesson.generalLocation.id,
+            lesson.teacher.id,
+            lesson.title,
+            createCurrentStudentExpression(),
+            lesson.description,
+            lesson.amount,
+            lesson.minStudent,
+            lesson.maxStudent,
+            lesson.startDate,
+            lesson.endDate,
+            lesson.deadline,
+            lesson.status.stringValue(),
+            lesson.region.stringValue(),
+            lesson.schoolLevel.stringValue(),
+            lesson.subject.stringValue(),
+            lesson.lessonType.stringValue()
+        );
+    }
+
+    private ConstructorExpression<LessonWithTeacherResponse> createLessonWithTeacherResponse() {
+        return Projections.constructor(
+            LessonWithTeacherResponse.class,
+            teacher.publicId,
+            lesson.id,
+            lesson.generalLocation.id,
+            lesson.title,
+            createCurrentStudentExpression(),
+            lesson.description,
+            lesson.amount,
+            lesson.minStudent,
+            lesson.maxStudent,
+            lesson.startDate,
+            lesson.endDate,
+            lesson.deadline,
+            lesson.status.stringValue(),
+            lesson.region.stringValue(),
+            lesson.schoolLevel.stringValue(),
+            lesson.subject.stringValue(),
+            lesson.lessonType.stringValue(),
+            teacher.name,
+            teacher.university,
+            teacher.major,
+            teacher.career,
+            generalLocation.locationName,
+            generalLocation.x,
+            generalLocation.y,
+            generalLocation.serviceUrl
+        );
+    }
+
+    private Expression<Integer> createCurrentStudentExpression() {
+        return Expressions.cases()
+            .when(enrollment.status.notIn(REFUND_REQUESTED, REFUNDED, CANCELLED))
+            .then(1)
+            .otherwise(0)
+            .sum().as("currentStudent");
+    }
+
+    private <T> JPAQuery<T> pagination(
+        final JPAQuery<T> query,
+        final Integer pageSize,
+        final Integer pageNumber
+    ) {
+        return query
+            .offset((long) (pageNumber - 1) * pageSize)
+            .limit(pageSize);
     }
 }

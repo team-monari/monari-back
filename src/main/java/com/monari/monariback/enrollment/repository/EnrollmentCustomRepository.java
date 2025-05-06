@@ -15,12 +15,6 @@ public interface EnrollmentCustomRepository {
         final Integer LessonId
     );
 
-    List<Enrollment> findAllByStudentIdWithPagination(
-        final Integer studentId,
-        final Integer pageNumber,
-        final Integer pageSize
-    );
-
     Optional<Enrollment> findByStudentAndLesson(final UUID studentId, final Integer lessonId);
 
     Long countByStudentId(final Integer studentId);

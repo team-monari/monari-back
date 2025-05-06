@@ -1,8 +1,10 @@
 package com.monari.monariback.lesson.dto.response;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record LessonWithTeacherResponse(
+    UUID publicTeacherId,
     Integer lessonId,
     Integer locationId,
     String title,
@@ -22,53 +24,11 @@ public record LessonWithTeacherResponse(
     String name,
     String university,
     String major,
-    String career
+    String career,
+    String locationName,
+    String x,
+    String y,
+    String serviceUrl
 ) {
-
-    public static LessonWithTeacherResponse ofCreate(
-        final Integer lessonId,
-        final Integer locationId,
-        final String title,
-        final Integer currentStudent,
-        final String description,
-        final Integer amount,
-        final Integer minStudent,
-        final Integer maxStudent,
-        final LocalDate startDate,
-        final LocalDate endDate,
-        final LocalDate deadline,
-        final String status,
-        final String region,
-        final String schoolLevel,
-        final String subject,
-        final String lessonType,
-        final String name,
-        final String university,
-        final String major,
-        final String career
-    ) {
-        return new LessonWithTeacherResponse(
-            lessonId,
-            locationId,
-            title,
-            currentStudent,
-            description,
-            amount,
-            minStudent,
-            maxStudent,
-            startDate,
-            endDate,
-            deadline,
-            status,
-            region,
-            schoolLevel,
-            subject,
-            lessonType,
-            name,
-            university,
-            major,
-            career
-        );
-    }
 
 }

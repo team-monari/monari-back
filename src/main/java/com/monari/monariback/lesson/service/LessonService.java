@@ -6,6 +6,7 @@ import static com.monari.monariback.lesson.constant.LessonResponseConstants.LESS
 import static com.monari.monariback.lesson.constant.LessonResponseConstants.LESSON_UPDATE_SUCCESS;
 
 import com.monari.monariback.auth.entity.Accessor;
+import com.monari.monariback.common.aop.ExecutionTime;
 import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.error.ErrorCode;
 import com.monari.monariback.common.exception.BusinessException;
@@ -25,7 +26,6 @@ import com.monari.monariback.student.entity.Student;
 import com.monari.monariback.student.repository.StudentRepository;
 import com.monari.monariback.teacher.entity.Teacher;
 import com.monari.monariback.teacher.repository.TeacherRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
+
 public class LessonService {
 
     private static final Integer PAGE_SIZE = 6;
@@ -48,6 +49,22 @@ public class LessonService {
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
     private final EnrollmentRepository enrollmentRepository;
+
+    /**
+     * 선생님 은행 정보 확인
+     *
+     * @param teacher - 선생님 Entity
+     * @author Hong
+     */
+    // TODO : 선생님 내부 메서드로 변경
+    private static void checkTeacherBankProfile(final Teacher teacher) {
+        if (teacher.getBankName() == null || teacher.getBankName().isEmpty() &&
+            teacher.getAccountNumber() == null || teacher.getAccountNumber().isEmpty()) {
+            throw new BusinessException(
+                ErrorCode.TEACHER_PROFILE_REQUIRED_BANK_PROFILE
+            );
+        }
+    }
 
     /**
      * 수업 생성
@@ -62,21 +79,24 @@ public class LessonService {
         final CreateLessonRequest lessonDto,
         final Accessor accessor
     ) {
+        final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
+            .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
+
+        checkTeacherBankProfile(teacher);
 
         switch (lessonDto.lessonType()) {
-            case ONLINE -> createOnlineLesson(lessonDto, accessor);
-            case OFFLINE -> createOfflineLesson(lessonDto, accessor);
+            case ONLINE -> createOnlineLesson(lessonDto, teacher);
+            case OFFLINE -> createOfflineLesson(lessonDto, teacher);
         }
         return LESSON_CREATE_SUCCESS;
     }
 
     public void createOfflineLesson(
         final CreateLessonRequest lessonDto,
-        final Accessor accessor) {
-        final GeneralLocation location = generalLocationRepository.findById(ONLINE_LOCATION)
+        final Teacher teacher) {
+
+        final GeneralLocation location = generalLocationRepository.findById(lessonDto.locationId())
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
-        final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
-            .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
 
         final Lesson lesson = Lesson.ofCreate(
             location,
@@ -101,9 +121,7 @@ public class LessonService {
 
     public void createOnlineLesson(
         final CreateLessonRequest lessonDto,
-        final Accessor accessor) {
-        final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
-            .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
+        final Teacher teacher) {
 
         final GeneralLocation location = generalLocationRepository.findById(ONLINE_LOCATION)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
@@ -141,11 +159,13 @@ public class LessonService {
         final UpdateLessonRequest lessonDto,
         final Accessor accessor
     ) {
-        Lesson lesson = lessonRepository.findById(lessonId)
+        final Lesson lesson = lessonRepository.findById(lessonId)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND));
 
-        final GeneralLocation location = generalLocationRepository.findById(ONLINE_LOCATION)
+        final GeneralLocation location = generalLocationRepository.findById(
+                lesson.getGeneralLocation().getId())
             .orElseThrow(() -> new NotFoundException(ErrorCode.LOCATION_NOT_FOUND));
+
         final Teacher teacher = teacherRepository.findByPublicId(accessor.getPublicId())
             .orElseThrow(() -> new NotFoundException(TEACHER_NOT_FOUND));
 
@@ -178,33 +198,8 @@ public class LessonService {
      */
     @Transactional(readOnly = true)
     public LessonWithTeacherResponse readLesson(final Integer lessonId) {
-        final Lesson lesson = lessonRepository.findByLessonIdWithTeacher(lessonId)
+        return lessonRepository.findByLessonIdWithTeacher(lessonId)
             .orElseThrow(() -> new NotFoundException(ErrorCode.LESSON_NOT_FOUND));
-
-        final Teacher teacher = lesson.getTeacher();
-
-        return LessonWithTeacherResponse.ofCreate(
-            lesson.getId(),
-            lesson.getGeneralLocation().getId(),
-            lesson.getTitle(),
-            enrollmentRepository.countCurrentStudentByLessonId(lessonId),
-            lesson.getDescription(),
-            lesson.getAmount(),
-            lesson.getMinStudent(),
-            lesson.getMaxStudent(),
-            lesson.getStartDate(),
-            lesson.getEndDate(),
-            lesson.getDeadline(),
-            lesson.getStatus().name(),
-            lesson.getRegion().name(),
-            lesson.getSchoolLevel().name(),
-            lesson.getSubject().name(),
-            lesson.getLessonType().name(),
-            teacher.getName(),
-            teacher.getUniversity(),
-            teacher.getMajor(),
-            teacher.getCareer()
-        );
     }
 
     /**
@@ -216,20 +211,15 @@ public class LessonService {
      * @author Hong
      */
     @Transactional(readOnly = true)
+    @ExecutionTime
     public Page<LessonResponse> readLessons(
         final Integer pageNumber,
         final Integer pageSize
     ) {
         return new PageImpl<>(
-            lessonRepository
-                .findLessonsByPageSize(pageSize, pageNumber)
-                .stream()
-                .map(lesson -> {
-                    int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
-                        lesson.getId());
-                    return LessonResponse.ofCreatePage(lesson, currStudent);
-                })
-                .toList()
+            lessonRepository.findLessonsWithStudentCount(pageSize, pageNumber),
+            PageRequest.of(pageNumber, pageSize),
+            lessonRepository.countTotalLessons()
         );
     }
 
@@ -241,6 +231,7 @@ public class LessonService {
      * @author Hong
      */
     @Transactional(readOnly = true)
+    @ExecutionTime
     public Page<LessonResponse> searchLessons(
         final SearchLessonRequest searchLessonRequest
     ) {
@@ -254,26 +245,17 @@ public class LessonService {
         );
 
         return new PageImpl<>(
-            lessonRepository
-                .searchLessons(
-                    searchLessonRequest.keyword(),
-                    searchLessonRequest.pageSize(),
-                    searchLessonRequest.pageNumber(),
-                    searchLessonRequest.schoolLevel(),
-                    searchLessonRequest.subject(),
-                    searchLessonRequest.region(),
-                    searchLessonRequest.lessonType(),
-                    searchLessonRequest.searchType()
-                )
-                .stream()
-                .map(lesson -> {
-                    int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
-                        lesson.getId());
-                    return LessonResponse.ofCreatePage(lesson, currStudent);
-                })
-                .toList(),
-            PageRequest.of(
-                searchLessonRequest.pageNumber() - 1,
+            lessonRepository.searchLessonsWithStudentCount(
+                searchLessonRequest.keyword(),
+                searchLessonRequest.pageSize(),
+                searchLessonRequest.pageNumber(),
+                searchLessonRequest.schoolLevel(),
+                searchLessonRequest.subject(),
+                searchLessonRequest.region(),
+                searchLessonRequest.lessonType(),
+                searchLessonRequest.searchType()
+            ),
+            PageRequest.of(searchLessonRequest.pageNumber() - 1,
                 searchLessonRequest.pageSize()
             ),
             totalLessonCount
@@ -287,6 +269,7 @@ public class LessonService {
      * @author Hong
      */
     @Transactional(readOnly = true)
+    @ExecutionTime
     public PageInfoResponse getTotalPages() {
         return new PageInfoResponse(lessonRepository.getTotalLessonPages(PAGE_SIZE, null));
     }
@@ -301,6 +284,7 @@ public class LessonService {
      * @author Hong
      */
     @Transactional(readOnly = true)
+    @ExecutionTime
     public Page<LessonResponse> getMyEnrolledLessons(
         final Integer pageNumber,
         final Integer pageSize,
@@ -332,23 +316,13 @@ public class LessonService {
 
         final Long totalStudent = enrollmentRepository.countByStudentId(student.getId());
 
-        final List<LessonResponse> enrolledList = enrollmentRepository.
-            findAllByStudentIdWithPagination(
-                student.getId()
-                , pageSize
-                , pageNumber)
-            .stream()
-            .map(enrollment -> {
-                Lesson lesson = enrollment.getLesson();
-                log.info(lesson.toString());
-                int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
-                    lesson.getId());
-                return LessonResponse.ofCreatePage(lesson, currStudent);
-            })
-            .toList();
-
         return new PageImpl<>(
-            enrolledList,
+            lessonRepository.findLessonsWithStudentCountByAuth(
+                pageSize,
+                pageNumber,
+                null,
+                accessor.getPublicId()
+            ),
             PageRequest.of(pageNumber - 1, pageSize),
             totalStudent
         );
@@ -373,21 +347,18 @@ public class LessonService {
 
         final Long TotalLessons = lessonRepository.getTotalLessenByTeacherId(teacher.getId());
 
-        final List<LessonResponse> teachingLessons = lessonRepository.findAllByTeacherId(
-                teacher.getId(), pageSize, pageNumber
-            )
-            .stream()
-            .map(lesson -> {
-                int currStudent = enrollmentRepository.countCurrentStudentByLessonId(
-                    lesson.getId());
-                return LessonResponse.ofCreatePage(lesson, currStudent);
-            })
-            .toList();
-
         return new PageImpl<>(
-            teachingLessons,
+            lessonRepository.
+                findLessonsWithStudentCountByAuth(
+                    pageSize,
+                    pageNumber,
+                    accessor.getPublicId(),
+                    null
+                ),
             PageRequest.of(pageNumber - 1, pageSize),
             TotalLessons
         );
     }
+
 }
+

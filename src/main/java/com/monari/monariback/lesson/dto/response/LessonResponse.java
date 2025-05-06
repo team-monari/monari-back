@@ -1,6 +1,5 @@
 package com.monari.monariback.lesson.dto.response;
 
-import com.monari.monariback.lesson.entity.Lesson;
 import java.time.LocalDate;
 
 public record LessonResponse(
@@ -61,31 +60,6 @@ public record LessonResponse(
             schoolLevel,
             subject,
             lessonType
-        );
-    }
-
-    public static LessonResponse ofCreatePage(
-        final Lesson lesson,
-        final Integer currentStudent
-    ) {
-        return new LessonResponse(
-            lesson.getId(),
-            lesson.getGeneralLocation().getId(),
-            lesson.getTeacher().getId(),
-            lesson.getTitle(),
-            currentStudent,
-            lesson.getDescription(),
-            lesson.getAmount(),
-            lesson.getMinStudent(),
-            lesson.getMaxStudent(),
-            lesson.getStartDate(),
-            lesson.getEndDate(),
-            lesson.getDeadline(),
-            lesson.getStatus().name(),
-            lesson.getRegion().name(),
-            lesson.getSchoolLevel().name(),
-            lesson.getSubject().name(),
-            lesson.getLessonType().name()
         );
     }
 }
