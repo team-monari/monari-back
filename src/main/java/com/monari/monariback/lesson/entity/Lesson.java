@@ -173,6 +173,17 @@ public class Lesson extends BaseEntity {
     }
 
     public int calculateFinalPrice() {
-        return Math.round((float) this.getAmount() / this.getEnrollments().size());
+        int current = this.getEnrollments().size();
+        int min = this.getMinStudent();
+        int amount = this.getAmount();
+
+        if (current <= min) {
+            return amount;
+        }
+
+        int extraStudents = current - min;
+        double discountRate = extraStudents * 0.025;
+
+        return (int) Math.round(amount * (1 - discountRate));
     }
 }
