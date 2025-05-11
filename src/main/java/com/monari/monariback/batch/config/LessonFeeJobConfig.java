@@ -1,5 +1,6 @@
 package com.monari.monariback.batch.config;
 
+import com.monari.monariback.batch.itemlistener.CustomItemProcessListener;
 import com.monari.monariback.batch.itemprocessor.MailItemProcessor;
 import com.monari.monariback.batch.itemwriter.EnrollmentItemWriter;
 import com.monari.monariback.enrollment.entity.Enrollment;
@@ -48,6 +49,8 @@ public class LessonFeeJobConfig {
     private final EnrollmentItemWriter enrollmentItemWriter;
     private final LessonRepository lessonRepository;
 
+    private final CustomItemProcessListener customItemProcessListener;
+
     @Value("${lessonChunkSize:10}")
     private int lessonChunkSize;
 
@@ -94,10 +97,11 @@ public class LessonFeeJobConfig {
                     JOIN FETCH l.teacher
                     JOIN FETCH e.student
                     WHERE l.startDate = :lessonStartDate
+                    ORDER BY e.id
                     """)
                 .parameterValues(params)
                 .saveState(false)
-                .pageSize(lessonChunkSize)
+                .pageSize(enrollmentChunkSize)
                 .build();
     }
 
@@ -118,6 +122,7 @@ public class LessonFeeJobConfig {
             .processor(mailItemProcessor)
             .writer(mimeMessageItemWriter)
             .taskExecutor(taskExecutor())
+            .listener(customItemProcessListener)
             .build();
     }
 
