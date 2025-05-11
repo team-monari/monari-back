@@ -97,10 +97,11 @@ public class LessonFeeJobConfig {
                     JOIN FETCH l.teacher
                     JOIN FETCH e.student
                     WHERE l.startDate = :lessonStartDate
+                    ORDER BY e.id
                     """)
                 .parameterValues(params)
                 .saveState(false)
-                .pageSize(lessonChunkSize)
+                .pageSize(enrollmentChunkSize)
                 .build();
     }
 
