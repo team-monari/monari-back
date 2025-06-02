@@ -16,6 +16,7 @@ public enum ErrorCode {
 
     // lesson
     LESSON_NOT_FOUND(HttpStatus.NOT_FOUND, "LESSON4041", "존재하지 않는 수업입니다."),
+    LESSON_NOT_SUPPORTED_STATUS(HttpStatus.BAD_REQUEST, "LESSON4001", "지원하지 않는 수업 상태입니다."),
 
     // student
     STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT4041", "존재하지 않는 학생입니다"),
