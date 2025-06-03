@@ -35,6 +35,11 @@ public interface LessonCustomRepository {
 
     Integer countTotalLessons();
 
+    //    @Cacheable(
+//        value = "lessons",
+//        key = "'page:' + (#pageNumber != null ? #pageNumber : 1) + ':size:' + (#pageSize != null ? #pageSize : 6)",
+//        unless = "#result == null || #result.isEmpty()"
+//    )
     List<LessonResponse> findLessonsWithStudentCount(
         final Integer pageSize,
         final Integer pageNumber

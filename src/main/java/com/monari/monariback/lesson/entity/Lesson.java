@@ -17,6 +17,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -31,7 +32,11 @@ import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
-@Table(name = "lesson")
+@Table(name = "lesson",
+    indexes = {
+        @Index(name = "idx_lesson_created_at_id_desc", columnList = "created_at DESC, id DESC")
+    }
+)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Lesson extends BaseEntity {

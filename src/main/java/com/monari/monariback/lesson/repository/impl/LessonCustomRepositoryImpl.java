@@ -17,11 +17,12 @@ import com.monari.monariback.lesson.dto.response.LessonWithTeacherResponse;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import com.monari.monariback.lesson.repository.LessonCustomRepository;
 import com.querydsl.core.types.ConstructorExpression;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -40,6 +41,14 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
     };
     private final JPAQueryFactory queryFactory;
 
+    private static NumberTemplate<Integer> getCurrentStudent() {
+        return Expressions.numberTemplate(Integer.class, "cast({0} as int)",
+            JPAExpressions.select(enrollment.id.countDistinct())
+                .from(enrollment)
+                .where(enrollment.lesson.id.eq(lesson.id)
+                    .and(enrollment.status.notIn(REFUND_REQUESTED, REFUNDED, CANCELLED))));
+    }
+
     /**
      * 전체 강의 수 또는 키워드에 해당하는 강의 수를 기준으로 총 페이지 수를 계산합니다.
      *
@@ -56,7 +65,6 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
         long totalCount = getTotalLessonCount(keyword, null, null, null, null, null);
         return totalCount == 0 ? 0 : (int) Math.ceil((double) totalCount / pageSize);
     }
-
 
     /**
      * 전체 또는 검색 키워드에 해당하는 강의 수를 반환합니다.
@@ -179,7 +187,6 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
     public Optional<LessonWithTeacherResponse> findByLessonIdWithTeacher(final int locationId) {
         return Optional.ofNullable(queryFactory.select(createLessonWithTeacherResponse())
             .from(lesson)
-            .leftJoin(lesson.enrollments, enrollment)
             .leftJoin(lesson.teacher, teacher)
             .leftJoin(lesson.generalLocation, generalLocation)
             .where(lesson.id.eq(locationId))
@@ -201,7 +208,6 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             .fetchOne();
         return (int) (count != null ? count : 0);
     }
-
 
     private BooleanExpression buildKeywordPredicate(
         final String keyword,
@@ -246,6 +252,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
      * @return LessonResponse 객체의 리스트
      * @author Hong
      */
+
     private List<LessonResponse> fetchLessonsWithStudentCount(
         final BooleanExpression whereCondition,
         final Integer pageSize,
@@ -257,7 +264,6 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
                 .from(lesson)
                 .leftJoin(lesson.enrollments, enrollment)
                 .where(whereCondition)
-                .groupBy(lesson.id)
                 .orderBy(LESSON_DEFAULT_ORDER),
             pageSize,
             pageNumber
@@ -299,7 +305,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             lesson.generalLocation.id,
             lesson.teacher.id,
             lesson.title,
-            createCurrentStudentExpression(),
+            getCurrentStudent(),
             lesson.description,
             lesson.amount,
             lesson.minStudent,
@@ -322,7 +328,7 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             lesson.id,
             lesson.generalLocation.id,
             lesson.title,
-            createCurrentStudentExpression(),
+            getCurrentStudent(),
             lesson.description,
             lesson.amount,
             lesson.minStudent,
@@ -344,14 +350,6 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             generalLocation.y,
             generalLocation.serviceUrl
         );
-    }
-
-    private Expression<Integer> createCurrentStudentExpression() {
-        return Expressions.cases()
-            .when(enrollment.status.notIn(REFUND_REQUESTED, REFUNDED, CANCELLED))
-            .then(1)
-            .otherwise(0)
-            .sum().as("currentStudent");
     }
 
     private <T> JPAQuery<T> pagination(
