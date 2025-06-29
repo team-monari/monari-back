@@ -42,7 +42,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: Build Docker image
-        run: docker build -t juwon0909/monari:latest .
+        run: docker build -t jongminhong844/monari:latest .
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -51,7 +51,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Push Docker image
-        run: docker push juwon0909/monari:latest
+        run: docker push jongminhong844/monari:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.6
