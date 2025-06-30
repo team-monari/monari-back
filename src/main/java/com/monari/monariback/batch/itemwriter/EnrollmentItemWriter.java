@@ -1,18 +1,25 @@
 package com.monari.monariback.batch.itemwriter;
 
 import com.monari.monariback.enrollment.entity.Enrollment;
+import com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus;
+import com.monari.monariback.enrollment.repository.EnrollmentRepository;
 import com.monari.monariback.lesson.entity.Lesson;
 import com.monari.monariback.lesson.entity.enurmerated.LessonStatus;
+import com.monari.monariback.lesson.repository.LessonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class EnrollmentItemWriter implements ItemWriter<Lesson> {
+
+    private final EnrollmentRepository enrollmentRepository;
+    private final LessonRepository lessonRepository;
 
     /**
      * 수업 상태 확정 및 최종 수강료 계산
@@ -21,17 +28,24 @@ public class EnrollmentItemWriter implements ItemWriter<Lesson> {
      */
     @Override
     public void write(Chunk<? extends Lesson> chunk) throws Exception {
+        List<Lesson> lessonsCancelled = new ArrayList<>();
+
         for (Lesson lesson : chunk) {
-            lesson.updateStatusIfMinEnrollmentNotMet();
+            if (lesson.isMinEnrollmentNotMet() || lesson.getStatus() == LessonStatus.CANCELED) {
+                lessonsCancelled.add(lesson);
+            } else {
 
-            if (lesson.getStatus() == LessonStatus.ACTIVE) {
                 int finalPrice = lesson.calculateFinalPrice();
-                List<Enrollment> enrollments = lesson.getEnrollments();
+                List<Integer> enrollmentIds = lesson.getEnrollments().stream()
+                        .filter(e -> e.getStatus() == EnrollmentStatus.PENDING)
+                        .map(Enrollment::getId)
+                        .toList();
 
-                for (Enrollment enrollment : enrollments) {
-                    enrollment.updateFinalPrice(finalPrice);
-                }
+                enrollmentRepository.updateFinalPrice(enrollmentIds, finalPrice, EnrollmentStatus.REQUESTED);
             }
         }
+
+        List<Integer> lessonIds = lessonsCancelled.stream().map(Lesson::getId).toList();
+        lessonRepository.updateStatus(lessonIds, LessonStatus.CANCELED);
     }
 }

@@ -163,14 +163,8 @@ public class Lesson extends BaseEntity {
         status = lessonStatus;
     }
 
-    public void updateStatusIfMinEnrollmentNotMet() {
-        if (this.getMinStudent() > this.getEnrollments().size()) {
-            updateStatus(LessonStatus.CANCELED);
-        }
-    }
-
-    public void updateStatus(final LessonStatus lessonStatus) {
-        this.status = lessonStatus;
+    public boolean isMinEnrollmentNotMet() {
+        return this.getMinStudent() > this.getEnrollments().size();
     }
 
     public int calculateFinalPrice() {

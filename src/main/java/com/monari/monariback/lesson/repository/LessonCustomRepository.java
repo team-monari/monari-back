@@ -6,6 +6,8 @@ import com.monari.monariback.common.enumerated.SearchType;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
 import com.monari.monariback.lesson.dto.response.LessonWithTeacherResponse;
+import com.monari.monariback.lesson.entity.Lesson;
+import com.monari.monariback.lesson.entity.enurmerated.LessonStatus;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import java.util.List;
 import java.util.Optional;
@@ -50,4 +52,6 @@ public interface LessonCustomRepository {
         final LessonType lessonType,
         final SearchType searchType
     );
+
+    void updateStatus(final List<Integer> lessonIds, final LessonStatus lessonStatus);
 }
