@@ -5,6 +5,7 @@ import com.monari.monariback.common.enumerated.Region;
 import com.monari.monariback.common.enumerated.SchoolLevel;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.enrollment.entity.Enrollment;
+import com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus;
 import com.monari.monariback.lesson.entity.enurmerated.LessonStatus;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import com.monari.monariback.location.entity.GeneralLocation;
@@ -173,7 +174,11 @@ public class Lesson extends BaseEntity {
     }
 
     public int calculateFinalPrice() {
-        int current = this.getEnrollments().size();
+        int current = (int) this.getEnrollments()
+                .stream()
+                .filter(e -> e.getStatus() == EnrollmentStatus.PENDING)
+                .count();
+
         int min = this.getMinStudent();
         int amount = this.getAmount();
 
