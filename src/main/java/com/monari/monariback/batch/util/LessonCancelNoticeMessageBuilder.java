@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import static com.monari.monariback.batch.util.LessonNoticeMessageBuilderType.LESSON_CANCEL_NOTICE;
+
 @Component
 public class LessonCancelNoticeMessageBuilder extends LessonNoticeMessageBuilder {
 
@@ -41,5 +43,10 @@ public class LessonCancelNoticeMessageBuilder extends LessonNoticeMessageBuilder
         Context context = new Context();
         context.setVariable("mailContextDto", LessonCancelNoticeContextDto.from(enrollment));
         return context;
+    }
+
+    @Override
+    public LessonNoticeMessageBuilderType getLessonNoticeMessageBuilderType() {
+        return LESSON_CANCEL_NOTICE;
     }
 }

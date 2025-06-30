@@ -21,6 +21,8 @@ public abstract class LessonNoticeMessageBuilder {
 
     public abstract Context createContext(Enrollment enrollment);
 
+    public abstract LessonNoticeMessageBuilderType getLessonNoticeMessageBuilderType();
+
     public MimeMessageHelper prepareServiceMail() throws MessagingException {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);

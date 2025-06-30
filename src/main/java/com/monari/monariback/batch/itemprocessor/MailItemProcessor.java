@@ -1,7 +1,7 @@
 package com.monari.monariback.batch.itemprocessor;
 
 import com.monari.monariback.batch.util.LessonNoticeMessageBuilder;
-import com.monari.monariback.batch.util.LessonNoticeMessageBuilderFactory;
+import com.monari.monariback.batch.util.LessonNoticeMessageBuilders;
 import com.monari.monariback.enrollment.entity.Enrollment;
 import com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus;
 import jakarta.mail.internet.MimeMessage;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MailItemProcessor implements ItemProcessor<Enrollment, MimeMessage> {
 
-    private final LessonNoticeMessageBuilderFactory lessonNoticeMessageBuilderFactory;
+    private final LessonNoticeMessageBuilders lessonNoticeMessageBuilders;
 
     /**
      * 수강 신청한 학생들에게 보낼 수강료 안내 메일 메시지 구성
@@ -29,7 +29,7 @@ public class MailItemProcessor implements ItemProcessor<Enrollment, MimeMessage>
         }
 
         LessonNoticeMessageBuilder lessonNoticeMessageBuilder =
-                lessonNoticeMessageBuilderFactory.getLessonNoticeMessageBuilder(enrollment);
+                lessonNoticeMessageBuilders.getLessonNoticeMessageBuilder(enrollment);
 
         return lessonNoticeMessageBuilder.buildNoticeMessage(enrollment);
     }
