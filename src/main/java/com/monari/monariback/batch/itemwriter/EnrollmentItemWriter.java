@@ -28,11 +28,11 @@ public class EnrollmentItemWriter implements ItemWriter<Lesson> {
      */
     @Override
     public void write(Chunk<? extends Lesson> chunk) throws Exception {
-        List<Lesson> lessonsCancelled = new ArrayList<>();
+        List<Integer> lessonsCancelledIds = new ArrayList<>();
 
         for (Lesson lesson : chunk) {
             if (lesson.isMinEnrollmentNotMet() || lesson.getStatus() == LessonStatus.CANCELED) {
-                lessonsCancelled.add(lesson);
+                lessonsCancelledIds.add(lesson.getId());
             } else {
 
                 int finalPrice = lesson.calculateFinalPrice();
@@ -45,7 +45,6 @@ public class EnrollmentItemWriter implements ItemWriter<Lesson> {
             }
         }
 
-        List<Integer> lessonIds = lessonsCancelled.stream().map(Lesson::getId).toList();
-        lessonRepository.updateStatus(lessonIds, LessonStatus.CANCELED);
+        lessonRepository.updateStatus(lessonsCancelledIds, LessonStatus.CANCELED);
     }
 }
