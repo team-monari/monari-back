@@ -13,7 +13,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.monari.monariback.location.entity.QGeneralLocation.generalLocation;
@@ -38,6 +40,28 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                 .orderBy(study.createdAt.desc(), study.id.desc())
                 .limit(pageSize)
                 .offset((long) pageSize * (pageNum - 1))
+                .fetch();
+    }
+
+    @Override
+    public List<StudyDto> paginationCoveringIndex(int pageNum, int pageSize) {
+        List<Integer> ids = queryFactory
+                .select(study.id)
+                .from(study)
+                .orderBy(study.id.desc())
+                .limit(pageSize)
+                .offset((long) pageSize * (pageNum - 1))
+                .fetch();
+
+        if (CollectionUtils.isEmpty(ids)) {
+            return new ArrayList<>();
+        }
+
+        return queryFactory
+                .select(createStudyDto())
+                .from(study)
+                .where(study.id.in(ids))
+                .orderBy(study.id.desc())
                 .fetch();
     }
 
