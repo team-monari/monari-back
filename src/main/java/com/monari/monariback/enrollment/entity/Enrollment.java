@@ -96,10 +96,4 @@ public class Enrollment extends BaseEntity {
             || this.status == EnrollmentStatus.CANCELLED;
     }
 
-    public void updateFinalPrice(final int finalPrice) {
-        if (this.getStatus() == EnrollmentStatus.PENDING) {
-            this.finalPrice = finalPrice;
-            updateStatus(EnrollmentStatus.REQUESTED);
-        }
-    }
 }

@@ -1,6 +1,8 @@
 package com.monari.monariback.enrollment.repository;
 
 import com.monari.monariback.enrollment.entity.Enrollment;
+import com.monari.monariback.enrollment.entity.enumerated.EnrollmentStatus;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,4 +25,6 @@ public interface EnrollmentCustomRepository {
         final Integer studentId,
         final Integer lessonId
     );
+
+    void updateFinalPrice(final List<Integer> enrollmentIds, final int finalPrice, final EnrollmentStatus status);
 }

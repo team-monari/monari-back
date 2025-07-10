@@ -88,4 +88,16 @@ public class EnrollmentCustomRepositoryImpl implements EnrollmentCustomRepositor
             .where(enrollment.student.id.eq(studentId)
                 .and(enrollment.lesson.id.eq(lessonId))).fetchFirst());
     }
+
+    @Override
+    public void updateFinalPrice(List<Integer> enrollmentIds, int finalPrice, EnrollmentStatus status) {
+        queryFactory
+                .update(enrollment)
+                .set(enrollment.finalPrice, finalPrice)
+                .set(enrollment.status, status)
+                .where(enrollment.id.in(enrollmentIds))
+                .execute();
+    }
+
+
 }

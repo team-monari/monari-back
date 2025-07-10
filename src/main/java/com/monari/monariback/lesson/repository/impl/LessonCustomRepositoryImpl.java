@@ -14,6 +14,7 @@ import com.monari.monariback.common.enumerated.SearchType;
 import com.monari.monariback.common.enumerated.Subject;
 import com.monari.monariback.lesson.dto.response.LessonResponse;
 import com.monari.monariback.lesson.dto.response.LessonWithTeacherResponse;
+import com.monari.monariback.lesson.entity.enurmerated.LessonStatus;
 import com.monari.monariback.lesson.entity.enurmerated.LessonType;
 import com.monari.monariback.lesson.repository.LessonCustomRepository;
 import com.querydsl.core.types.ConstructorExpression;
@@ -175,6 +176,15 @@ public class LessonCustomRepositoryImpl implements LessonCustomRepository {
             pageSize,
             pageNum
         );
+    }
+
+    @Override
+    public void updateStatus(List<Integer> lessonIds, LessonStatus lessonStatus) {
+        queryFactory
+                .update(lesson)
+                .set(lesson.status, lessonStatus)
+                .where(lesson.id.in(lessonIds))
+                .execute();
     }
 
     /**

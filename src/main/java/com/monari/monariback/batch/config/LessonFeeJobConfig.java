@@ -51,7 +51,7 @@ public class LessonFeeJobConfig {
 
     private final CustomItemProcessListener customItemProcessListener;
 
-    @Value("${lessonChunkSize:10}")
+    @Value("${lessonChunkSize:1000}")
     private int lessonChunkSize;
 
     @Value("${enrollmentChunkSize:5}")
@@ -132,7 +132,7 @@ public class LessonFeeJobConfig {
         @Qualifier(NOTIFICATION_STEP_NAME) Step lessonFeeNotificationStep) {
         return new JobBuilder(JOB_NAME, jobRepository)
             .start(lessonFeeCalculationStep)
-            .next(lessonFeeNotificationStep)
+//            .next(lessonFeeNotificationStep)
             .build();
     }
 
