@@ -14,6 +14,8 @@ public interface StudyCustomRepository {
 
     List<StudyDto> findOrderByCreatedAtDesc(int pageNum, int pageSize);
 
+    List<StudyDto> paginationCoveringIndex(int pageNum, int pageSize);
+
     List<StudyDto> findByKeywordsOrderByCreatedAtDesc(
             int pageNum,
             int pageSize,
